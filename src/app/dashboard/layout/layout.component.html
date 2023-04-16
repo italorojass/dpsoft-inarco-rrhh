@@ -1,26 +1,32 @@
 <div class="container-scroller">
   <app-header></app-header>
-<!-- partial -->
-<div class="container-fluid page-body-wrapper">
-  <div class="main-panel">
-    <div class="content-wrapper">
-      <div class="container-fluid">
-        <h3 class="text-right mb-4 text-dark">{{obra}}</h3>
+  <!-- partial -->
+  <div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+
+              <h3 class="text-left mb-4 text-dark"> <a [routerLink]="['/obras']"><i class="icon-action-undo mr-2"></i>{{obra}}</a></h3>
+            </div>
+          </div>
+
+
+
+
+        </div>
+        <router-outlet></router-outlet>
 
       </div>
-      <router-outlet></router-outlet>
+      <!-- content-wrapper ends -->
+      <!-- partial:partials/_footer.html -->
+      <app-footer></app-footer>
 
+      <!-- partial -->
     </div>
-    <!-- content-wrapper ends -->
-    <!-- partial:partials/_footer.html -->
-    <app-footer></app-footer>
-
-    <!-- partial -->
+    <!-- main-panel ends -->
   </div>
-  <!-- main-panel ends -->
-</div>
-<!-- page-body-wrapper ends -->
+  <!-- page-body-wrapper ends -->
 
 </div>
-
-
