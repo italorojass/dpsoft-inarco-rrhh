@@ -14,6 +14,11 @@ export class HeaderComponent implements OnInit {
     this.user = JSON.parse(sessionStorage.getItem('user')!).user;
   }
 
+  logout(){
+    sessionStorage.clear();
+
+  }
+
   menu = [
     {
       title: 'Inicio',
@@ -25,17 +30,17 @@ export class HeaderComponent implements OnInit {
       subitem: [
         {
           title: 'Proyectos',
-          href: '/obras/administracion',
+          href: '/obras/inicio/proyectos',
           icon: 'icon-docs'
         },
         {
           title: 'Usuarios',
-          href: '/obras/usuarios',
+          href: '/obras/inicio/usuarios',
           icon: 'icon-people'
         },
         {
           title:'Parámetros',
-          href : '/obras/parametros',
+          href : '/obras/inicio/parametros',
           icon : 'icon-layers'
         }],
 
@@ -43,12 +48,12 @@ export class HeaderComponent implements OnInit {
     },
     {
       title: 'Requerimientos',
-      href: '/obras/requerimientos',
+      href: '/obras/inicio/requerimientos',
       icon: 'icon-note'
     },
     {
       title: 'Reportes',
-      href: '/obras/reportes',
+      href: '/obras/inicio/reportes',
       icon: 'icon-cloud-download'
     }
 

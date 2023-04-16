@@ -6,6 +6,12 @@ import { ObrasComponent } from './obras/obras.component';
 import { LayoutComponent } from './layout/layout.component';
 import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
+import { DetallePagoComponent } from './detalle-pago/detalle-pago.component';
+import { ProyectosComponent } from './proyectos/proyectos.component';
+import { UsuariosComponent } from './usuarios/usuarios.component';
+import { ParametrosComponent } from './parametros/parametros.component';
+import { RequerimientosComponent } from './requerimientos/requerimientos.component';
+import { ReporteComponent } from './reporte/reporte.component';
 
 
 @NgModule({
@@ -13,7 +19,13 @@ import { FooterComponent } from './layout/footer/footer.component';
     ObrasComponent,
     LayoutComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    DetallePagoComponent,
+    ProyectosComponent,
+    UsuariosComponent,
+    ParametrosComponent,
+    RequerimientosComponent,
+    ReporteComponent
 
   ],
   imports: [

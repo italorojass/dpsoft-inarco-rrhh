@@ -27,7 +27,8 @@
               "src/assets/vendors/iconfonts/flag-icon-css/css/flag-icon.min.css",
               "src/assets/vendors/css/vendor.bundle.addons.css",
               "src/assets/vendors/font-awesome/css/all.min.css",
-              "src/assets/css/style.css"
+              "src/assets/css/style.css",
+              "src/styles.css"
             ],
             "scripts": [
               "src/assets/vendors/js/vendor.bundle.base.js",
