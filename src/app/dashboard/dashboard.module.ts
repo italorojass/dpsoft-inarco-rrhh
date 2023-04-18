@@ -12,7 +12,13 @@ import { UsuariosComponent } from './usuarios/usuarios.component';
 import { ParametrosComponent } from './parametros/parametros.component';
 import { RequerimientosComponent } from './requerimientos/requerimientos.component';
 import { ReporteComponent } from './reporte/reporte.component';
-
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { AgGridModule } from 'ag-grid-angular';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HorasExtraComponent } from './horas-extra/horas-extra.component';
+import { DiferenciaSabDomComponent } from './diferencia-sab-dom/diferencia-sab-dom.component';
+import { DetalleBonoComponent } from './detalle-bono/detalle-bono.component';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -25,12 +31,20 @@ import { ReporteComponent } from './reporte/reporte.component';
     UsuariosComponent,
     ParametrosComponent,
     RequerimientosComponent,
-    ReporteComponent
+    ReporteComponent,
+    DashboardComponent,
+    HorasExtraComponent,
+    DiferenciaSabDomComponent,
+    DetalleBonoComponent
+
 
   ],
   imports: [
     CommonModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    ReactiveFormsModule,
+    AgGridModule,
+    RouterModule
   ]
 })
 export class DashboardModule { }

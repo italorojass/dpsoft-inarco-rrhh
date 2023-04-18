@@ -7,6 +7,11 @@ import { ProyectosComponent } from './proyectos/proyectos.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { RequerimientosComponent } from './requerimientos/requerimientos.component';
 import { ReporteComponent } from './reporte/reporte.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { DiferenciaSabDomComponent } from './diferencia-sab-dom/diferencia-sab-dom.component';
+import { DetalleBonoComponent } from './detalle-bono/detalle-bono.component';
+import { HorasExtraComponent } from './horas-extra/horas-extra.component';
+import { ParametrosComponent } from './parametros/parametros.component';
 
 const routes: Routes = [
   {
@@ -19,7 +24,7 @@ const routes: Routes = [
     children : [
       {
       path : '',
-      component : DetallePagoComponent
+      component : DashboardComponent
     },
     {
       path : 'proyectos',
@@ -31,7 +36,7 @@ const routes: Routes = [
     },
     {
       path : 'parametros',
-      component : UsuariosComponent
+      component : ParametrosComponent
     },
     {
       path : 'requerimientos',
@@ -41,6 +46,23 @@ const routes: Routes = [
       path : 'reportes',
       component : ReporteComponent
     }
+    ,
+    {
+      path : 'horas-extras',
+      component : HorasExtraComponent
+    },
+    {
+      path : 'detalle-pagos',
+      component : DetallePagoComponent
+    },
+    {
+      path : 'diferencia-sab-dom',
+      component : DiferenciaSabDomComponent
+    },
+    {
+      path : 'detalle-bonos',
+      component : DetalleBonoComponent
+    },
   ]
   },
 ];

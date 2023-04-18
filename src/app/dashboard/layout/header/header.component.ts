@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
+import * as $ from 'jquery';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -13,6 +13,24 @@ export class HeaderComponent implements OnInit {
   user: string = '';
   ngOnInit(): void {
     this.user = JSON.parse(sessionStorage.getItem('user')!).user;
+
+    $(".navbar.horizontal-layout .navbar-menu-wrapper .navbar-toggler").on("click", function() {
+      $(".navbar.horizontal-layout .nav-bottom").toggleClass("header-toggled");
+    });
+
+     // Navigation in mobile menu on click
+     var navItemClicked = $('.page-navigation >.nav-item');
+     navItemClicked.on("click", function(event) {
+       if(window.matchMedia('(max-width: 991px)').matches) {
+         if(!($(this).hasClass('show-submenu'))) {
+           navItemClicked.removeClass('show-submenu');
+         }
+         $(this).toggleClass('show-submenu');
+       }
+     })
+
+
+
   }
 
   logout(){
@@ -49,9 +67,30 @@ export class HeaderComponent implements OnInit {
       icon: 'icon-settings'
     },
     {
-      title: 'Requerimientos',
-      href: '/obras/inicio/requerimientos',
-      icon: 'icon-note'
+      title: 'Pagos obra',
+      //href: '/obras/inicio/requerimientos',
+      icon: 'icon-briefcase',
+      subitem: [
+        {
+          title: 'Detalle pagos',
+          href: '/obras/inicio/detalle-pagos',
+          icon: 'icon-docs'
+        },
+        {
+          title: 'Horas extras',
+          href: '/obras/inicio/horas-extras',
+          icon: 'icon-people'
+        },
+        {
+          title:'Diferencia sab. dom.',
+          href : '/obras/inicio/diferencia-sab-dom',
+          icon : 'icon-layers'
+        },
+        {
+          title:'Detalle bonos',
+          href : '/obras/inicio/detalle-bonos',
+          icon : 'icon-layers'
+        }],
     },
     {
       title: 'Reportes',
