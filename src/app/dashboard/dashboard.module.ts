@@ -18,7 +18,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HorasExtraComponent } from './horas-extra/horas-extra.component';
 import { DiferenciaSabDomComponent } from './diferencia-sab-dom/diferencia-sab-dom.component';
 import { DetalleBonoComponent } from './detalle-bono/detalle-bono.component';
-import {RouterModule} from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -43,8 +42,8 @@ import {RouterModule} from '@angular/router';
     CommonModule,
     DashboardRoutingModule,
     ReactiveFormsModule,
-    AgGridModule,
-    RouterModule
+    AgGridModule
+
   ]
 })
 export class DashboardModule { }
