@@ -18,6 +18,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HorasExtraComponent } from './horas-extra/horas-extra.component';
 import { DiferenciaSabDomComponent } from './diferencia-sab-dom/diferencia-sab-dom.component';
 import { DetalleBonoComponent } from './detalle-bono/detalle-bono.component';
+import { NgChartsModule } from 'ng2-charts';
+import { RECAPTCHA_SETTINGS, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
+import { HttpClientModule } from '@angular/common/http';
+import { DataTablesModule } from "angular-datatables";
+import { MaestroEspecialidadComponent } from './maestro-especialidad/maestro-especialidad.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +39,8 @@ import { DetalleBonoComponent } from './detalle-bono/detalle-bono.component';
     DashboardComponent,
     HorasExtraComponent,
     DiferenciaSabDomComponent,
-    DetalleBonoComponent
+    DetalleBonoComponent,
+    MaestroEspecialidadComponent
 
 
   ],
@@ -42,8 +48,18 @@ import { DetalleBonoComponent } from './detalle-bono/detalle-bono.component';
     CommonModule,
     DashboardRoutingModule,
     ReactiveFormsModule,
-    AgGridModule
+    AgGridModule,
+    NgChartsModule,
+    RecaptchaModule,
+    HttpClientModule,
+    DataTablesModule
 
+  ],
+  providers : [
+    {
+      provide: RECAPTCHA_SETTINGS,
+      useValue: { siteKey: "<YOUR_KEY>" } as RecaptchaSettings,
+    },
   ]
 })
 export class DashboardModule { }

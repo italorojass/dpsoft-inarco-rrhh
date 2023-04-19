@@ -8,8 +8,12 @@ import { Component, OnInit } from '@angular/core';
 export class UsuariosComponent implements OnInit {
 
   constructor() { }
-
+  userSelect:string = ''
   ngOnInit(): void {
+  }
+
+  resolved(captchaResponse: string) {
+    console.log(`Resolved captcha with response: ${captchaResponse}`);
   }
 
 }

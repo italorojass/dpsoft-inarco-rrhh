@@ -26,7 +26,7 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item">
+              <a class="dropdown-item" data-toggle="modal" data-target="#modalCambiarClave">
                 <i class="icon-settings text-primary mr-2"></i>
                 Cambiar contraseña
               </a>
@@ -70,3 +70,63 @@
     </div>
   </div>
 </nav>
+
+
+<!--Modal Cambiar clave-->
+<div class="modal fade" id="modalCambiarClave" tabindex="-1" role="dialog" aria-labelledby="modalCambiarClaveLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCambiarClaveLabel">Cambiar contraseña</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <form>
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Contraseña actual</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="nombre" id="nombre" type="password" placeholder="xxxx">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Nueva contraseña</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="usuario" id="usuario" type="password" placeholder="xxxxx">
+            </div>
+
+
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Repita contraseña</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="rol" id="rol" type="password" placeholder="xxxx">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-12">
+              <b class="col-form-label">*La contraseña debe contener letras y numeros.</b><br>
+              <b class="col-form-label">*Minimo 6 caractéres.</b>
+            </div>
+
+          </div>
+
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success">Cambiar contraseña</button>
+        <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

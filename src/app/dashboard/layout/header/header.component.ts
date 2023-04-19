@@ -62,7 +62,12 @@ export class HeaderComponent implements OnInit {
           title:'Parámetros',
           href : '/obras/inicio/parametros',
           icon : 'icon-layers'
-        }],
+        }
+      ,{
+        title:'Maestro de especialidad',
+        href : '/obras/inicio/maestro-especialidad',
+        icon : 'icon-layers'
+      }],
 
       icon: 'icon-settings'
     },

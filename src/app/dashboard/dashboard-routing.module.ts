@@ -12,6 +12,7 @@ import { DiferenciaSabDomComponent } from './diferencia-sab-dom/diferencia-sab-d
 import { DetalleBonoComponent } from './detalle-bono/detalle-bono.component';
 import { HorasExtraComponent } from './horas-extra/horas-extra.component';
 import { ParametrosComponent } from './parametros/parametros.component';
+import { MaestroEspecialidadComponent } from './maestro-especialidad/maestro-especialidad.component';
 
 const routes: Routes = [
   {
@@ -62,6 +63,10 @@ const routes: Routes = [
     {
       path : 'detalle-bonos',
       component : DetalleBonoComponent
+    },
+    {
+      path : 'maestro-especialidad',
+      component : MaestroEspecialidadComponent
     },
   ]
   },
