@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-obras',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ObrasComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router :Router) { }
 
   obras = [{
     id : 1,
@@ -24,7 +25,7 @@ export class ObrasComponent implements OnInit {
 ];
 usuario : any;
   ngOnInit(): void {
-    this.usuario = JSON.parse(sessionStorage.getItem('user')!).user
+    this.usuario = JSON.parse(sessionStorage.getItem('user')!)
 
   }
 
@@ -32,6 +33,11 @@ usuario : any;
     console.log('select',i);
     sessionStorage.setItem('obraSelect',JSON.stringify(i))
 
+  }
+
+  logout(){
+    sessionStorage.clear();
+    this.router.navigate(['/login']);
   }
 
 }

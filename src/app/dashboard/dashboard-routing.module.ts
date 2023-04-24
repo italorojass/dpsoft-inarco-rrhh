@@ -13,19 +13,23 @@ import { DetalleBonoComponent } from './detalle-bono/detalle-bono.component';
 import { HorasExtraComponent } from './horas-extra/horas-extra.component';
 import { ParametrosComponent } from './parametros/parametros.component';
 import { MaestroEspecialidadComponent } from './maestro-especialidad/maestro-especialidad.component';
+import { AuthGuard } from '../shared/guards/auth.guard';
 
 const routes: Routes = [
   {
     path : '',
-    component : ObrasComponent
+    component : ObrasComponent,
+    canActivate : [AuthGuard]
   },
   {
     path : 'inicio',
     component: LayoutComponent,
+    canActivate : [AuthGuard],
     children : [
       {
       path : '',
       component : DashboardComponent
+
     },
     {
       path : 'proyectos',

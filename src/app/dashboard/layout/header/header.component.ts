@@ -12,25 +12,7 @@ export class HeaderComponent implements OnInit {
 
   user: string = '';
   ngOnInit(): void {
-    this.user = JSON.parse(sessionStorage.getItem('user')!).user;
-
-    $(".navbar.horizontal-layout .navbar-menu-wrapper .navbar-toggler").on("click", function() {
-      $(".navbar.horizontal-layout .nav-bottom").toggleClass("header-toggled");
-    });
-
-     // Navigation in mobile menu on click
-     var navItemClicked = $('.page-navigation >.nav-item');
-     navItemClicked.on("click", function(event) {
-       if(window.matchMedia('(max-width: 991px)').matches) {
-         if(!($(this).hasClass('show-submenu'))) {
-           navItemClicked.removeClass('show-submenu');
-         }
-         $(this).toggleClass('show-submenu');
-       }
-     })
-
-
-
+    this.user = JSON.parse(sessionStorage.getItem('user')!);
   }
 
   logout(){

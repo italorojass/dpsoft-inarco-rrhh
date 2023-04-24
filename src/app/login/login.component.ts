@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { LoginService } from './services/login.service';
 import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,8 @@ import * as CryptoJS from 'crypto-js';
 export class LoginComponent implements OnInit {
 
   constructor(private loginSv : LoginService,
-    private router : Router) { }
+    private router : Router,
+    private toastr: ToastrService) { }
 
   ngOnInit(): void {
   }
@@ -24,24 +26,21 @@ export class LoginComponent implements OnInit {
 
   login(f:NgForm){
     console.log(f.value);
-
-
-    var key = CryptoJS.enc.Utf8.parse(this.key);
-    let passEncrypt = CryptoJS.AES.encrypt(f.value.pass.trim(),this.key,{ mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.NoPadding }).toString();
-
-    console.log('encrypt',passEncrypt);
-    /* let decrypt =  CryptoJS.AES.decrypt(passEncrypt, this.key).toString(CryptoJS.enc.Utf8);
-    console.log('descrypt',decrypt); */
-
-    let bodyEncryp = {
-      usua : f.value.usua,
-      pass : passEncrypt
+    let body = {
+      "usua" : f.value.usua,
+      "pass": f.value.pass
     }
-   // this.router.navigate(['/obras'])
-    this.loginSv.login(bodyEncryp).subscribe(r=>{
+    this.loginSv.login(body).subscribe((r:any)=>{
       console.log('response login',r);
-      sessionStorage.setItem('user',JSON.stringify(f.value));
-      this.router.navigate(['/obras'])
+      if(r.status =='ok'){
+        sessionStorage.setItem('token',r['result'].token);
+        sessionStorage.setItem('idUser',r['result'].id);
+        sessionStorage.setItem('user',JSON.stringify(f.value.usua));
+        this.router.navigate(['/obras'])
+      }else{
+        this.toastr.error(r.result.error_msg, 'Error al iniciar sesión');
+      }
+
     })
 
   }

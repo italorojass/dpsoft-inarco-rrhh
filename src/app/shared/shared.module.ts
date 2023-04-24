@@ -7,6 +7,7 @@ import { LoaderInterceptorInterceptor } from './interceptors/loader-interceptor.
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ErrorsInterceptor } from './interceptors/errors.interceptor';
+import { AuthGuard } from './guards/auth.guard';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { ErrorsInterceptor } from './interceptors/errors.interceptor';
     {
       provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorInterceptor, multi: true
     },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorsInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorsInterceptor, multi: true },
+    AuthGuard
   ],
   exports : [
     LoaderComponent
