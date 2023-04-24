@@ -41,27 +41,29 @@
 
             <table id="order-listing" class="table">
               <thead>
-                <tr class="bg-light">
-                  <th>Código</th>
-                  <th>Descripción</th>
-                  <th>Acciones</th>
+                <tr class="bg-light" >
+                  <th *ngFor="let item of daysTable">{{item}}</th>
+
                 </tr>
               </thead>
               <tbody>
                 <tr >
-                  <td>-</td>
-                  <td>-</td>
-
-                  <td>
-                    <button type="submit" class="btn btn-outline-success btn-rounded btn-sm mr-2"><i class="icon-pencil"></i>Modificar</button>
-                    <button type="submit" class="btn btn-outline-danger btn-rounded btn-sm"><i class="icon-trash"></i>Eliminar</button>
-                  </td>
-
+                  <td *ngFor="let item of daysTable"> -</td>
                 </tr>
 
 
               </tbody>
             </table>
+          </div>
+        </div>
+
+        <div class="row pt-2">
+          <div class="col-12 ">
+              <small><strong>H =</strong> Hábil </small>
+              <br>
+              <small> <strong>S =</strong> Sábado</small>
+              <br>
+              <small> <strong>F =</strong> Feriado</small>
           </div>
         </div>
       </div>

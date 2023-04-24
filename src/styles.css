@@ -3,6 +3,7 @@ input.ng-dirty.ng-invalid {
   color: #ff5e5e
 }
 
-input.ng-dirty.ng-valid {
-  color: #7ed321
-}
+
+
+@import 'ngx-toastr/toastr';
+

@@ -23,6 +23,7 @@ import { RECAPTCHA_SETTINGS, RecaptchaModule, RecaptchaSettings } from 'ng-recap
 import { HttpClientModule } from '@angular/common/http';
 import { DataTablesModule } from "angular-datatables";
 import { MaestroEspecialidadComponent } from './maestro-especialidad/maestro-especialidad.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { MaestroEspecialidadComponent } from './maestro-especialidad/maestro-esp
     NgChartsModule,
     RecaptchaModule,
     HttpClientModule,
-    DataTablesModule
+    DataTablesModule,
+    SharedModule
 
   ],
   providers : [
