@@ -1,0 +1,205 @@
+<div class="row">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Detalle pagos</h4>
+        <hr>
+        <div class="row">
+          <div class="col-12">
+            <div class="d-flex justify-content-start">
+              <button type="submit" class="btn btn-outline-primary btn-rounded " data-toggle="modal" data-target="#modalNuevoPago"><i class="icon-note"></i>Nuevo</button>
+              <button type="submit" class="btn btn-outline-success btn-rounded ml-2"><i class="icon-paper-clip"></i>Descargar excel</button>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-12">
+             <div class="table-responsive" >
+          <table class="table table-striped" datatable [dtOptions]="dtOptions" >
+            <thead>
+              <tr>
+                <th>N.</th>
+                <th>Fin de mes</th>
+
+                <th>Nombre completo</th>
+                <th>N. Ficha</th>
+                <th>Rut</th>
+                <th>Especialidad</th>
+                <th>Sueldo líquido</th>
+                <th>Dias a pago</th>
+                <th>Valor Hora Extra líquido</th>
+                <th>Total periodo</th>
+                <th>Hora extra legal lunes a sábados</th>
+                <th>Total valor hora extra líquido</th>
+                <th>Diferencia dias sabados</th>
+                <th>Diferencia dias domingos</th>
+                <th>Total Bonos</th>
+                <th>Asignaciones</th>
+                <th>Ajuste positivo</th>
+                <th>Total ganado</th>
+                <th>Anticipo</th>
+                <th>Descuentos varios</th>
+                <th>Remuneración a pagar</th>
+                <th>Finiquito fin de mes</th>
+                <th>Liquido a pagar</th>
+                <th>Acciones</th>
+              </tr>
+
+            </thead>
+          <!--   <thead>
+              <tr>
+                <th><input type="text" placeholder="Search ID" name="search-id" id="search-id"/></th>
+                <th><input type="text" placeholder="Search first name" name="search-first-name" id="search-name"/></th>
+                <th><input type="text" placeholder="Search last name" name="search-last-name"/></th>
+              </tr>
+            </thead> -->
+            <tbody>
+              <tr *ngFor="let item of dataExample">
+                <td>{{item.numero}}</td>
+                <td>{{item.findemes}}</td>
+                <td>{{item.nombreCompleto}}</td>
+                <td>{{item.numeroFicha}}</td>
+                <td>{{item.rut}}</td>
+                <td>{{item.especialidad}}</td>
+                <td>{{item.sueldoLiquido}}</td>
+                <td>{{item.diasPago}}</td>
+                <td>{{item.valorHoraExtraLiq}}</td>
+                <td>{{item.totalPeriodo}}</td>
+                <td>{{item.horaExtraLunesSabado}}</td>
+                <td>{{item.totalHoraExtraLiquido}}</td>
+                <td>{{item.diferenciaSabado}}</td>
+                <td>{{item.diferenciaDomingos}}</td>
+                <td>{{item.totalBonos}}</td>
+                <td>{{item.asignaciones}}</td>
+                <td>{{item.ajustePositivo}}</td>
+                <td>{{item.totalGanado}}</td>
+                <td>{{item.anticipo}}</td>
+                <td>{{item.descuentosVarios}}</td>
+                <td>{{item.remuneracionPagar}}</td>
+                <td>{{item.finiquitoFinMes}}</td>
+                <td>{{item.liquidoAPagar}}</td>
+                <td>
+                  <button type="button" class="btn btn-outline-success btn-rounded btn-sm " data-toggle="modal" data-target="#modalNuevoUser"><i class="icon-pencil" ></i></button>
+                    <button type="button" class="btn btn-outline-danger btn-rounded btn-sm"><i class="icon-trash"></i></button>
+                </td>
+              </tr>
+
+            </tbody>
+
+            <tfoot >
+              <tr>
+                <td colspan="4"></td>
+                <th>Total periodo</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--Modal nuevo pago-->
+<div class="modal fade" id="modalNuevoPago" tabindex="-1" role="dialog" aria-labelledby="modalNuevoPagoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalNuevoPagoLabel">Nuevo Trabajador</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <form>
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">R.U.T</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Num ficha</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="usuario" id="usuario" type="text" placeholder="userExample">
+            </div>
+
+
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Nombre</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="rol" id="rol" type="text" placeholder="Nombre de ejemplo">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Especialidad</label>
+            </div>
+            <div class="col-lg-8">
+              <select class="form-control">
+                <option value="Activo">Activo</option>
+                <option value="Inactivo">Inactivo</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Sueldo liquido</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="rol" id="rol" type="text" placeholder="000">
+
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Valor hora extra</label>
+            </div>
+            <div class="col-lg-8">
+               <input class="form-control"  name="rol" id="rol" type="text" placeholder="000">
+
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success">Guardar</button>
+        <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

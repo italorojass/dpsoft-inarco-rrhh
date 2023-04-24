@@ -18,7 +18,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="icon-user"></i></span>
                   </div>
-                  <input type="text" class="form-control" placeholder="Username" name="user" #user="ngModel" ngModel required>
+                  <input type="text" class="form-control" placeholder="Username" name="usua" #usua="ngModel" ngModel required>
                 </div>
               </div>
               <div class="form-group">
@@ -30,7 +30,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <button class="btn btn-primary submit-btn" [routerLink]="['/obras']" [disabled]="!f.valid">Ingresar</button>
+                <button class="btn btn-primary submit-btn" [disabled]="!f.valid">Ingresar</button>
               </div>
               <div class="wrapper mt-5 text-gray">
                 <p class="footer-text">Created by DpSoft © {{hoy}}. All rights reserved.</p>

@@ -8,8 +8,10 @@ import { Component, OnInit } from '@angular/core';
 export class LayoutComponent implements OnInit {
 
   constructor() { }
+  obra : string= '';
 
   ngOnInit(): void {
+    this.obra = JSON.parse(sessionStorage.getItem('obraSelect')!).name;
   }
 
 }
