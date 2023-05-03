@@ -21,6 +21,8 @@ export class HeaderComponent implements OnInit {
 
   }
 
+  rutaLogo = 'assets/images/logo-inarco-new-removebg-preview.jpg'
+
   menu = [
     {
       title: 'Inicio',

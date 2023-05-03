@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { UsuariosService } from './services/usuarios.service';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-usuarios',
@@ -7,9 +9,33 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UsuariosComponent implements OnInit {
 
-  constructor() { }
+  constructor(private userSv : UsuariosService, private fb : FormBuilder) { }
   userSelect:string = ''
   ngOnInit(): void {
+    this.getUsers();
+  }
+
+  usuarios : any=[];
+  getUsers(){
+    this.userSv.get().subscribe((r:any)=>{
+      console.log(r);
+      this.usuarios = r['result'].usuarios;
+    })
+  }
+
+  userForm = this.fb.group({
+    usuario : [],
+    nombre_usuario : [],
+    mail : [],
+    estado : []
+
+  })
+  titleModal = '';
+  userTitleEditModal = '';
+  editModal(item:any){
+    this.titleModal = 'Editando';
+    this.userTitleEditModal = item.usuario;
+    this.userForm.patchValue(item);
   }
 
   resolved(captchaResponse: string) {

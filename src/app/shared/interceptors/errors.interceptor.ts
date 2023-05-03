@@ -18,7 +18,7 @@ export class ErrorsInterceptor implements HttpInterceptor {
       catchError((error) => {
 
         console.error('error intercept',error,error.status);
-        this.toastr.error(error.error.result.error_msg, 'Error al procesar la solicitud');
+        this.toastr.error('', 'Error al procesar la solicitud');
         //Swal.fire('Error al procesar la solicitud',error.error.result.error_msg,'error')
         return throwError(error.message);
       })

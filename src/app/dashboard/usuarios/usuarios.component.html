@@ -8,7 +8,7 @@
         <div class="row">
           <div class="col-12">
             <div class="d-flex justify-content-start">
-              <button type="button" class="btn btn-outline-success btn-rounded mr-2"
+              <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" (click)="userTitleEditModal == '';titleModal=='Nuevo';userForm.reset()"
               data-toggle="modal" data-target="#modalNuevoUser"><i class="icon-plus"></i>Nuevo</button>
 
             </div>
@@ -18,10 +18,10 @@
         <div class="row pt-2">
           <div class="col-12 table-responsive">
 
-            <table id="order-listing" class="table">
+            <table id="order-listing" class="table table-striped">
               <thead>
                 <tr class="bg-light">
-                  <th>Compañia</th>
+                  <th>ID</th>
                   <th>Nombre usuario</th>
                   <th>Usuario</th>
 
@@ -31,24 +31,25 @@
                   <th>Acciones</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr >
-                  <td>S-590</td>
-                  <td>Sakata</td>
+              <tbody *ngIf="usuarios.length>0;else nodata">
+                <tr *ngFor="let item of usuarios">
+                  <td>{{item.id}}</td>
+                  <td>{{item.nombre_usuario}}</td>
 
                   <td>
-                    sakata
+                    {{item.usuario}}
                   </td>
                   <td>
-                   prueba@prueba.cl
+                   {{item.mail}}
                   </td>
                   <td>
-                    <label class="badge badge-danger">INACTIVO</label>
+                    <label class="badge" [ngClass]="item.estado=='Activo' ? 'badge-success' : 'badge-danger'">{{item.estado}}</label>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-outline-dark btn-rounded mr-2"
+                    <button type="button" class="btn btn-outline-dark btn-rounded mr-2 btn-sm"
                     data-toggle="modal" data-target="#modalAsociarObras"><i class="icon-people"></i>Asociar obras</button>
-                    <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" data-toggle="modal" data-target="#modalNuevoUser"><i class="icon-pencil" ></i>Modificar</button>
+                    <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" data-toggle="modal" data-target="#modalNuevoUser"
+                    (click)="editModal(item)"><i class="icon-pencil" ></i>Modificar</button>
                     <button type="button" class="btn btn-outline-danger btn-rounded btn-sm"><i class="icon-trash"></i>Eliminar</button>
                   </td>
 
@@ -56,6 +57,14 @@
 
 
               </tbody>
+              <ng-template #nodata>
+                <tbody>
+                  <tr>
+                    <td colspan="6" align="center">** Sin datos **</td>
+                  </tr>
+                </tbody>
+              </ng-template>
+
             </table>
           </div>
         </div>
@@ -69,20 +78,20 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalNuevoUserLabel">Nuevo usuario</h5>
+        <h5 class="modal-title" id="modalNuevoUserLabel">{{titleModal}} usuario {{userTitleEditModal}}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
 
-        <form>
+        <form [formGroup]="userForm">
           <div class="form-group row">
             <div class="col-lg-3">
               <label class="col-form-label">Nombre</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control" maxlength="25" name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo">
+              <input class="form-control" maxlength="25" name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo" formControlName="usuario">
             </div>
           </div>
           <div class="form-group row">
@@ -90,25 +99,18 @@
               <label class="col-form-label">Usuario</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control" maxlength="25" name="usuario" id="usuario" type="text" placeholder="userExample">
+              <input class="form-control" maxlength="25" name="usuario" id="usuario" type="text" placeholder="userExample" formControlName="nombre_usuario">
             </div>
 
 
           </div>
-          <div class="form-group row">
-            <div class="col-lg-3">
-              <label class="col-form-label">Rol</label>
-            </div>
-            <div class="col-lg-8">
-              <input class="form-control" maxlength="25" name="rol" id="rol" type="text" placeholder="Nombre de ejemplo">
-            </div>
-          </div>
+
           <div class="form-group row">
             <div class="col-lg-3">
               <label class="col-form-label">Mail</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control" maxlength="25" name="email" id="email" type="email" placeholder="ejemplo@inarco.cl">
+              <input class="form-control" maxlength="25" name="email" id="email" type="email" placeholder="ejemplo@inarco.cl" formControlName="mail">
             </div>
           </div>
 
@@ -117,7 +119,7 @@
               <label class="col-form-label">Estado</label>
             </div>
             <div class="col-lg-8">
-              <select class="form-control">
+              <select class="form-control" formControlName="estado" name="estado">
                 <option value="Activo">Activo</option>
                 <option value="Inactivo">Inactivo</option>
               </select>

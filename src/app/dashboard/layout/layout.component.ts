@@ -11,7 +11,7 @@ export class LayoutComponent implements OnInit {
   obra : string= '';
 
   ngOnInit(): void {
-    this.obra = JSON.parse(sessionStorage.getItem('obraSelect')!).name;
+    this.obra = JSON.parse(sessionStorage.getItem('obraSelect')!).nombre;
   }
 
 }

@@ -21,8 +21,6 @@ export class LoginComponent implements OnInit {
 
   hoy = new Date().getFullYear();
 
-  encrypt_method = 'AES-128-ECB';
-  key = 'AES128encript';
 
   login(f:NgForm){
     console.log(f.value);
@@ -35,8 +33,16 @@ export class LoginComponent implements OnInit {
       if(r.status =='ok'){
         sessionStorage.setItem('token',r['result'].token);
         sessionStorage.setItem('idUser',r['result'].id);
-        sessionStorage.setItem('user',JSON.stringify(f.value.usua));
-        this.router.navigate(['/obras'])
+
+        if(r['result'].obras.length > 0){
+          //sessionStorage.setItem('obras',JSON.stringify(r['result'].obras));
+          sessionStorage.setItem('user',JSON.stringify(f.value.usua));
+          this.router.navigate(['/obras'])
+        }else{
+          this.toastr.error(r['result'].obras, 'Sin obras asociadas');
+        }
+
+
       }else{
         this.toastr.error(r.result.error_msg, 'Error al iniciar sesión');
       }

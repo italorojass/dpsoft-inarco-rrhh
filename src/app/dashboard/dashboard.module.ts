@@ -20,10 +20,13 @@ import { DiferenciaSabDomComponent } from './diferencia-sab-dom/diferencia-sab-d
 import { DetalleBonoComponent } from './detalle-bono/detalle-bono.component';
 import { NgChartsModule } from 'ng2-charts';
 import { RECAPTCHA_SETTINGS, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { DataTablesModule } from "angular-datatables";
 import { MaestroEspecialidadComponent } from './maestro-especialidad/maestro-especialidad.component';
 import { SharedModule } from '../shared/shared.module';
+import { UsuariosService } from './usuarios/services/usuarios.service';
+import { HeaderInterceptor } from '../shared/interceptors/header.interceptor';
+import { ObrasService } from './obras/services/obras.service';
 
 @NgModule({
   declarations: [
@@ -62,6 +65,11 @@ import { SharedModule } from '../shared/shared.module';
       provide: RECAPTCHA_SETTINGS,
       useValue: { siteKey: "<YOUR_KEY>" } as RecaptchaSettings,
     },
+    {
+      provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true
+    },
+    UsuariosService,
+    ObrasService
   ]
 })
 export class DashboardModule { }

@@ -2,7 +2,7 @@
 
 <div class="row">
   <div class="col-12">
-    <img class="img" src="../../../assets/images/logo-inarco-new.png">
+    <img class="img" [src]="rutaLogo"  width="400" height="220" class="img-fluid">
 
   </div>
 </div>
@@ -31,7 +31,7 @@
                   <tr style="cursor: pointer;" *ngFor="let item of obras" (click)="go(item)" [routerLink]="['inicio']">
 
                     <td align="center">
-                      <h4 class="text-primary font-weight-normal"> {{item.name}}</h4>
+                      <h4 class="text-primary font-weight-normal"> {{item.nombre}}</h4>
                     </td>
 
                   </tr>

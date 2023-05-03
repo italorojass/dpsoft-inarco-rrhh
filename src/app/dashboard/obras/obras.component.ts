@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ObrasService } from './services/obras.service';
 
 @Component({
   selector: 'app-obras',
@@ -8,25 +9,17 @@ import { Router } from '@angular/router';
 })
 export class ObrasComponent implements OnInit {
 
-  constructor(private router :Router) { }
+  constructor(private router :Router, private obrasSv : ObrasService) { }
 
-  obras = [{
-    id : 1,
-    name : 'La dehesa 2'
-  },
-  {
-    id : 2,
-    name : 'Talbot'
-  },
-  {
-    id : 3,
-    name : 'Cd Bimbo'
-  }
-];
+  obras:any = [];
 usuario : any;
   ngOnInit(): void {
     this.usuario = JSON.parse(sessionStorage.getItem('user')!)
-
+    this.obrasSv.get().subscribe((r:any)=>{
+      console.log(r);
+      this.obras = r.result.obras;
+      sessionStorage.setItem('obras',JSON.stringify(r.result.obras));
+    })
   }
 
   go(i:any){
@@ -34,6 +27,9 @@ usuario : any;
     sessionStorage.setItem('obraSelect',JSON.stringify(i))
 
   }
+
+  rutaLogo = 'assets/images/logo-inarco-new-removebg-preview.jpg'
+
 
   logout(){
     sessionStorage.clear();
