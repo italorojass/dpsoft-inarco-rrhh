@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './shared/shared.module';
 import { LoginService } from './login/services/login.service';
+import { APP_BASE_HREF } from '@angular/common';
 
 //I keep the new line
 @NgModule({
@@ -27,7 +28,8 @@ import { LoginService } from './login/services/login.service';
 
   ],
   providers: [
-    LoginService
+    LoginService,
+    {provide: APP_BASE_HREF, useValue: '.'}
   ],
   bootstrap: [AppComponent]
 })

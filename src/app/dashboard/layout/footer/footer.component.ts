@@ -11,5 +11,7 @@ export class FooterComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  rutaLogo = 'assets/images/logo-inarco-new-removebg-preview.jpg'
+
 
 }

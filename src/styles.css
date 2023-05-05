@@ -1,9 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
-input.ng-dirty.ng-invalid {
-  color: #ff5e5e
+
+.ng-invalid:not(form)  {
+  border: 1px solid #ff5e5e /* red */
 }
-
-
-
 @import 'ngx-toastr/toastr';
 
+.text-vertical {
+  writing-mode: vertical-lr; -ms-writing-mode: tb-rl; transform: rotate(180deg)
+}
+
+.wraptxt{
+  white-space: break-spaces !important;
+}

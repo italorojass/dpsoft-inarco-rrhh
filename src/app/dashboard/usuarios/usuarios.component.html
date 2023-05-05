@@ -8,7 +8,7 @@
         <div class="row">
           <div class="col-12">
             <div class="d-flex justify-content-start">
-              <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" (click)="userTitleEditModal == '';titleModal=='Nuevo';userForm.reset()"
+              <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" (click)="clearNew()"
               data-toggle="modal" data-target="#modalNuevoUser"><i class="icon-plus"></i>Nuevo</button>
 
             </div>
@@ -22,7 +22,7 @@
               <thead>
                 <tr class="bg-light">
                   <th>ID</th>
-                  <th>Nombre usuario</th>
+                  <th >Nombre usuario </th>
                   <th>Usuario</th>
 
                   <th>Mail</th>
@@ -48,9 +48,9 @@
                   <td>
                     <button type="button" class="btn btn-outline-dark btn-rounded mr-2 btn-sm"
                     data-toggle="modal" data-target="#modalAsociarObras"><i class="icon-people"></i>Asociar obras</button>
-                    <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" data-toggle="modal" data-target="#modalNuevoUser"
+                    <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" data-toggle="modal" data-target="#modalEditUser"
                     (click)="editModal(item)"><i class="icon-pencil" ></i>Modificar</button>
-                    <button type="button" class="btn btn-outline-danger btn-rounded btn-sm"><i class="icon-trash"></i>Eliminar</button>
+                    <button type="button" class="btn btn-outline-danger btn-rounded btn-sm" (click)="deleteUser(item)"><i class="icon-trash"></i>Eliminar</button>
                   </td>
 
                 </tr>
@@ -78,7 +78,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalNuevoUserLabel">{{titleModal}} usuario {{userTitleEditModal}}</h5>
+        <h5 class="modal-title" id="modalNuevoUserLabel">Nuevo usuario</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -91,7 +91,7 @@
               <label class="col-form-label">Nombre</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control" maxlength="25" name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo" formControlName="usuario">
+              <input class="form-control"  name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo" formControlName="usuario">
             </div>
           </div>
           <div class="form-group row">
@@ -99,18 +99,43 @@
               <label class="col-form-label">Usuario</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control" maxlength="25" name="usuario" id="usuario" type="text" placeholder="userExample" formControlName="nombre_usuario">
+              <input class="form-control"  name="usuario" id="usuario" type="text" placeholder="Inarco" formControlName="nombre">
             </div>
 
 
           </div>
+          <div >
+
+            <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Contraseña</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="pass" id="pass" type="password" placeholder="****" formControlName="pass">
+            </div>
+
+
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Repetir contraseña</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="usuario" id="usuario" type="password" placeholder="****" formControlName="confirmPassword">
+            </div>
+
+
+          </div>
+          </div>
+
+
 
           <div class="form-group row">
             <div class="col-lg-3">
               <label class="col-form-label">Mail</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control" maxlength="25" name="email" id="email" type="email" placeholder="ejemplo@inarco.cl" formControlName="mail">
+              <input class="form-control"  name="email" id="email" type="email" placeholder="ejemplo@inarco.cl" formControlName="mail">
             </div>
           </div>
 
@@ -127,19 +152,78 @@
             </div>
           </div>
 
-          <div class="form-group row">
-            <div class="col-lg-3">
-              <!-- <label class="col-form-label">Código</label> -->
-            </div>
-            <div class="col-lg-8">
-              <re-captcha (resolved)="resolved($event)" ></re-captcha>
-            </div>
-          </div>
+
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success">Guardar</button>
-        <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="crearUsuario()" [disabled]="!userForm.valid">Guardar</button>
+        <button type="button" class="btn btn-light" data-dismiss="modal" #closeModal>Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal editar usuario-->
+<div class="modal fade" id="modalEditUser" tabindex="-1" role="dialog" aria-labelledby="modalNuevoUserLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalNuevoUserLabel">{{titleModal}} usuario {{userTitleEditModal}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="userForm">
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Nombre</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo" formControlName="usuario" readonly>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Usuario</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="usuario" id="usuario" type="text" placeholder="Inarco" formControlName="nombre" readonly>
+            </div>
+
+
+          </div>
+
+
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Mail</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="email" id="email" type="email" placeholder="ejemplo@inarco.cl" formControlName="mail">
+            </div>
+          </div>
+
+           <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Estado</label>
+            </div>
+            <div class="col-lg-8">
+              <select class="form-control" formControlName="estado" name="estado">
+                <option value="Activo">Activo</option>
+                <option value="Inactivo">Inactivo</option>
+              </select>
+
+            </div>
+          </div>
+
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="saveEditUser()" [disabled]="!userForm.valid">Editar</button>
+        <button type="button" class="btn btn-light" data-dismiss="modal" #closeModalEdit>Cancelar</button>
       </div>
     </div>
   </div>
@@ -164,7 +248,7 @@
               <label class="col-form-label">Default usage</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control" maxlength="25" name="defaultconfig" id="defaultconfig" type="text" placeholder="Type Something..">
+              <input class="form-control"  name="defaultconfig" id="defaultconfig" type="text" placeholder="Type Something..">
             </div>
           </div>
         </form>

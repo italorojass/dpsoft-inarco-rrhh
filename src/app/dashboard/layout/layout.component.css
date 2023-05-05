@@ -1,0 +1,12 @@
+
+
+.content-wrapper1 {
+  padding: 1.5rem 0;
+  width: 100%;
+  padding-right: 6px;
+  padding-left: 6px;
+  margin-right: auto;
+  margin-left: auto;
+  min-height: calc(100vh - 181px);
+  flex-grow: 1
+}
