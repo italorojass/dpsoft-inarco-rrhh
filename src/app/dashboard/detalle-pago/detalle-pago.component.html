@@ -7,113 +7,117 @@
         <div class="row">
           <div class="col-12">
             <div class="d-flex justify-content-start">
-              <button type="submit" class="btn btn-outline-primary btn-rounded " data-toggle="modal" data-target="#modalNuevoPago"><i class="icon-note"></i>Nuevo</button>
-              <button type="submit" class="btn btn-outline-success btn-rounded ml-2"><i class="icon-paper-clip"></i>Descargar excel</button>
+              <button type="submit" class="btn btn-outline-primary btn-rounded " data-toggle="modal"
+                data-target="#modalNuevoPago"><i class="icon-note"></i>Nuevo</button>
+              <button type="submit" class="btn btn-outline-success btn-rounded ml-2"><i
+                  class="icon-paper-clip"></i>Descargar excel</button>
             </div>
           </div>
         </div>
         <div class="row mt-3">
           <div class="col-12">
-             <div class="table-responsive" >
-          <table class="table table-striped " >
-            <thead >
-              <tr>
-                <th>N.</th>
-                <th class="wraptxt">Fin de mes</th>
+            <div class="table-responsive">
+              <table class="table table-striped ">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th class="wraptxt">Nombre completo</th>
+                    <th class="wraptxt">N. Ficha</th>
+                    <th>Rut</th>
+                    <th>Especialidad</th>
+                    <th class="wraptxt">Sueldo líquido</th>
+                    <th class="wraptxt">Dias a pago</th>
+                    <th class="wraptxt">Valor hora extra líquido</th>
+                    <th class="wraptxt">Total periodo</th>
+                    <th class="wraptxt">Hora extra legal lunes a sábados</th>
+                    <th class="wraptxt">Total valor hora extra líquido</th>
+                    <th class="wraptxt">Diferencia días sábados</th>
+                    <th class="wraptxt"> Diferencia días domingos</th>
+                    <th class="wraptxt">Total Bonos</th>
+                    <th class="wraptxt">Asignaciones</th>
+                    <th class="wraptxt">Ajuste positivo</th>
+                    <th class="wraptxt">Total ganado</th>
+                    <th>Anticipo</th>
+                    <th class="wraptxt">Descuentos varios</th>
+                    <th class="wraptxt">Remuneración a pagar</th>
+                    <th class="wraptxt">Finiquito fin de mes</th>
+                    <th class="wraptxt">Liquido a pagar</th>
+                    <th>Acciones</th>
+                  </tr>
 
-                <th class="wraptxt">Nombre completo</th>
-                <th class="wraptxt">N. Ficha</th>
-                <th>Rut</th>
-                <th>Especialidad</th>
-                <th class="wraptxt">Sueldo líquido</th>
-                <th class="wraptxt">Dias a pago</th>
-                <th class="wraptxt">Valor hora extra líquido</th>
-                <th class="wraptxt">Total periodo</th>
-                <th class="wraptxt">Hora extra legal lunes a sábados</th>
-                <th class="wraptxt">Total valor hora extra líquido</th>
-                <th class="wraptxt">Diferencia días sábados</th>
-                <th class="wraptxt"> Diferencia días domingos</th>
-                <th class="wraptxt">Total Bonos</th>
-                <th class="wraptxt">Asignaciones</th>
-                <th class="wraptxt">Ajuste positivo</th>
-                <th class="wraptxt">Total ganado</th>
-                <th>Anticipo</th>
-                <th class="wraptxt">Descuentos varios</th>
-                <th class="wraptxt">Remuneración a pagar</th>
-                <th class="wraptxt">Finiquito fin de mes</th>
-                <th class="wraptxt">Liquido a pagar</th>
-                <th>Acciones</th>
-              </tr>
-
-            </thead>
-          <!--   <thead>
+                </thead>
+                <!--   <thead>
               <tr>
                 <th><input type="number" placeholder="Search ID" name="search-id" id="search-id"/></th>
                 <th><input type="number" placeholder="Search first name" name="search-first-name" id="search-name"/></th>
                 <th><input type="number" placeholder="Search last name" name="search-last-name"/></th>
               </tr>
             </thead> -->
-            <tbody>
-              <tr *ngFor="let item of dataExample">
-                <td>{{item.numero}}</td>
-                <td>{{item.findemes}}</td>
-                <td>{{item.nombre}}</td>
-                <td>{{item.numFicha}}</td>
-                <td>{{item.rut}}</td>
-                <td>{{item.especialidad}}</td>
-                <td align="right">{{item.sueldoLiquido | number}}</td>
-                <td align="right">{{item.diasPago}}</td>
-                <td align="right">{{item.valorHoraExtraLiq | number}}</td>
-                <td align="right">{{getTotalPeriodo(item.sueldoLiquido,item.diasPago) | number}}</td>
-                <td align="right">{{item.horaExtraLunesSabado | number}}</td>
-                <td align="right">{{item.totalHoraExtraLiquido | number}}</td>
-                <td align="right">{{item.diferenciaSabado | number}}</td>
-                <td align="right">{{item.diferenciaDomingos}}</td>
-                <td align="right">{{item.totalBonos | number}}</td>
-                <td align="right">{{item.asignaciones | number}}</td>
-                <td align="right">{{item.ajustePositivo | number}}</td>
-                <td align="right">{{item.totalGanado | number}}</td>
-                <td align="right">{{item.anticipo | number}}</td>
-                <td align="right">{{item.descuentosVarios | number}}</td>
-                <td align="right">{{item.remuneracionPagar | number}}</td>
-                <td align="right">{{item.finiquitoFinMes | number}}</td>
-                <td align="right">{{item.liquidoAPagar | number}}</td>
-                <td>
-                  <button type="button" class="btn btn-outline-success btn-rounded btn-sm " data-toggle="modal" data-target="#modalEditarPago" (click)="editPago(item)"><i class="icon-pencil ml-1" ></i></button>
-                    <button type="button" class="btn btn-outline-danger btn-rounded btn-sm"><i class="icon-trash ml-1"></i></button>
-                </td>
-              </tr>
+                <tbody *ngIf="data.length>0">
+                  <tr *ngFor="let item of data;let i=index">
+                    <td>{{item.id}}</td>
+                    <td>{{item.nombre}}</td>
+                    <td>
+                      <div class="badge badge-pill" [ngClass]="getBadgeFicha(item.ficha)">{{item.ficha}}</div>
+                    </td>
+                    <td>{{item.rut}}-{{item.dig}}</td>
+                    <td>{{item.especialidad}}</td>
+                    <td align="right">{{item.sueldo_liq | number }}</td>
+                    <td align="right">{{item.dias}}</td>
+                    <td align="right">{{item.valor_hora | number}}</td>
+                    <td align="right">{{item.total_periodo | number}}</td>
+                    <td align="right">{{item.hor_lun_sab | number}}</td>
+                    <td align="right">{{item.val_lun_sab | number}}</td>
+                    <td align="right">{{item.difer_sabado | number}}</td>
+                    <td align="right">{{item.difer_domingo}}</td>
+                    <td align="right">{{item.total_bonos | number}}</td>
+                    <td align="right">{{item.asignaciones | number}}</td>
+                    <td align="right">{{item.ajuste_pos | number}}</td>
+                    <td align="right">{{item.total_ganado | number}}</td>
+                    <td align="right">{{item.anticipo | number}}</td>
+                    <td align="right">{{item.dctos_varios | number}}</td>
+                    <td align="right">{{item.a_pagar | number}}</td>
+                    <td align="right">{{item.finiquito | number}}</td>
+                    <td align="right">{{item.liq_apagar | number}}</td>
+                    <td>
+                      <button type="button" class="btn btn-outline-success btn-rounded btn-sm " data-toggle="modal"
+                        data-target="#modalEditarPago" (click)="editPago(item)"><i
+                          class="icon-pencil ml-1"></i></button>
+                      <button type="button" class="btn btn-outline-danger btn-rounded btn-sm"><i
+                          class="icon-trash ml-1"></i></button>
+                    </td>
+                  </tr>
 
-            </tbody>
+                </tbody>
 
-            <tfoot >
-              <tr>
-                <td colspan="4"></td>
-                <th>Total periodo</th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <tfoot>
+                  <tr>
+                    <td colspan="4"></td>
+                    <th>Total periodo</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
 
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -124,11 +128,12 @@
 
 
 <!--Modal nuevo pago-->
-<div class="modal fade" id="modalNuevoPago" tabindex="-1" role="dialog" aria-labelledby="modalNuevoPagoLabel" aria-hidden="true">
+<div class="modal fade" id="modalNuevoPago" tabindex="-1" role="dialog" aria-labelledby="modalNuevoPagoLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-md" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalNuevoPagoLabel">Nuevo Trabajador</h5>
+        <h5 class="modal-title" id="modalNuevoPagoLabel">Nuevo Pago</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -141,7 +146,7 @@
               <label class="col-form-label">R.U.T</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="nombre" id="nombre" type="number" placeholder="Nombre de ejemplo">
+              <input class="form-control" name="nombre" id="nombre" type="number" placeholder="Nombre de ejemplo">
             </div>
           </div>
           <div class="form-group row">
@@ -149,7 +154,7 @@
               <label class="col-form-label">Num ficha</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="usuario" id="usuario" type="number" placeholder="userExample">
+              <input class="form-control" name="usuario" id="usuario" type="number" placeholder="userExample">
             </div>
 
 
@@ -159,7 +164,7 @@
               <label class="col-form-label">Nombre</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="rol" id="rol" type="number" placeholder="Nombre de ejemplo">
+              <input class="form-control" name="rol" id="rol" type="number" placeholder="Nombre de ejemplo">
             </div>
           </div>
           <div class="form-group row">
@@ -179,7 +184,7 @@
               <label class="col-form-label">Sueldo liquido</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="rol" id="rol" type="number" placeholder="000">
+              <input class="form-control" name="rol" id="rol" type="number" placeholder="000">
 
             </div>
           </div>
@@ -189,7 +194,7 @@
               <label class="col-form-label">Valor hora extra</label>
             </div>
             <div class="col-lg-8">
-               <input class="form-control"  name="rol" id="rol" type="number" placeholder="000">
+              <input class="form-control" name="rol" id="rol" type="number" placeholder="000">
 
             </div>
           </div>
@@ -205,7 +210,8 @@
 </div>
 
 <!--Modal editar pago-->
-<div class="modal fade" id="modalEditarPago" tabindex="-1" role="dialog" aria-labelledby="modalNuevoPagoLabel" aria-hidden="true">
+<div class="modal fade" id="modalEditarPago" tabindex="-1" role="dialog" aria-labelledby="modalNuevoPagoLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -225,8 +231,8 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">R.U.T</label>
                 <div class="col-sm-9">
-                  <input class="form-control"  name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo"
-                  formControlName="rut" readonly>
+                  <input class="form-control" name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo"
+                    formControlName="rut" readonly>
                 </div>
               </div>
             </div>
@@ -234,8 +240,8 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Número ficha</label>
                 <div class="col-sm-9">
-                  <input class="form-control"  name="rol" id="rol" type="number" name="numFicha"
-                  formControlName="numFicha" readonly>
+                  <input class="form-control" name="rol" id="rol" type="text" name="ficha" formControlName="ficha"
+                    readonly>
                 </div>
               </div>
             </div>
@@ -245,8 +251,8 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Nombre</label>
                 <div class="col-sm-9">
-                  <input class="form-control"  name="rol" id="rol" type="text" placeholder="Nombre de ejemplo"
-                  formControlName="nombre" readonly name="nombre">
+                  <input class="form-control" name="rol" id="rol" type="text" placeholder="Nombre de ejemplo"
+                    formControlName="nombre" readonly name="nombre">
                 </div>
               </div>
             </div>
@@ -254,8 +260,8 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Especialidad</label>
                 <div class="col-sm-9">
-                  <input class="form-control"  name="rol" id="rol" type="text" placeholder="Nombre de ejemplo" name="especialidad"
-                  formControlName="especialidad" readonly>
+                  <input class="form-control" name="rol" id="rol" type="text" placeholder="Nombre de ejemplo"
+                    name="especialidad" formControlName="especialidad" readonly>
                 </div>
               </div>
             </div>
@@ -269,35 +275,35 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Sueldo líquido</label>
                 <div class="col-sm-9">
-                 <!--  <label class="col-sm-3 col-form-label">{{editPagoForm.get('sueldoLiquido')?.value | currency}}</label> -->
-                  <input type="number" class="form-control" formControlName="sueldoLiquido" name="sueldoLiquido"  />
+                  <!--  <label class="col-sm-3 col-form-label">{{editPagoForm.get('sueldoLiquido')?.value | currency}}</label> -->
+                  <input type="number" class="form-control" formControlName="sueldo_liq" name="sueldoLiquido" />
                 </div>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
               <div class="form-group row">
-                <label class="col-sm-6 col-form-label">Dias a pago</label>
-                <div class="col-sm-6">
-                  <input type="number" class="form-control" formControlName="diasPago" name="diasPago"/>
+                <label class="col-sm-3 col-form-label">Dias a pago</label>
+                <div class="col-sm-9">
+                  <input type="number" class="form-control" formControlName="dias" name="diasPago" />
                 </div>
               </div>
             </div>
-            <div class="col-md-3">
+            <!-- <div class="col-md-3">
               <div class="form-group row">
                 <label class="col-sm-6 col-form-label">Total periodo</label>
                 <div class="col-sm-6">
                   <strong class="col-sm-3 col-form-label">{{totalPeriodoEdit | currency}}</strong>
-                  <!-- <input type="number" class="form-control" formControlName="totalPeriodo" name="totalPeriodo" readonly [value]="totalPeriodoEdit"/> -->
+
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
           <div class="row">
             <div class="col-md-6">
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Valor hora extra líquido</label>
                 <div class="col-sm-9">
-                  <input type="number" class="form-control" formControlName="valorHoraExtraLiquido" name="valorHoraExtraLiquido"/>
+                  <input type="number" class="form-control" formControlName="valor_hora" name="valorHoraExtraLiquido" />
                 </div>
               </div>
             </div>
@@ -305,7 +311,7 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Asignaciones</label>
                 <div class="col-sm-9">
-                  <input type="number" class="form-control" formControlName="asignaciones" name="asignaciones"/>
+                  <input type="number" class="form-control" formControlName="asignaciones" name="asignaciones" />
                 </div>
               </div>
             </div>
@@ -315,7 +321,7 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Ajuste positivo</label>
                 <div class="col-sm-9">
-                  <input type="number" class="form-control" formControlName="ajustePositivo" name="ajustePositivo"/>
+                  <input type="number" class="form-control" formControlName="ajuste_pos" name="ajustePositivo" />
                 </div>
               </div>
             </div>
@@ -323,7 +329,7 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Anticipo</label>
                 <div class="col-sm-9">
-                  <input type="number" class="form-control" formControlName="anticipo" name="anticipo"/>
+                  <input type="number" class="form-control" formControlName="anticipo" name="anticipo" />
                 </div>
               </div>
             </div>
@@ -333,7 +339,7 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Descuentos varios</label>
                 <div class="col-sm-9">
-                  <input type="number" class="form-control" formControlName="descuentosVarios" name="descuentosVarios"/>
+                  <input type="number" class="form-control" formControlName="dctos_varios" name="descuentosVarios" />
                 </div>
               </div>
             </div>
@@ -346,8 +352,47 @@
               </div>
             </div>
           </div>
-        </form>
 
+
+
+
+        </form>
+        <div class="row">
+          <div class="d-flex justify-content-end">
+            <div class="col-12">
+              <div class="table">
+                <table class="table table-striped">
+                  <tr>
+                    <td>
+                      <label >Total periodo:</label>
+                    </td>
+                    <td>
+                      <strong >{{totalPeriodoEdit | currency}}</strong>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <label >Remuneración a pagar:</label>
+                    </td>
+                    <td>
+                      <strong>{{totalRemuneracionEdit | currency}}</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label >Total descuentos:</label>
+                    </td>
+                    <td>
+                      <strong >{{totalDesctEdit | currency}}</strong>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
 
       </div>
       <div class="modal-footer">

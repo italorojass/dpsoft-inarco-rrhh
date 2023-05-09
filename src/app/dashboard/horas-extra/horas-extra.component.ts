@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DetallePagoService } from '../detalle-pago/services/detalle-pago.service';
 
 @Component({
   selector: 'app-horas-extra',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HorasExtraComponent implements OnInit {
 
-  constructor() { }
+  constructor(private dtSv : DetallePagoService) { }
   date = new Date();
   year = this.date.getFullYear();
   month = this.date.getMonth() + 1; // 👈️ months are 0-based
@@ -29,9 +30,24 @@ export class HorasExtraComponent implements OnInit {
     let dayString = this.weekday[firstday.getDay()]
     let lastDayString = this.weekday[lastday.getDay()]
     console.log(firstday, dayString, lastday, lastDayString);
-
+    this.getHoraExtra();
 
   }
+
+  data : any=[];
+  getHoraExtra(){
+    let obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
+    console.log(obra)
+    let body = {
+      tipo : 'extras',
+      obra : obra.codigo
+    }
+    this.dtSv.get(body).subscribe((r:any)=>{
+        this.data = r.result.pagos;
+        console.log(r.result)
+    })
+  }
+
 
 
 }

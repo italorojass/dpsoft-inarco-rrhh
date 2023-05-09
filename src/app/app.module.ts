@@ -28,8 +28,7 @@ import { APP_BASE_HREF } from '@angular/common';
 
   ],
   providers: [
-    LoginService,
-    {provide: APP_BASE_HREF, useValue: '.'}
+    LoginService
   ],
   bootstrap: [AppComponent]
 })

@@ -27,6 +27,7 @@ import { SharedModule } from '../shared/shared.module';
 import { UsuariosService } from './usuarios/services/usuarios.service';
 import { HeaderInterceptor } from '../shared/interceptors/header.interceptor';
 import { ObrasService } from './obras/services/obras.service';
+import { DetallePagoService } from './detalle-pago/services/detalle-pago.service';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { ObrasService } from './obras/services/obras.service';
       provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true
     },
     UsuariosService,
-    ObrasService
+    ObrasService,
+    DetallePagoService
   ]
 })
 export class DashboardModule { }
