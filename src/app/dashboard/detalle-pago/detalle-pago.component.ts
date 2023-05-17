@@ -28,6 +28,8 @@ export class DetallePagoComponent implements OnInit,AfterViewInit  {
        this.totalPeriodoEdit= ((values.sueldo_liq /30) * values.dias).toFixed(2);
        this.totalRemuneracionEdit = (values.ajuste_pos + values.asignaciones);
        this.totalDesctEdit = (values.anticipo - values.dctos_varios);
+       //remuneracion a pagar
+       // total periodo + totalvalorhoraextraliquido+totalbonos+asignaciones+diferdom+ajustePos - los descuentos
     });
 
     this.getPagos();
@@ -49,6 +51,151 @@ export class DetallePagoComponent implements OnInit,AfterViewInit  {
     })
   }
 
+  getTotalSueldoLiq(){
+    let sueldo = 0;
+    this.data.forEach((element:any)=>{
+      sueldo += Number(element.sueldo_liq);
+
+    });
+    return sueldo;
+  }
+
+  getTotalValor_hora(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.valor_hora);
+
+    });
+    return result;
+  }
+
+  getTotaltotal_periodo(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.total_periodo);
+
+    });
+    return result;
+  }
+
+
+  getTotalhor_lun_sab(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.hor_lun_sab);
+
+    });
+    return result;
+  }
+
+  getTotalval_lun_sab(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.val_lun_sab);
+
+    });
+    return result;
+  }
+
+
+  getTotaldifer_sabado(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.difer_sabado);
+
+    });
+    return result;
+  }
+
+  getTotaldifer_domingo(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.difer_domingo);
+
+    });
+    return result;
+  }
+
+  getTotaltotal_bonos(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.total_bonos);
+
+    });
+    return result;
+  }
+
+  getTotalAsignaciones(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.asignaciones);
+
+    });
+    return result;
+  }
+
+  getTotalajuste_pos(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.ajuste_pos);
+
+    });
+    return result;
+  }
+
+  getTotaltotal_ganado(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.total_ganado);
+
+    });
+    return result;
+  }
+
+  getTotalanticipo(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.anticipo);
+
+    });
+    return result;
+  }
+
+  getTotaldctos_varios(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.dctos_varios);
+
+    });
+    return result;
+  }
+
+  getTotala_pagar(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.dctos_varios);
+
+    });
+    return result;
+  }
+
+  getTotalfiniquito(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.dctos_varios);
+
+    });
+    return result;
+  }
+
+  getTotalliq_apagar(){
+    let result = 0;
+    this.data.forEach((element:any)=>{
+      result += Number(element.liq_apagar);
+
+    });
+    return result;
+  }
 
   dictFicha : any = {
     F1 : 'badge-outline-primary',

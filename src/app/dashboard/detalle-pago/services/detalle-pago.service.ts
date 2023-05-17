@@ -10,6 +10,8 @@ export class DetallePagoService {
   constructor(private _http: HttpClient) { }
 
   get(body:any){
+
+    console.log(`${environment.url}ws_estadopago_rrhh.php`,body);
     return this._http.post(`${environment.url}ws_estadopago_rrhh.php`,body);
   }
 }

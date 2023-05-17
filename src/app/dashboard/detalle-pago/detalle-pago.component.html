@@ -20,6 +20,7 @@
               <table class="table table-striped ">
                 <thead>
                   <tr>
+                    <th>Acciones</th>
                     <th>ID</th>
                     <th class="wraptxt">Nombre completo</th>
                     <th class="wraptxt">N. Ficha</th>
@@ -34,15 +35,20 @@
                     <th class="wraptxt">Diferencia días sábados</th>
                     <th class="wraptxt"> Diferencia días domingos</th>
                     <th class="wraptxt">Total Bonos</th>
+                    <th class="wraptxt">Zona 10%</th>
+                    <th class="wraptxt">Viático </th>
+                    <th class="wraptxt">Aguinaldo</th>
                     <th class="wraptxt">Asignaciones</th>
                     <th class="wraptxt">Ajuste positivo</th>
                     <th class="wraptxt">Total ganado</th>
-                    <th>Anticipo</th>
+                    <th class="wraptxt">Anticipo</th>
                     <th class="wraptxt">Descuentos varios</th>
                     <th class="wraptxt">Remuneración a pagar</th>
+                    <th class="wraptxt">Finiquito quincena</th>
+
                     <th class="wraptxt">Finiquito fin de mes</th>
                     <th class="wraptxt">Liquido a pagar</th>
-                    <th>Acciones</th>
+
                   </tr>
 
                 </thead>
@@ -55,6 +61,13 @@
             </thead> -->
                 <tbody *ngIf="data.length>0">
                   <tr *ngFor="let item of data;let i=index">
+                    <td>
+                      <button type="button" class="btn btn-outline-success btn-rounded btn-sm " data-toggle="modal"
+                        data-target="#modalEditarPago" (click)="editPago(item)"><i
+                          class="icon-pencil ml-1"></i></button>
+                      <button type="button" class="btn btn-outline-danger btn-rounded btn-sm"><i
+                          class="icon-trash ml-1"></i></button>
+                    </td>
                     <td>{{item.id}}</td>
                     <td>{{item.nombre}}</td>
                     <td>
@@ -71,48 +84,49 @@
                     <td align="right">{{item.difer_sabado | number}}</td>
                     <td align="right">{{item.difer_domingo}}</td>
                     <td align="right">{{item.total_bonos | number}}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td align="right">{{item.asignaciones | number}}</td>
                     <td align="right">{{item.ajuste_pos | number}}</td>
                     <td align="right">{{item.total_ganado | number}}</td>
                     <td align="right">{{item.anticipo | number}}</td>
                     <td align="right">{{item.dctos_varios | number}}</td>
                     <td align="right">{{item.a_pagar | number}}</td>
+                    <td></td>
                     <td align="right">{{item.finiquito | number}}</td>
                     <td align="right">{{item.liq_apagar | number}}</td>
-                    <td>
-                      <button type="button" class="btn btn-outline-success btn-rounded btn-sm " data-toggle="modal"
-                        data-target="#modalEditarPago" (click)="editPago(item)"><i
-                          class="icon-pencil ml-1"></i></button>
-                      <button type="button" class="btn btn-outline-danger btn-rounded btn-sm"><i
-                          class="icon-trash ml-1"></i></button>
-                    </td>
+
                   </tr>
 
                 </tbody>
 
                 <tfoot>
                   <tr>
-                    <td colspan="4"></td>
+                    <td colspan="5"></td>
                     <th>Total periodo</th>
+                    <td>{{getTotalSueldoLiq() | currency}}</td>
+                    <td>-</td>
+
+                    <td>{{getTotaltotal_periodo() | currency}}</td>
+                    <td>{{getTotalValor_hora() | currency}}</td>
+                    <td>{{getTotalhor_lun_sab() | currency}}</td>
+                    <td>{{getTotalval_lun_sab() | currency}}</td>
+                    <td>{{getTotaldifer_sabado() | currency}}</td>
+                    <td>{{getTotaldifer_domingo() | currency}}</td>
+                    <td>{{getTotaltotal_bonos() | currency}}</td>
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td>{{getTotalAsignaciones() | currency}}</td>
+                    <td>{{getTotalajuste_pos() | currency}}</td>
+                    <td>{{getTotaltotal_ganado() | currency}}</td>
+                    <td>{{getTotalanticipo() | currency}}</td>
+                    <td>{{getTotaldctos_varios() | currency}}</td>
+                    <td>{{getTotala_pagar() | currency}}</td>
+                    <td>{{getTotalfiniquito() | currency}}</td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{getTotalliq_apagar() | currency}}</td>
 
                   </tr>
                 </tfoot>
