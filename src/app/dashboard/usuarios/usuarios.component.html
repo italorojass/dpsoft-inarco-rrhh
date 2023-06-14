@@ -9,20 +9,20 @@
           <div class="col-12">
             <div class="d-flex justify-content-start">
               <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" (click)="clearNew()"
-              data-toggle="modal" data-target="#modalNuevoUser"><i class="icon-plus"></i>Nuevo</button>
+                data-toggle="modal" data-target="#modalNuevoUser"><i class="icon-plus"></i>Nuevo</button>
 
             </div>
           </div>
         </div>
 
         <div class="row pt-2">
-          <div class="col-12 table-responsive">
+          <div class="col-12 table-responsive1">
 
-            <table id="order-listing" class="table table-striped">
-              <thead>
+            <table id="order-listing" class="table table-bordered table-striped">
+              <thead class="thead-dark">
                 <tr class="bg-light">
                   <th>ID</th>
-                  <th >Nombre usuario </th>
+                  <th>Nombre usuario </th>
                   <th>Usuario</th>
 
                   <th>Mail</th>
@@ -32,25 +32,28 @@
                 </tr>
               </thead>
               <tbody *ngIf="usuarios.length>0;else nodata">
-                <tr *ngFor="let item of usuarios">
-                  <td>{{item.id}}</td>
+                <tr *ngFor="let item of usuarios;let i=index">
+                  <td>{{i+1}}</td>
                   <td>{{item.nombre_usuario}}</td>
 
                   <td>
                     {{item.usuario}}
                   </td>
                   <td>
-                   {{item.mail}}
+                    {{item.mail}}
                   </td>
                   <td>
-                    <label class="badge" [ngClass]="item.estado=='Activo' ? 'badge-success' : 'badge-danger'">{{item.estado}}</label>
+                    <label class="badge"
+                      [ngClass]="item.estado=='Activo' ? 'badge-success' : 'badge-danger'">{{item.estado}}</label>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-outline-dark btn-rounded mr-2 btn-sm"
-                    data-toggle="modal" data-target="#modalAsociarObras"><i class="icon-people"></i>Asociar obras</button>
-                    <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" data-toggle="modal" data-target="#modalEditUser"
-                    (click)="editModal(item)"><i class="icon-pencil" ></i>Modificar</button>
-                    <button type="button" class="btn btn-outline-danger btn-rounded btn-sm" (click)="deleteUser(item)"><i class="icon-trash"></i>Eliminar</button>
+                    <button type="button" class="btn btn-outline-dark btn-rounded mr-2 btn-sm" data-toggle="modal" (click)="getObras(item)"
+                      data-target="#modalAsociarObras"><i class="icon-people"></i>Asociar obras</button>
+                    <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" data-toggle="modal"
+                      data-target="#modalEditUser" (click)="editModal(item)"><i
+                        class="icon-pencil"></i>Modificar</button>
+                    <button type="button" class="btn btn-outline-danger btn-rounded btn-sm"
+                      (click)="deleteUser(item)"><i class="icon-trash"></i>Eliminar</button>
                   </td>
 
                 </tr>
@@ -74,8 +77,9 @@
 </div>
 
 <!--Modal nuevo usuario-->
-<div class="modal fade" id="modalNuevoUser" tabindex="-1" role="dialog" aria-labelledby="modalNuevoUserLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="modalNuevoUser" tabindex="-1" role="dialog" aria-labelledby="modalNuevoUserLabel"
+  aria-hidden="true">
+  <div class="modal-dialog " role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modalNuevoUserLabel">Nuevo usuario</h5>
@@ -91,7 +95,8 @@
               <label class="col-form-label">Nombre</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo" formControlName="usuario">
+              <input class="form-control" name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo"
+                formControlName="usuario">
             </div>
           </div>
           <div class="form-group row">
@@ -99,33 +104,42 @@
               <label class="col-form-label">Usuario</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="usuario" id="usuario" type="text" placeholder="Inarco" formControlName="nombre">
+              <input class="form-control" name="usuario" id="usuario" type="text" placeholder="Inarco"
+                formControlName="nombre">
             </div>
 
 
           </div>
-          <div >
+          <div>
 
             <div class="form-group row">
-            <div class="col-lg-3">
-              <label class="col-form-label">Contraseña</label>
-            </div>
-            <div class="col-lg-8">
-              <input class="form-control"  name="pass" id="pass" type="password" placeholder="****" formControlName="pass">
-            </div>
+              <div class="col-lg-3">
+                <label class="col-form-label">Contraseña</label>
+              </div>
+              <div class="col-lg-8">
+                <input class="form-control" name="pass" id="pass" type="password" placeholder="****"
+                  formControlName="pass">
+
+              </div>
 
 
-          </div>
-          <div class="form-group row">
-            <div class="col-lg-3">
-              <label class="col-form-label">Repetir contraseña</label>
             </div>
-            <div class="col-lg-8">
-              <input class="form-control"  name="usuario" id="usuario" type="password" placeholder="****" formControlName="confirmPassword">
-            </div>
+            <div class="form-group row">
+              <div class="col-lg-3">
+                <label class="col-form-label">Repetir contraseña</label>
+              </div>
+              <div class="col-lg-8">
+                <input class="form-control" name="usuario" id="usuario" type="password" placeholder="****"
+                  formControlName="confirmPassword">
+
+                  <small *ngIf="userForm.hasError('notSame')" class="text-danger">
+                    Las contraseñas no coinciden
+                  </small>
+
+              </div>
 
 
-          </div>
+            </div>
           </div>
 
 
@@ -135,7 +149,8 @@
               <label class="col-form-label">Mail</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="email" id="email" type="email" placeholder="ejemplo@inarco.cl" formControlName="mail">
+              <input class="form-control" name="email" id="email" type="email" placeholder="ejemplo@inarco.cl"
+                formControlName="mail">
             </div>
           </div>
 
@@ -156,7 +171,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" (click)="crearUsuario()" [disabled]="!userForm.valid">Guardar</button>
+        <button type="button" class="btn btn-success" (click)="crearUsuario()"
+          [disabled]="!userForm.valid">Grabar</button>
         <button type="button" class="btn btn-light" data-dismiss="modal" #closeModal>Cancelar</button>
       </div>
     </div>
@@ -164,8 +180,9 @@
 </div>
 
 <!--Modal editar usuario-->
-<div class="modal fade" id="modalEditUser" tabindex="-1" role="dialog" aria-labelledby="modalNuevoUserLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="modalEditUser" tabindex="-1" role="dialog" aria-labelledby="modalNuevoUserLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modalNuevoUserLabel">{{titleModal}} usuario {{userTitleEditModal}}</h5>
@@ -173,7 +190,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" >
 
         <form [formGroup]="userForm">
           <div class="form-group row">
@@ -181,7 +198,8 @@
               <label class="col-form-label">Nombre</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo" formControlName="usuario" readonly>
+              <input class="form-control" name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo"
+                formControlName="usuario" readonly>
             </div>
           </div>
           <div class="form-group row">
@@ -189,7 +207,8 @@
               <label class="col-form-label">Usuario</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="usuario" id="usuario" type="text" placeholder="Inarco" formControlName="nombre" readonly>
+              <input class="form-control" name="usuario" id="usuario" type="text" placeholder="Inarco"
+                formControlName="nombre" readonly>
             </div>
 
 
@@ -201,11 +220,12 @@
               <label class="col-form-label">Mail</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="email" id="email" type="email" placeholder="ejemplo@inarco.cl" formControlName="mail">
+              <input class="form-control" name="email" id="email" type="email" placeholder="ejemplo@inarco.cl"
+                formControlName="mail">
             </div>
           </div>
 
-           <div class="form-group row">
+          <div class="form-group row">
             <div class="col-lg-3">
               <label class="col-form-label">Estado</label>
             </div>
@@ -222,7 +242,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" (click)="saveEditUser()" [disabled]="!userForm.valid">Editar</button>
+        <button type="button" class="btn btn-success" (click)="saveEditUser()"
+          [disabled]="!userForm.valid">Grabar</button>
         <button type="button" class="btn btn-light" data-dismiss="modal" #closeModalEdit>Cancelar</button>
       </div>
     </div>
@@ -231,31 +252,34 @@
 
 
 <!--Modal Asociar obras-->
-<div class="modal fade" id="modalAsociarObras" tabindex="-1" role="dialog" aria-labelledby="modalAsociarObrasLabel" aria-hidden="true">
+<div class="modal fade" id="modalAsociarObras" tabindex="-1" role="dialog" aria-labelledby="modalAsociarObrasLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalAsociarObrasLabel">Asociar obras al usuario {{userSelect}}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="modalAsociarObrasLabel">Asociar obras al usuario {{userSelect.nombre_usuario}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeModalAsociar>
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
+        <div class="row" *ngIf="obrasAsociar.length>0">
+          <div class="col-md-4" *ngFor="let item of obrasAsociar" >
+            <div style="border: 1px solid #ccc!important;padding : 5px 10px">
+              <div class="mt-2">
+                <input type="checkbox" class="mr-2"  [(ngModel)]="item.isCheck" [checked]="item.isCheck"> <label class="form-title">{{item.codigo}} | {{item.nombre}} </label>
+              </div>
 
-        <form>
-          <div class="form-group row">
-            <div class="col-lg-3">
-              <label class="col-form-label">Default usage</label>
             </div>
-            <div class="col-lg-8">
-              <input class="form-control"  name="defaultconfig" id="defaultconfig" type="text" placeholder="Type Something..">
-            </div>
+
           </div>
-        </form>
+        </div>
+
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success">Submit</button>
-        <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="guardarObraAsociada()"
+          [disabled]="obrasAsociar.length==0">Grabar</button>
+        <button type="button" class="btn btn-light" data-dismiss="modal" #closeModalEdit>Cancelar</button>
       </div>
     </div>
   </div>

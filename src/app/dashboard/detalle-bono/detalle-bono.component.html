@@ -4,70 +4,140 @@
       <div class="card-body">
         <h4 class="card-title">Detalle de bonos</h4>
         <hr>
-        <!-- <div class="row">
+    <!--     <div class="row">
           <div class="col-12">
            <form>
              <div class="form-row">
                <div class="form-group col-md-4">
-                 <label for="inputEmail4">Quincena</label>
-                 <input type="radio" class="form-control" id="inputZip">
+                 <label for="inputEmail4">Nombre del bono </label>
+                 <input type="text" class="form-control" id="inputZip">
 
                </div>
-               <div class="form-group col-md-4">
-                <label for="inputEmail4">Mes y año de trabajo</label>
-                <input type="date" class="form-control">
-               </div>
              </div>
-
-             <div class="form-row">
-               <div class="form-group col-md-4 ">
-                 <label for="inputZip">Fin de mes</label>
-                 <input type="radio" class="form-control" id="inputZip">
-               </div>
-
+             <div class="d-flex justify-content-start">
+               <button type="submit" class="btn btn-success btn-rounded"><i class="icon-check"></i>Grabar</button>
              </div>
-             <div class="d-flex justify-content-end">
-               <button type="submit" class="btn btn-success btn-rounded"><i class="icon-check"></i>Guardar</button>
-               <button type="submit" class="btn btn-danger btn-rounded"><i class="icon-close"></i>Cancelar</button>
-             </div>
-
            </form>
           </div>
          </div> -->
 
 
         <div class="row pt-2">
-          <div class="col-12 table-responsive">
+          <div class="col-12 table-responsive1">
 
-            <table id="order-listing" class="table">
-              <thead>
+            <table id="order-listing" class="table table-bordered">
+              <thead class="thead-dark">
                 <tr class="bg-light">
-                  <th>N.</th>
+                  <th></th>
+                  <th>Correlativo</th>
                   <th>Nombre</th>
                   <th>RUT</th>
                   <th>N. de ficha</th>
-                  <th>Semana Santa</th>
+                  <th *ngFor="let item of [].constructor(10); let i=index">
+                    <span class="text-vertical"></span>
+                  </th>
                   <th>Total bonos del mes</th>
-                  <th>Acciones</th>
+
                 </tr>
               </thead>
               <tbody>
-                <tr >
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
+                <tr *ngFor="let item of data;let i=index">
                   <td>
-                    <button type="submit" class="btn btn-outline-success btn-rounded btn-sm mr-2"><i class="icon-pencil"></i>Modificar</button>
-                    <button type="submit" class="btn btn-outline-danger btn-rounded btn-sm"><i class="icon-trash"></i>Eliminar</button>
+                    <button type="button" class="btn btn-icons btn-rounded btn-outline-primary btn-sm"
+                      *ngIf="!item.isEdit" (click)="item.isEdit = true"><i class="icon-pencil"></i></button>
+
+                    <div *ngIf="item.isEdit">
+
+                      <button type="button" class="btn btn-icons btn-rounded btn-outline-success btn-sm"
+                        (click)="saveEdit(item)"><i class="icon-check"></i></button>
+
+                      <button type="button" class="btn btn-icons btn-rounded btn-outline-danger btn-sm"
+                        (click)="item.isEdit = false"><i class="icon-close"></i></button>
+                    </div>
                   </td>
+                  <td>{{i+1}}</td>
+                  <td>{{item.nombre}}</td>
+                  <td>{{formatRut(item.rut,item.dig)}}</td>
+                  <td >{{item.ficha}}</td>
+                  <td align="right">
+
+                    <span *ngIf="!item.isEdit;else act"> {{item.bono1 | number}}</span>
+                    <ng-template #act>
+                      <input [(ngModel)]="item.bono1" name="bono1" id="bono1"
+                        style='width:6em' type="number" />
+                    </ng-template>
+                  </td>
+                  <td align="right">   <span *ngIf="!item.isEdit;else act1"> {{item.bono2 | number}}</span>
+                    <ng-template #act1>
+                      <input [(ngModel)]="item.bono2" name="bono2" id="bono2"
+                        style='width:6em' type="number" />
+                    </ng-template></td>
+                  <td align="right">
+                    <span *ngIf="!item.isEdit;else act2"> {{item.bono3 | number}}</span>
+                    <ng-template #act2>
+                      <input [(ngModel)]="item.bono3" name="bono3"
+                        style='width:6em' type="number" />
+                    </ng-template>
+                  </td>
+                  <td align="right">
+                    <span *ngIf="!item.isEdit;else act3"> {{item.bono4 | number}}</span>
+                    <ng-template #act3>
+                      <input [(ngModel)]="item.bono4" name="bono3"
+                        style='width:6em' type="number" />
+                    </ng-template>
+                  </td>
+                  <td align="right">
+                    <span *ngIf="!item.isEdit;else act4"> {{item.bono5 | number}}</span>
+                    <ng-template #act4>
+                      <input [(ngModel)]="item.bono5" name="bono4"
+                        style='width:6em' type="number" />
+                    </ng-template>
+                  </td>
+                  <td align="right">
+                    <span *ngIf="!item.isEdit;else act5"> {{item.bono6 | number}}</span>
+                    <ng-template #act5>
+                      <input [(ngModel)]="item.bono6" name="bono6"
+                        style='width:6em' type="number" />
+                    </ng-template>
+                  </td>
+                  <td align="right">
+                    <span *ngIf="!item.isEdit;else act6"> {{item.bono7 | number}}</span>
+                    <ng-template #act6>
+                      <input [(ngModel)]="item.bono7" name="bono6"
+                        style='width:6em' type="number" />
+                    </ng-template>
+                  </td>
+                  <td align="right">
+                    <span *ngIf="!item.isEdit;else act7"> {{item.bono8 | number}}</span>
+                    <ng-template #act7>
+                      <input [(ngModel)]="item.bono8" name="bono8"
+                        style='width:6em' type="number" />
+                    </ng-template>
+                  </td>
+                  <td align="right">
+                    <span *ngIf="!item.isEdit;else act8"> {{item.bono9 | number}}</span>
+                    <ng-template #act8>
+                      <input [(ngModel)]="item.bono9" name="bono9"
+                        style='width:6em' type="number" />
+                    </ng-template>
+                  </td>
+                  <td align="right">
+                    <span *ngIf="!item.isEdit;else act9"> {{item.bono10 | number}}</span>
+                    <ng-template #act9>
+                      <input [(ngModel)]="item.bono10" name="bono9"
+                        style='width:6em' type="number" />
+                    </ng-template>
+                  </td>
+                  <td align="right">{{item.total_bonos | number}}</td>
 
                 </tr>
-
-
               </tbody>
+              <tfoot>
+                <tr>
+                  <th>Total periodo</th>
+                  <td></td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>

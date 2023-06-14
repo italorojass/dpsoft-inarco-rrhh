@@ -1,4 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@ng-select/ng-select/themes/default.theme.css";
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 .ng-invalid:not(form)  {
   border: 1px solid #ff5e5e /* red */
@@ -11,4 +14,33 @@
 
 .wraptxt{
   white-space: break-spaces !important;
+}
+
+
+.wraptxt1{
+  white-space: pre-wrap !important;
+}
+
+thead tr th {
+  position: sticky;
+  top: 0;
+
+  background-color: #ffffff;
+}
+
+.table-responsive1 {
+  height:700px;
+  z-index: 10;
+  position: relative;
+  overflow: auto;
+}
+
+
+.sticky-col {
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+.ag-root-wrapper-body.ag-layout-normal.ag-focus-managed {
+  height: 100%;
 }

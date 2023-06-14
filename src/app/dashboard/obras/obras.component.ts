@@ -12,14 +12,15 @@ export class ObrasComponent implements OnInit {
   constructor(private router :Router, private obrasSv : ObrasService) { }
 
   obras:any = [];
-usuario : any;
+  usuario : any;
   ngOnInit(): void {
     this.usuario = JSON.parse(sessionStorage.getItem('user')!)
-    this.obrasSv.get().subscribe((r:any)=>{
+    this.obras =  JSON.parse(sessionStorage.getItem('obras')!)
+   /*  this.obrasSv.get().subscribe((r:any)=>{
       console.log(r);
       this.obras = r.result.obras;
       sessionStorage.setItem('obras',JSON.stringify(r.result.obras));
-    })
+    }) */
   }
 
   go(i:any){

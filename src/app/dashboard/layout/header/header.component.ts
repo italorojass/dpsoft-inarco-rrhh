@@ -47,11 +47,11 @@ export class HeaderComponent implements OnInit {
           href : '/obras/inicio/parametros',
           icon : 'icon-layers'
         }
-      ,{
+      ,/* {
         title:'Maestro de especialidad',
         href : '/obras/inicio/maestro-especialidad',
         icon : 'icon-layers'
-      }],
+      } */],
 
       icon: 'icon-settings'
     },
@@ -88,5 +88,10 @@ export class HeaderComponent implements OnInit {
     }
 
   ]
+
+  toggleBar : boolean=false;
+  openBars(){
+    console.log('open menu')
+  }
 
 }

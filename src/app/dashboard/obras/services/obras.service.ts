@@ -9,9 +9,15 @@ export class ObrasService {
 
   constructor(private _http: HttpClient) { }
 
-  get(){
+  /* get(){
 
 
     return this._http.post(`${environment.url}obras_rrhh.php`,'');
+  } */
+
+  getb(body){
+
+
+    return this._http.post(`${environment.url}obras_rrhh.php`,body);
   }
 }

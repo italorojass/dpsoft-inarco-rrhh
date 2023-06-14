@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import { CommonModule, CurrencyPipe, registerLocaleData } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { ObrasComponent } from './obras/obras.component';
@@ -14,7 +14,7 @@ import { RequerimientosComponent } from './requerimientos/requerimientos.compone
 import { ReporteComponent } from './reporte/reporte.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AgGridModule } from 'ag-grid-angular';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HorasExtraComponent } from './horas-extra/horas-extra.component';
 import { DiferenciaSabDomComponent } from './diferencia-sab-dom/diferencia-sab-dom.component';
 import { DetalleBonoComponent } from './detalle-bono/detalle-bono.component';
@@ -28,6 +28,18 @@ import { UsuariosService } from './usuarios/services/usuarios.service';
 import { HeaderInterceptor } from '../shared/interceptors/header.interceptor';
 import { ObrasService } from './obras/services/obras.service';
 import { DetallePagoService } from './detalle-pago/services/detalle-pago.service';
+import { BuildMonthService } from '../shared/services/build-month.service';
+import { HoraextraService } from './horas-extra/services/horaextra.service';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ProyectosService } from './proyectos/services/proyectos.service';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import localeEs from '@angular/common/locales/es';
+import { LoaderInterceptorInterceptor } from '../shared/interceptors/loader-interceptor.interceptor';
+import { ParametrosService } from './parametros/services/parametros.service';
+import { DifSabDomService } from './diferencia-sab-dom/services/dif-sab-dom.service';
+import { BonosService } from './detalle-bono/services/bonos.service';
+// Registra el idioma español
+registerLocaleData(localeEs);
 
 @NgModule({
   declarations: [
@@ -58,7 +70,11 @@ import { DetallePagoService } from './detalle-pago/services/detalle-pago.service
     RecaptchaModule,
     HttpClientModule,
     DataTablesModule,
-    SharedModule
+    SharedModule,
+    FormsModule,
+    NgbModule,
+    SweetAlert2Module
+
 
   ],
   providers : [
@@ -69,9 +85,19 @@ import { DetallePagoService } from './detalle-pago/services/detalle-pago.service
     {
       provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true
     },
+    { provide: LOCALE_ID, useValue: 'es' },
+    {
+      provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorInterceptor, multi: true
+    },
     UsuariosService,
     ObrasService,
-    DetallePagoService
+    DetallePagoService,
+    BuildMonthService,
+    HoraextraService,
+    ProyectosService,
+    ParametrosService,
+    DifSabDomService,
+    BonosService
   ]
 })
 export class DashboardModule { }

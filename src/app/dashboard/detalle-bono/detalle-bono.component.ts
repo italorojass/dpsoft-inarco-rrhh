@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { DetallePagoService } from '../detalle-pago/services/detalle-pago.service';
+import { BonosService } from './services/bonos.service';
+import { BuildMonthService } from 'src/app/shared/services/build-month.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-detalle-bono',
@@ -8,24 +10,58 @@ import { DetallePagoService } from '../detalle-pago/services/detalle-pago.servic
 })
 export class DetalleBonoComponent implements OnInit {
 
-  constructor(private dtSv : DetallePagoService) { }
+  constructor(private bonoSV : BonosService,private BuildMonthService : BuildMonthService,private toast : ToastrService) { }
 
   ngOnInit(): void {
     this.get();
   }
-
+  obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
   data : any=[];
   get(){
-    let obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
-    console.log(obra)
+
+
     let body = {
       tipo : 'bonos',
-      obra : obra.codigo
+      obra : this.obra.codigo,
+      accion: 'C'
     }
-    this.dtSv.get(body).subscribe((r:any)=>{
-        this.data = r.result.pagos;
-        console.log(r.result)
+    this.bonoSV.get(body).subscribe((r:any)=>{
+        //this.data = r.result.bonos;
+        this.data = r.result.bonos.map((value) => {
+
+          return {
+            ...value,
+            isEdit: false
+          }
+        });
+
+        console.log(this.data)
     })
   }
+
+  formatRut(rut,dig){
+
+    return this.BuildMonthService.formatRut(rut,dig);
+  }
+
+  saveEdit(item){
+    item.isEdit = false;
+    let b = {
+      tipo: 'bonos',
+      accion: 'M',
+      obra: this.obra.codigo,
+     ...item
+    }
+    console.log('body',b);
+    this.bonoSV.get(b).subscribe((r: any) => {
+      console.log(r);
+      let reemplazar = this.data.findIndex(x=>x.id == r['result'].bonos[0].id);
+      this.data[reemplazar] = r['result'].bonos[0];
+      this.toast.success('Actualizado con éxito',`Bono de ${item.nombre}`);
+
+
+    })
+  }
+
 
 }

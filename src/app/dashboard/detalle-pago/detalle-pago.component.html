@@ -7,30 +7,31 @@
         <div class="row">
           <div class="col-12">
             <div class="d-flex justify-content-start">
-              <button type="submit" class="btn btn-outline-primary btn-rounded " data-toggle="modal"
-                data-target="#modalNuevoPago"><i class="icon-note"></i>Nuevo</button>
-              <button type="submit" class="btn btn-outline-success btn-rounded ml-2"><i
-                  class="icon-paper-clip"></i>Descargar excel</button>
+              <button type="button" class="btn btn-outline-primary btn-rounded " data-toggle="modal"
+                (click)="getEspecialidad();resetForm()" data-target="#modalNuevoPago"><i
+                  class="icon-note"></i>Nuevo</button>
+              <!--   <button type="submit" class="btn btn-outline-success btn-rounded ml-2"><i
+                  class="icon-paper-clip"></i>Descargar excel</button> -->
             </div>
           </div>
         </div>
         <div class="row mt-3">
           <div class="col-12">
-            <div class="table-responsive">
-              <table class="table table-striped ">
-                <thead>
+            <div class="table-responsive1 ">
+              <table class="table table-striped table-bordered">
+                <thead class="thead-dark">
                   <tr>
-                    <th>Acciones</th>
-                    <th>ID</th>
-                    <th class="wraptxt">Nombre completo</th>
+                    <th></th>
+                    <th>Correlativo</th>
+                    <th class="wraptxt">Nombre</th>
                     <th class="wraptxt">N. Ficha</th>
                     <th>Rut</th>
                     <th>Especialidad</th>
                     <th class="wraptxt">Sueldo líquido</th>
-                    <th class="wraptxt">Dias a pago</th>
+                    <th class="wraptxt1">Dias a pago</th>
                     <th class="wraptxt">Valor hora extra líquido</th>
                     <th class="wraptxt">Total periodo</th>
-                    <th class="wraptxt">Hora extra legal lunes a sábados</th>
+                    <th class="wraptxt1">Hora extra legal lunes a sábados</th>
                     <th class="wraptxt">Total valor hora extra líquido</th>
                     <th class="wraptxt">Diferencia días sábados</th>
                     <th class="wraptxt"> Diferencia días domingos</th>
@@ -59,74 +60,91 @@
                 <th><input type="number" placeholder="Search last name" name="search-last-name"/></th>
               </tr>
             </thead> -->
-                <tbody *ngIf="data.length>0">
+                <tbody *ngIf="data && data.length>0">
                   <tr *ngFor="let item of data;let i=index">
                     <td>
-                      <button type="button" class="btn btn-outline-success btn-rounded btn-sm " data-toggle="modal"
-                        data-target="#modalEditarPago" (click)="editPago(item)"><i
-                          class="icon-pencil ml-1"></i></button>
-                      <button type="button" class="btn btn-outline-danger btn-rounded btn-sm"><i
-                          class="icon-trash ml-1"></i></button>
+                      <!--  <button type="button" class="btn btn-icons btn-rounded btn-outline-primary btn-sm" *ngIf="!item.isEdit" (click)="item.isEdit = true"><i
+                        class="icon-pencil"></i></button>
+
+                    <div *ngIf="item.isEdit">
+                      <button type="button" class="btn btn-icons btn-rounded btn-outline-success btn-sm" (click)="saveEditDetallePago(item)"><i
+                          class="icon-check"></i></button>
+                          <button type="button" class="btn btn-icons btn-rounded btn-outline-danger btn-sm" (click)="item.isEdit = false"><i
+                            class="icon-close"></i></button>
+                    </div> -->
+
+                      <button type="button" class="btn btn-icons btn-rounded btn-outline-primary btn-sm"
+                        data-toggle="modal" data-target="#modalEditarPago" (click)="editPago(item);"><i
+                          class="icon-pencil "></i></button>
+
+
+                      <!--   <button type="button" class="btn btn-outline-danger btn-rounded btn-sm"><i
+                          class="icon-trash ml-1"></i></button> -->
                     </td>
-                    <td>{{item.id}}</td>
+                    <td>{{i+1}}</td>
+
                     <td>{{item.nombre}}</td>
                     <td>
                       <div class="badge badge-pill" [ngClass]="getBadgeFicha(item.ficha)">{{item.ficha}}</div>
                     </td>
-                    <td>{{item.rut}}-{{item.dig}}</td>
-                    <td>{{item.especialidad}}</td>
-                    <td align="right">{{item.sueldo_liq | number }}</td>
+                    <td>{{formatRut(item.rut,item.dig)}}</td>
+                    <td>{{item.descripcion}}</td>
+                    <td align="right">${{item.sueldo_liq | number}}</td>
                     <td align="right">{{item.dias}}</td>
-                    <td align="right">{{item.valor_hora | number}}</td>
-                    <td align="right">{{item.total_periodo | number}}</td>
-                    <td align="right">{{item.hor_lun_sab | number}}</td>
-                    <td align="right">{{item.val_lun_sab | number}}</td>
-                    <td align="right">{{item.difer_sabado | number}}</td>
-                    <td align="right">{{item.difer_domingo}}</td>
-                    <td align="right">{{item.total_bonos | number}}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td align="right">{{item.asignaciones | number}}</td>
-                    <td align="right">{{item.ajuste_pos | number}}</td>
-                    <td align="right">{{item.total_ganado | number}}</td>
-                    <td align="right">{{item.anticipo | number}}</td>
-                    <td align="right">{{item.dctos_varios | number}}</td>
-                    <td align="right">{{item.a_pagar | number}}</td>
-                    <td></td>
-                    <td align="right">{{item.finiquito | number}}</td>
-                    <td align="right">{{item.liq_apagar | number}}</td>
+                    <td align="right">${{item.valor_hora | number}}</td>
+
+                    <td align="right">${{item.total_periodo | number}}</td>
+                    <td align="right">{{item.hor_lun_sab | number }}</td>
+                    <td align="right">${{item.val_lun_sab | number}}</td>
+                    <td align="right">${{item.difer_sabado | number}}</td>
+                    <td align="right">${{item.difer_domingo}}</td>
+                    <td align="right">${{item.total_bonos | number}}</td>
+                    <td align="right">${{item.zona10 | number}}</td>
+                    <td align="right">${{item.viatico | number}}</td>
+                    <td align="right">${{item.aguinaldo | number}}</td>
+
+                    <td align="right">${{item.asignaciones | number}}</td>
+                    <td align="right">${{item.ajuste_pos | number}}</td>
+                    <td align="right">${{item.total_ganado | number}}</td>
+                    <td align="right">${{item.anticipo | number}}</td>
+                    <td align="right">${{item.dctos_varios | number}}</td>
+                    <td align="right">${{item.a_pagar | number}}</td>
+                    <td align="right">${{item.finiquito_quincena | number}}</td>
+                    <td align="right">${{item.finiquito | number}}</td>
+                    <td align="right">${{item.liq_apagar | number}}</td>
 
                   </tr>
 
                 </tbody>
 
-                <tfoot>
+                <tfoot *ngIf="data && data.length>0">
                   <tr>
                     <td colspan="5"></td>
                     <th>Total periodo</th>
-                    <td>{{getTotalSueldoLiq() | currency}}</td>
-                    <td>-</td>
+                    <td align="right">${{getTotalSueldoLiq() | number}}</td>
 
-                    <td>{{getTotaltotal_periodo() | currency}}</td>
-                    <td>{{getTotalValor_hora() | currency}}</td>
-                    <td>{{getTotalhor_lun_sab() | currency}}</td>
-                    <td>{{getTotalval_lun_sab() | currency}}</td>
-                    <td>{{getTotaldifer_sabado() | currency}}</td>
-                    <td>{{getTotaldifer_domingo() | currency}}</td>
-                    <td>{{getTotaltotal_bonos() | currency}}</td>
+                    <td>-</td>
+                    <td align="right">${{getTotalValor_hora() | number}}</td>
+                    <td align="right">${{getTotaltotal_periodo() | number}}</td>
+                    <td align="right">{{getTotalhor_lun_sab() | number}}</td>
+                    <td align="right">${{getTotalval_lun_sab() | number}}</td>
+                    <td align="right">${{getTotaldifer_sabado() | number}}</td>
+                    <td align="right">${{getTotaldifer_domingo() | number}}</td>
+                    <td align="right">${{getTotaltotal_bonos() | number}}</td>
+
+                    <td align="right">${{getTotalzona10() | number}}</td>
+                    <td align="right">${{getTotalViatico() | number}}</td>
+                    <td align="right">${{getTotalAguinaldo() | number}}</td>
+
+                    <td align="right">${{getTotalAsignaciones() | number}}</td>
+                    <td align="right">${{getTotalajuste_pos() | number}}</td>
+                    <td align="right">${{getTotaltotal_ganado() | number}}</td>
+                    <td align="right">${{getTotalanticipo() | number}}</td>
+                    <td align="right">${{getTotaldctos_varios() | number}}</td>
+                    <td align="right">${{getTotala_pagar() | number}}</td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>{{getTotalAsignaciones() | currency}}</td>
-                    <td>{{getTotalajuste_pos() | currency}}</td>
-                    <td>{{getTotaltotal_ganado() | currency}}</td>
-                    <td>{{getTotalanticipo() | currency}}</td>
-                    <td>{{getTotaldctos_varios() | currency}}</td>
-                    <td>{{getTotala_pagar() | currency}}</td>
-                    <td>{{getTotalfiniquito() | currency}}</td>
-                    <td></td>
-                    <td>{{getTotalliq_apagar() | currency}}</td>
+                    <td align="right">${{getTotalfiniquito() | number}}</td>
+                    <td align="right">${{getTotalliq_apagar() | number}}</td>
 
                   </tr>
                 </tfoot>
@@ -144,81 +162,194 @@
 <!--Modal nuevo pago-->
 <div class="modal fade" id="modalNuevoPago" tabindex="-1" role="dialog" aria-labelledby="modalNuevoPagoLabel"
   aria-hidden="true">
-  <div class="modal-dialog modal-md" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalNuevoPagoLabel">Nuevo Pago</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="modalNuevoPagoLabel">Nuevo trabajador</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeModal>
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
 
-        <form>
-          <div class="form-group row">
-            <div class="col-lg-3">
-              <label class="col-form-label">R.U.T</label>
+        <form class="form-sample" [formGroup]="editPagoForm" (ngSubmit)="newPago()">
+          <div class="modal-body">
+
+            <p class="card-description ">
+              Información personal
+            </p>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">R.U.T</label>
+                  <div class="col-sm-4">
+                    <input class="form-control" name="rut" id="rut" type="number" placeholder="1111111" max="99999999"
+                      formControlName="rut">
+
+
+                  </div>
+                  -
+                  <div class="col-sm-2">
+                    <input class="form-control" name="dig" id="nombre" type="text" placeholder="K" readonly
+                      formControlName="dig">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Número ficha</label>
+                  <div class="col-sm-9">
+                    <select class="form-control" name="ficha" formControlName="ficha">
+                      <option value="">Seleccionar</option>
+                      <option value="F1">F1</option>
+                      <option value="F2">F2</option>
+                      <option value="F3">F3</option>
+                      <option value="F4">F4</option>
+                      <option value="F5">F5</option>
+                    </select>
+
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="col-lg-8">
-              <input class="form-control" name="nombre" id="nombre" type="number" placeholder="Nombre de ejemplo">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Nombre</label>
+                  <div class="col-sm-9">
+                    <input class="form-control" name="rol" id="rol" type="text" placeholder="Nombre de ejemplo"
+                      formControlName="nombre" name="nombre">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Especialidad</label>
+                  <div class="col-sm-9">
+                    <select class="form-control" name="especialidad" formControlName="especialidad">
+                      <option value="">Seleccionar</option>
+                      <option *ngFor="let item of especialidades" [value]="item.id">{{item.descripcion}}</option>
+
+                    </select>
+
+
+                  </div>
+                </div>
+              </div>
             </div>
+            <hr>
+            <b class="card-description ">
+              Datos de pago
+            </b>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Sueldo líquido</label>
+                  <div class="col-sm-3">
+                    <!--  <label class="col-sm-3 col-form-label">{{editPagoForm.get('sueldoLiquido')?.value | number}}</label> -->
+                    <input type="number" class="form-control" formControlName="sueldo_liq" name="sueldoLiquido"
+                      min="1" />
+                  </div>
+                  <label class="col-sm-3 col-form-label float-right">Dias a pago</label>
+                  <div class="col-sm-3">
+                    <input type="number" class="form-control" formControlName="dias" name="diasPago" min="0" />
+                  </div>
+
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Valor hora extra líquido</label>
+                  <div class="col-sm-3">
+                    <input type="number" class="form-control" formControlName="valor_hora"
+                      name="valorHoraExtraLiquido" />
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+            <div class="row">
+
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Asignaciones</label>
+                  <div class="col-sm-3">
+                    <input type="number" class="form-control" formControlName="asignaciones" name="asignaciones" />
+                  </div>
+                  <label class="col-sm-3 col-form-label">Ajuste positivo</label>
+                  <div class="col-sm-3">
+                    <input type="number" class="form-control" formControlName="ajuste_pos" name="ajustePositivo" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Anticipo</label>
+                  <div class="col-sm-3">
+                    <input type="number" class="form-control" formControlName="anticipo" name="anticipo" />
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+
+            <div class="row">
+
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Viático</label>
+                  <div class="col-sm-3">
+                    <input type="number" class="form-control" formControlName="viatico" name="viatico" />
+                  </div>
+                  <label class="col-sm-3 col-form-label">Aguinaldo</label>
+                  <div class="col-sm-3">
+                    <input type="number" class="form-control" formControlName="aguinaldo" name="aguinaldo" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Descuentos varios</label>
+                  <div class="col-sm-3">
+                    <input type="number" class="form-control" formControlName="dctos_varios" name="descuentosVarios" />
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Zona 10%</label>
+                  <div class="col-sm-3">
+                    <input type="number" class="form-control" formControlName="zona10" name="zona10" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Finiquito fin de mes</label>
+                  <div class="col-sm-3">
+                    <input type="number" class="form-control" formControlName="finiquito" name="finiquito" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
-          <div class="form-group row">
-            <div class="col-lg-3">
-              <label class="col-form-label">Num ficha</label>
-            </div>
-            <div class="col-lg-8">
-              <input class="form-control" name="usuario" id="usuario" type="number" placeholder="userExample">
-            </div>
-
-
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success" [disabled]="!editPagoForm.valid">Guardar</button>
+            <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
           </div>
-          <div class="form-group row">
-            <div class="col-lg-3">
-              <label class="col-form-label">Nombre</label>
-            </div>
-            <div class="col-lg-8">
-              <input class="form-control" name="rol" id="rol" type="number" placeholder="Nombre de ejemplo">
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-lg-3">
-              <label class="col-form-label">Especialidad</label>
-            </div>
-            <div class="col-lg-8">
-              <select class="form-control">
-                <option value="Activo">Activo</option>
-                <option value="Inactivo">Inactivo</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <div class="col-lg-3">
-              <label class="col-form-label">Sueldo liquido</label>
-            </div>
-            <div class="col-lg-8">
-              <input class="form-control" name="rol" id="rol" type="number" placeholder="000">
-
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <div class="col-lg-3">
-              <label class="col-form-label">Valor hora extra</label>
-            </div>
-            <div class="col-lg-8">
-              <input class="form-control" name="rol" id="rol" type="number" placeholder="000">
-
-            </div>
-          </div>
-
         </form>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success">Guardar</button>
-        <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
-      </div>
+
     </div>
   </div>
 </div>
@@ -229,14 +360,14 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalNuevoPagoLabel">Editando pago</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="modalNuevoPagoLabel">Editar trabajador</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeModalEdit>
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <form class="form-sample" [formGroup]="editPagoForm" (ngSubmit)="saveEditDetallePago()">
+        <div class="modal-body">
 
-        <form class="form-sample" [formGroup]="editPagoForm">
           <p class="card-description ">
             Información personal
           </p>
@@ -244,9 +375,16 @@
             <div class="col-md-6">
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">R.U.T</label>
-                <div class="col-sm-9">
-                  <input class="form-control" name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo"
+                <div class="col-sm-4">
+                  <input class="form-control" name="rut" id="rut" type="number" placeholder="1111111" max="99999999"
                     formControlName="rut" readonly>
+
+
+                </div>
+                -
+                <div class="col-sm-2">
+                  <input class="form-control" name="dig" id="nombre" type="text" placeholder="K" readonly
+                    formControlName="dig">
                 </div>
               </div>
             </div>
@@ -274,8 +412,11 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Especialidad</label>
                 <div class="col-sm-9">
-                  <input class="form-control" name="rol" id="rol" type="text" placeholder="Nombre de ejemplo"
-                    name="especialidad" formControlName="especialidad" readonly>
+                  <select class="form-control" name="especialidad" formControlName="especialidad">
+                    <option value="">Seleccionar</option>
+                    <option *ngFor="let item of especialidades" [ngValue]="item.id">{{item.descripcion}}</option>
+
+                  </select>
                 </div>
               </div>
             </div>
@@ -288,53 +429,39 @@
             <div class="col-md-6">
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Sueldo líquido</label>
-                <div class="col-sm-9">
-                  <!--  <label class="col-sm-3 col-form-label">{{editPagoForm.get('sueldoLiquido')?.value | currency}}</label> -->
+                <div class="col-sm-3">
+                  <!--  <label class="col-sm-3 col-form-label">{{editPagoForm.get('sueldoLiquido')?.value | number}}</label> -->
                   <input type="number" class="form-control" formControlName="sueldo_liq" name="sueldoLiquido" />
                 </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Dias a pago</label>
-                <div class="col-sm-9">
+                <label class="col-sm-3 col-form-label float-right">Dias a pago</label>
+                <div class="col-sm-3">
                   <input type="number" class="form-control" formControlName="dias" name="diasPago" />
                 </div>
+
               </div>
             </div>
-            <!-- <div class="col-md-3">
-              <div class="form-group row">
-                <label class="col-sm-6 col-form-label">Total periodo</label>
-                <div class="col-sm-6">
-                  <strong class="col-sm-3 col-form-label">{{totalPeriodoEdit | currency}}</strong>
-
-                </div>
-              </div>
-            </div> -->
-          </div>
-          <div class="row">
             <div class="col-md-6">
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Valor hora extra líquido</label>
-                <div class="col-sm-9">
+                <div class="col-sm-3">
                   <input type="number" class="form-control" formControlName="valor_hora" name="valorHoraExtraLiquido" />
                 </div>
+
               </div>
+
             </div>
+
+          </div>
+          <div class="row">
+
             <div class="col-md-6">
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Asignaciones</label>
-                <div class="col-sm-9">
+                <div class="col-sm-3">
                   <input type="number" class="form-control" formControlName="asignaciones" name="asignaciones" />
                 </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Ajuste positivo</label>
-                <div class="col-sm-9">
+                <div class="col-sm-3">
                   <input type="number" class="form-control" formControlName="ajuste_pos" name="ajustePositivo" />
                 </div>
               </div>
@@ -342,25 +469,54 @@
             <div class="col-md-6">
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Anticipo</label>
-                <div class="col-sm-9">
+                <div class="col-sm-3">
                   <input type="number" class="form-control" formControlName="anticipo" name="anticipo" />
                 </div>
+
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="row">
+
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Viático</label>
+                <div class="col-sm-3">
+                  <input type="number" class="form-control" formControlName="viatico" name="viatico" />
+                </div>
+                <label class="col-sm-3 col-form-label">Aguinaldo</label>
+                <div class="col-sm-3">
+                  <input type="number" class="form-control" formControlName="aguinaldo" name="aguinaldo" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Descuentos varios</label>
+                <div class="col-sm-3">
+                  <input type="number" class="form-control" formControlName="dctos_varios" name="descuentosVarios" />
+                </div>
+
+
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
               <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Descuentos varios</label>
-                <div class="col-sm-9">
-                  <input type="number" class="form-control" formControlName="dctos_varios" name="descuentosVarios" />
+                <label class="col-sm-3 col-form-label">Zona 10%</label>
+                <div class="col-sm-3">
+                  <input type="number" class="form-control" formControlName="zona10" name="zona10" />
                 </div>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Finiquito fin de mes</label>
-                <div class="col-sm-9">
+                <div class="col-sm-3">
                   <input type="number" class="form-control" formControlName="finiquito" name="finiquito" />
                 </div>
               </div>
@@ -368,51 +524,51 @@
           </div>
 
 
+          <!--  <div class="row">
+            <div class="d-flex justify-content-end">
+              <div class="col-12">
+                <div class="table">
+                  <table class="table table-striped">
+                    <tr>
+                      <td>
+                        <label>Total periodo:</label>
+                      </td>
+                      <td>
+                        <strong>{{totalPeriodoEdit | number}}</strong>
+                      </td>
+                    </tr>
 
-
-        </form>
-        <div class="row">
-          <div class="d-flex justify-content-end">
-            <div class="col-12">
-              <div class="table">
-                <table class="table table-striped">
-                  <tr>
-                    <td>
-                      <label >Total periodo:</label>
-                    </td>
-                    <td>
-                      <strong >{{totalPeriodoEdit | currency}}</strong>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <label >Remuneración a pagar:</label>
-                    </td>
-                    <td>
-                      <strong>{{totalRemuneracionEdit | currency}}</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <label >Total descuentos:</label>
-                    </td>
-                    <td>
-                      <strong >{{totalDesctEdit | currency}}</strong>
-                    </td>
-                  </tr>
-                </table>
+                    <tr>
+                      <td>
+                        <label>Remuneración a pagar:</label>
+                      </td>
+                      <td>
+                        <strong>{{totalRemuneracionEdit | number}}</strong>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <label>Total descuentos:</label>
+                      </td>
+                      <td>
+                        <strong>{{totalDesctEdit | number}}</strong>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
               </div>
+
             </div>
+          </div> -->
 
-          </div>
         </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success" [disabled]="!editPagoForm.valid">Grabar</button>
+          <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success" [disabled]="!editPagoForm.valid">Editar pago</button>
-        <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
-      </div>
+
     </div>
   </div>
 </div>

@@ -4,99 +4,70 @@
       <div class="card-body">
         <h4 class="card-title">Proyectos</h4>
         <hr>
-        <div class="row">
-         <div class="col-12">
-          <form>
-            <div class="form-row">
-              <div class="form-group col-md-2">
-                <label for="inputEmail4">Código obra</label>
-                <input type="text" class="form-control" id="inputEmail4" placeholder="0000">
-              </div>
-              <div class="form-group col-md-3">
-                <label for="name">Descripción</label>
-                <input type="text" class="form-control" id="nombre" placeholder="Ejemplo de obra">
-              </div>
-              <div class="form-group col-md-4">
-                <label for="dir">Dirección</label>
-                <input type="text" class="form-control" id="direccion" placeholder="Av Las Condes 1000">
-              </div>
-              <div class="form-group col-md-3">
-                <label for="dir">Administrativo a cargo</label>
-                <input type="text" class="form-control" id="direccion" placeholder="Juan Carlos Tapia">
-              </div>
-            </div>
 
-            <div class="form-row">
-              <div class="form-group col-md-2">
-                <label for="inputZip">Entrega proyecto</label>
-                <input type="date" class="form-control" id="inputZip">
-              </div>
-              <div class="form-group col-md-2">
-                <label for="inputZip">Terminaciones</label>
-                <input type="date" class="form-control" id="inputZip">
-              </div>
-              <div class="form-group col ">
-                <label for="inputCity" >Entrega parcial</label>
-                <input type="checkbox" class="form-control" id="inputCity">
-              </div>
-
-              <div class="form-group col-md-2">
-                <label for="inputZip">Inst. Cubiertas/Imperm.</label>
-                <input type="date" class="form-control" id="inputZip">
-              </div>
-              <div class="form-group col-md-3">
-                <label for="inputZip">Estructura</label>
-                <input type="date" class="form-control" id="inputZip">
-              </div>
-            </div>
-            <div class="d-flex justify-content-end">
-              <button type="submit" class="btn btn-success btn-rounded"><i class="icon-check"></i>Guardar</button>
-              <button type="submit" class="btn btn-danger btn-rounded"><i class="icon-close"></i>Cancelar</button>
-            </div>
-
-          </form>
-         </div>
-        </div>
-        <hr>
 
 
         <div class="row pt-2">
-          <div class="col-12 table-responsive">
+          <!-- <div class="col-12">
+            <div class="ag-theme-alpine">
+              <ag-grid-angular style="width: 100%; height: 500px;" [rowData]="rowData" [columnDefs]="columnDefs"
+                [defaultColDef]="defaultColDef" [pagination]="true" [getRowId]="getRowId">
+              </ag-grid-angular>
+            </div>
 
-            <table id="order-listing" class="table">
-              <thead>
+          </div> -->
+
+          <div class="col-12 table-responsive1">
+
+            <table id="order-listing" class="table table-bordered table-striped">
+              <thead class="thead-dark">
                 <tr class="bg-light">
+                  <th>Correlativo</th>
                   <th>Código</th>
-                  <th>Nombre</th>
-                  <th>Dirección</th>
-                  <th>Entrega proyecto</th>
-                  <th>Terminaciones</th>
-                  <th>Entrega parcial</th>
-                  <th>Inst. Cubiertas/imperm.</th>
-                  <th>Estructura</th>
-                  <th>Acciones</th>
+                  <th>Proyecto</th>
+                  <th>Estado</th>
+                  <th></th>
+
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let item of numbers">
-                  <td>S-590</td>
-                  <td>Sakata</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
+                <tr *ngFor="let item of data;let i =index">
+                  <td>{{i+1}}</td>
+                  <td>{{item.codigo}}</td>
+                  <td>{{item.nombre}}</td>
                   <td>
-                    <label class="badge badge-danger">NO</label>
+                    <select class="form-control" [(ngModel)]="item.estado" *ngIf="item.isEdit" name="estado"
+                      id="estado">
+                      <option value="" disabled>Seleccionar</option>
+                      <option value="1">Activo</option>
+                      <option value="0">Inactivo</option>
+                    </select>
+
+
+                    <div *ngIf="!item.isEdit">
+                      <label class="badge badge-danger" *ngIf="item.estado==0;else act">Inactivo</label>
+                      <ng-template #act>
+                        <label class="badge badge-success">Activo</label>
+                      </ng-template>
+                    </div>
+
+
                   </td>
                   <td>
-                    21/12/2022
+                    <button type="button" class="btn btn-icons btn-rounded btn-outline-primary btn-sm"
+                      *ngIf="!item.isEdit" (click)="item.isEdit = true"><i class="icon-pencil"></i></button>
+
+                    <div *ngIf="item.isEdit">
+
+                      <button type="button" class="btn btn-icons btn-rounded btn-outline-success btn-sm"
+                        (click)="saveEdit(item)"><i class="icon-check"></i></button>
+
+                      <button type="button" class="btn btn-icons btn-rounded btn-outline-danger btn-sm"
+                        (click)="item.isEdit = false"><i class="icon-close"></i></button>
+                    </div>
+
                   </td>
-                  <td>
-                    28/01/2023
-                  </td>
-                  <td>
-                    <button type="submit" class="btn btn-outline-success btn-rounded"><i class="icon-pencil"></i>Modificar</button>
-                    <button type="submit" class="btn btn-outline-danger btn-rounded"><i class="icon-close"></i>Eliminar</button>
-                  </td>
+
                 </tr>
 
 

@@ -30,8 +30,8 @@
                 <tbody>
                   <tr style="cursor: pointer;" *ngFor="let item of obras" (click)="go(item)" [routerLink]="['inicio']">
 
-                    <td align="center">
-                      <h4 class="text-primary font-weight-normal"> {{item.nombre}}</h4>
+                    <td align="left">
+                      <h4 class="text-primary font-weight-normal">{{item.codigo}} | {{item.nombre}}</h4>
                     </td>
 
                   </tr>

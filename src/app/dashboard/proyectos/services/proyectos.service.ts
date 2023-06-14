@@ -5,13 +5,11 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class DetallePagoService {
+export class ProyectosService {
 
   constructor(private _http: HttpClient) { }
 
-  get(body:any){
-
-    //console.log(`${environment.url}ws_estadopago_rrhh.php`,body);
-    return this._http.post(`${environment.url}ws_estadopago_rrhh.php`,body);
+  get(body){
+    return this._http.post(`${environment.url}ws_especialidad_rrhh.php`,body);
   }
 }

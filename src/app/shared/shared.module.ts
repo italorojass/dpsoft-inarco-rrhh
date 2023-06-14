@@ -8,6 +8,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ErrorsInterceptor } from './interceptors/errors.interceptor';
 import { AuthGuard } from './guards/auth.guard';
+import { FormsModule } from '@angular/forms';
+import { AgGridSpanishService } from './services/ag-grid-spanish.service';
 
 
 @NgModule({
@@ -21,6 +23,7 @@ import { AuthGuard } from './guards/auth.guard';
       timeOut: 10000,
       preventDuplicates: false,
     }) ,
+    FormsModule
 
   ],
   providers:[
@@ -29,7 +32,8 @@ import { AuthGuard } from './guards/auth.guard';
       provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorInterceptor, multi: true
     },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorsInterceptor, multi: true },
-    AuthGuard
+    AuthGuard,
+    AgGridSpanishService
   ],
   exports : [
     LoaderComponent

@@ -25,17 +25,18 @@ export class LoginComponent implements OnInit {
   login(f:NgForm){
     console.log(f.value);
     let body = {
-      "usua" : f.value.usua,
-      "pass": f.value.pass
+      usua : f.value.usua,
+      pass: f.value.pass,
+      accion : 'C'
     }
     this.loginSv.login(body).subscribe((r:any)=>{
       console.log('response login',r);
       if(r.status =='ok'){
         sessionStorage.setItem('token',r['result'].token);
-        sessionStorage.setItem('idUser',r['result'].id);
+        sessionStorage.setItem('idUser',r['result'].id_usuario);
 
         if(r['result'].obras.length > 0){
-          //sessionStorage.setItem('obras',JSON.stringify(r['result'].obras));
+          sessionStorage.setItem('obras',JSON.stringify(r['result'].obras));
           sessionStorage.setItem('user',JSON.stringify(f.value.usua));
           this.router.navigate(['/obras'])
         }else{

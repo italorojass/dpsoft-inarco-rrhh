@@ -8,16 +8,7 @@
         <h4 class="text-white pl-3">Sistema de RRHH</h4>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between flex-grow-1">
-        <form class="search-field d-none d-md-flex" action="#">
-          <div class="form-group mb-0">
-            <div class="input-group">
-              <!-- <div class="input-group-prepend">
-                <span class="input-group-text"><i class="icon-magnifier"></i></span>
-              </div> -->
-              <!-- <input type="text" class="form-control" placeholder="search here..."> -->
-            </div>
-          </div>
-        </form>
+
         <ul class="navbar-nav navbar-nav-right mr-0 ml-auto">
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
@@ -38,13 +29,13 @@
             </div>
           </li>
         </ul>
-        <button class="navbar-toggler align-self-center" type="button" data-toggle="minimize">
+        <button class="navbar-toggler align-self-center" type="button" data-toggle="minimize" (click)="toggleBar = !toggleBar">
           <span class="icon-menu"></span>
         </button>
       </div>
     </div>
   </div>
-  <div class="nav-bottom">
+  <div class="nav-bottom " [ngClass]="toggleBar ? 'header-toggled' : ''">
     <div class="container">
       <ul class="nav page-navigation ">
         <ng-container *ngFor="let item of menu">

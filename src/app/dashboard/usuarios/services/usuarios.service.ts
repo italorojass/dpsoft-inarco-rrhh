@@ -9,9 +9,9 @@ export class UsuariosService {
 
   constructor(private _http: HttpClient) { }
 
-  get(){
+  /* get(){
     return this._http.post(`${environment.url}usuarios_rrhh.php`,'');
-  }
+  } */
 
   crearEditUsuario(body:any){
     return this._http.post(`${environment.url}ws_usuario_rrhh.php`,body);

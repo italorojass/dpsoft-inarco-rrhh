@@ -10,37 +10,52 @@
              <div class="form-row">
                <div class="form-group col-md-4">
                  <label for="inputEmail4">Quincena</label>
-                 <input type="radio" class="form-control" id="inputZip" formControlName="quincena" name="quincena">
+                 <input type="radio" class="ml-2" id="inputZip" formControlName="quincena" name="quincena">
 
                </div>
                <div class="form-group col-md-4">
-                <label for="inputEmail4">Mes y año de trabajo</label>
-                <input type="month" class="form-control" formControlName="date" name="date">
+                <label for="inputEmail4">Inicio periodo</label>
+                <input type="date" class="form-control col-6" formControlName="inicio" name="date">
                </div>
+               <div class="form-group col-md-4 ">
+                <label for="inputEmail4">Nombre del bono</label>
+                <input type="text" class="form-control col-6" formControlName="nombre_bono" name="nombre_bono">
+              </div>
              </div>
 
              <div class="form-row">
                <div class="form-group col-md-4 ">
                  <label for="inputZip">Fin de mes</label>
-                 <input type="radio" class="form-control" id="inputZip" formControlName="finmes" name="finmes">
+                 <input type="radio" class="ml-2" id="inputZip" formControlName="finmes" name="finmes">
                </div>
 
+               <div class="form-group col-md-4">
+                <label for="inputEmail4">Final periodo</label>
+                <input type="date" class="form-control col-6" formControlName="final" name="date">
+               </div>
+              <!--  <div class="form-group col-md-4 ">
+                <label for="inputEmail4">Primer día</label>
+                <input type="text" class="form-control col-4" formControlName="primerDia" name="date">
+
+              </div> -->
+
              </div>
-             <div class="d-flex justify-content-end">
+
+           <!--   <div class="d-flex justify-content-end">
                <button type="submit" class="btn btn-success btn-rounded"><i class="icon-check"></i>Guardar</button>
                <button type="button" class="btn btn-danger btn-rounded"><i class="icon-close"></i>Cancelar</button>
-             </div>
+             </div> -->
 
            </form>
           </div>
          </div>
 
 
-        <div class="row pt-2">
-          <div class="col-12 table-responsive">
+      <!--   <div class="row pt-2">
+          <div class="col-12 table-responsive1">
 
-            <table id="order-listing" class="table">
-              <thead>
+            <table id="order-listing" class="table table-bordered table-striped" *ngIf="daysTable.length >0">
+              <thead class="thead-dark">
                 <tr class="bg-light" >
                   <th *ngFor="let item of daysTable" class="text-vertical">{{item.dia}} | {{item.nombre}}</th>
 
@@ -50,13 +65,12 @@
                 <tr >
                   <td *ngFor="let item of daysTable"> -</td>
                 </tr>
-
-
               </tbody>
             </table>
-          </div>
-        </div>
 
+          </div>
+        </div> -->
+<!--
         <div class="row pt-2">
           <div class="col-12 ">
               <small><strong>H =</strong> Hábil </small>
@@ -65,7 +79,8 @@
               <br>
               <small> <strong>F =</strong> Feriado</small>
           </div>
-        </div>
+        </div> -->
+
       </div>
     </div>
   </div>

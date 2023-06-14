@@ -4,71 +4,346 @@
       <div class="card-body">
         <h4 class="card-title">Horas extras</h4>
         <hr>
-        <!-- <div class="row">
+
+         <div class="row">
           <div class="col-12">
-           <form>
-             <div class="form-row">
-               <div class="form-group col-md-4">
-                 <label for="inputEmail4">Quincena</label>
-                 <input type="radio" class="form-control" id="inputZip">
+           <form [formGroup]="formDate">
+            <div class="form-row">
+              <div class="form-group col-md-4">
 
-               </div>
-               <div class="form-group col-md-4">
-                <label for="inputEmail4">Mes y año de trabajo</label>
-                <input type="date" class="form-control">
-               </div>
-             </div>
 
+              </div>
+              <div class="form-group col-md-4">
+               <label for="inputEmail4">Inicio periodo</label>
+               <input type="date" class="form-control col-6" formControlName="inicio" name="date" readonly>
+              </div>
+
+            </div>
              <div class="form-row">
                <div class="form-group col-md-4 ">
-                 <label for="inputZip">Fin de mes</label>
-                 <input type="radio" class="form-control" id="inputZip">
+
                </div>
-
+               <div class="form-group col-md-4">
+                <label for="inputEmail4">Final periodo</label>
+                <input type="date" class="form-control col-6" formControlName="final" name="date" readonly>
+               </div>
              </div>
-             <div class="d-flex justify-content-end">
-               <button type="submit" class="btn btn-success btn-rounded"><i class="icon-check"></i>Guardar</button>
-               <button type="submit" class="btn btn-danger btn-rounded"><i class="icon-close"></i>Cancelar</button>
-             </div>
-
            </form>
           </div>
-         </div> -->
-
-
+         </div>
         <div class="row pt-2">
-          <div class="col-12 table-responsive">
-
-            <table id="order-listing" class="table">
-              <thead>
-                <tr class="bg-light">
-                  <th>N.</th>
-                  <th>Proceso</th>
-                  <th>Nombre</th>
-                  <th>Total H. Extras del mes</th>
-                  <th>Valor liquido hora extra</th>
-                  <th>Valor liquido total horas del mes</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr >
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>
-                    <button type="submit" class="btn btn-outline-success btn-rounded btn-sm mr-2"><i class="icon-pencil"></i>Modificar</button>
-                    <button type="submit" class="btn btn-outline-danger btn-rounded btn-sm"><i class="icon-trash"></i>Eliminar</button>
-                  </td>
-
-                </tr>
+          <div class="col-12">
+            <div class="table-responsive1">
+              <table id="order-listing" class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                  <tr class="bg-light">
+                    <th></th>
+                    <th class="text-vertical">Correlativo</th>
+                    <th>Nombre</th>
+                    <th *ngFor="let item of tblHeader;let i=index" align="center">
+                      <span *ngIf="item.nombre =='Total semanal';else normal" class="wraptxt1">
+                        {{item.nombre}} |
+                        {{item.dia}} </span>
+                      <ng-template #normal>
+                        <span class="text-vertical">
+                          {{item.nombre}} |
+                          {{item.dia}} </span>
+                      </ng-template>
 
 
-              </tbody>
-            </table>
+                    </th>
+
+
+                    <!--  <th class="wraptxt1">Total semana 1</th>
+                  <th class=" wraptxt1">Total semana 2</th>
+                  <th class=" wraptxt1">Total semana 3</th>
+                  <th class=" wraptxt1">Total semana 4</th>
+                  <th class=" wraptxt1">Total semana 5</th> -->
+                    <th class="wraptxt1">
+                      Total H. extras del mes </th>
+                    <th class="wraptxt1">
+                      Valor líquido hora extra </th>
+                    <th class="wraptxt1">
+                      Valor líquido total horas del mes
+                    </th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of data;let i=index">
+
+                    <td>
+
+                      <button type="button" class="btn btn-icons btn-rounded btn-outline-primary btn-sm"
+                        *ngIf="!item.isEdit" (click)="item.isEdit = true"><i class="icon-pencil"></i></button>
+
+                      <div *ngIf="item.isEdit">
+                        <button type="button" class="btn btn-icons btn-rounded btn-outline-success btn-sm"
+                          (click)="saveEdit(item)"><i class="icon-check"></i></button>
+                        <button type="button" class="btn btn-icons btn-rounded btn-outline-danger btn-sm"
+                          (click)="item.isEdit = false"><i class="icon-close"></i></button>
+                      </div>
+                    </td>
+                    <td>{{i+1}}</td>
+                    <td>{{item.nombre}}</td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia1" *ngIf="item.isEdit">
+                      </div>
+
+
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia1}}
+                      </div>
+
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia2" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia2}}
+                      </div>
+
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia3" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia3}}
+                      </div>
+                    </td>
+                    <td>
+
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia4" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia4}}
+                      </div>
+
+
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia5" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia5}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia6" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia6}}
+                      </div>
+
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia7" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia7}}
+                      </div>
+                    </td>
+                    <td>{{item.totsem1}}</td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia8" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia8}}
+                      </div>
+
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia9" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia9}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia10" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia10}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia11" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia11}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia12" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia12}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia13" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia13}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia14" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia14}}
+                      </div>
+                    </td>
+                    <td>{{item.totsem2 | number }}</td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia15" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia15}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia16" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia16}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia17" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia17}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia18" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia18}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia19" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia19}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia20" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia20}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia21" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia21}}
+                      </div>
+                    </td>
+                    <td>{{item.totsem3}}</td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia22" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia22}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia23" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia23}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia24" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia24}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia25" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia25}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia26" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia26}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia27" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia27}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col-3">
+                        <input type="number" class="form-control1" [(ngModel)]="item.dia28" *ngIf="item.isEdit">
+                      </div>
+                      <div *ngIf="!item.isEdit">
+                        {{item.dia28}}
+                      </div>
+                    </td>
+                    <td>{{item.totsem4}}</td>
+
+
+                    <td>{{item.tothormes}}</td>
+                    <td>${{item.valhor | number}}</td>
+                    <td>${{item.totvalhor | number}}</td>
+                    <!-- <td>
+                    <button type="submit" class="btn btn-outline-success btn-rounded btn-sm mr-2"><i
+                        class="icon-pencil"></i></button>
+                    <button type="submit" class="btn btn-outline-danger btn-rounded btn-sm"><i
+                        class="icon-trash"></i></button>
+                  </td> -->
+
+                  </tr>
+
+
+                </tbody>
+              </table>
+
+            </div>
+
+
           </div>
         </div>
       </div>

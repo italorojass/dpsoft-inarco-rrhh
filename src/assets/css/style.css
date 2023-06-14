@@ -8918,12 +8918,6 @@ select {
   word-wrap: normal;
 }
 
-button,
-[type="button"],
-[type="reset"],
-[type="submit"] {
-  -webkit-appearance: button;
-}
 
 button:not(:disabled),
 [type="button"]:not(:disabled),
@@ -8946,12 +8940,7 @@ input[type="checkbox"] {
   padding: 0;
 }
 
-input[type="date"],
-input[type="time"],
-input[type="datetime-local"],
-input[type="month"] {
-  -webkit-appearance: listbox;
-}
+
 
 textarea {
   overflow: auto;
@@ -8986,10 +8975,7 @@ progress {
   height: auto;
 }
 
-[type="search"] {
-  outline-offset: -2px;
-  -webkit-appearance: none;
-}
+
 
 [type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
@@ -18951,11 +18937,7 @@ body {
 .tt-query,
 .typeahead, .form-control:focus, .asColorPicker-input:focus, .dataTables_wrapper select:focus, .jsgrid .jsgrid-table .jsgrid-filter-row input:focus[type=text],
 .jsgrid .jsgrid-table .jsgrid-filter-row select:focus, .jsgrid .jsgrid-table .jsgrid-filter-row input:focus[type=number], .select2-container--default .select2-selection--single:focus, .select2-container--default .select2-selection--single .select2-search__field:focus, .tt-hint:focus,
-.tt-query:focus,
-.typeahead:focus {
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-}
+.tt-query:focus
 
 .form-control, .asColorPicker-input, .dataTables_wrapper select, .jsgrid .jsgrid-table .jsgrid-filter-row input[type=text],
 .jsgrid .jsgrid-table .jsgrid-filter-row select, .jsgrid .jsgrid-table .jsgrid-filter-row input[type=number], .select2-container--default .select2-selection--single, .select2-container--default .select2-selection--single .select2-search__field, .tt-hint,
@@ -20035,7 +20017,6 @@ pre {
   -ms-transform: rotate(0deg);
   -webkit-transform: rotate(0deg);
   transform: rotate(0deg);
-  moz-transform-origin: center;
   -o-transform-origin: center;
   -ms-transform-origin: center;
   -webkit-transform-origin: center;
@@ -20049,7 +20030,6 @@ pre {
 .navbar.horizontal-layout .nav-bottom .page-navigation > .nav-item > .nav-link .menu-arrow:before {
   font-family: 'simple-line-icons';
   content: "\e604";
-  speak: none;
   font-size: .625rem;
   font-style: normal;
   font-weight: 600;
@@ -23501,7 +23481,6 @@ ul li {
 .list-star li:before,
 .list-ticked li:before {
   font-family: 'simple-line-icons';
-  speak: none;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -27243,7 +27222,6 @@ body.avgrund-active {
   border-radius: 4px;
   display: block;
   margin: auto;
-  vertical-align: middle;
   position: absolute;
   top: 6px;
   z-index: -1;
@@ -27271,7 +27249,6 @@ body.avgrund-active {
   -moz-box-shadow: 3px 3px 6px 0 rgba(147, 127, 201, 0.43);
   display: block;
   margin: auto;
-  vertical-align: middle;
   position: absolute;
   top: 6px;
   z-index: -1;
@@ -28696,7 +28673,6 @@ div.tagsinput span.tag a {
   background: rgba(0, 0, 0, 0.8);
   width: 100px;
   margin-left: -50px;
-  -webkit-transition: 0.1s left, 0.1s top;
 }
 
 .wysi-editor .wrap {
