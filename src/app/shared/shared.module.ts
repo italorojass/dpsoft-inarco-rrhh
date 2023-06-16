@@ -10,11 +10,20 @@ import { ErrorsInterceptor } from './interceptors/errors.interceptor';
 import { AuthGuard } from './guards/auth.guard';
 import { FormsModule } from '@angular/forms';
 import { AgGridSpanishService } from './services/ag-grid-spanish.service';
+import { DatatableComponent } from './components/datatable/datatable.component';
+import { GuiGridModule } from '@generic-ui/ngx-grid';
+import { TableAggridComponent } from './components/table-aggrid/table-aggrid.component';
+import { AgGridModule } from 'ag-grid-angular';
+import { ButtonCellRendererComponent } from './components/button-cell-renderer/button-cell-renderer.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
   declarations: [
-    LoaderComponent
+    LoaderComponent,
+    DatatableComponent,
+    TableAggridComponent,
+    ButtonCellRendererComponent
   ],
   imports: [
     CommonModule,
@@ -23,8 +32,10 @@ import { AgGridSpanishService } from './services/ag-grid-spanish.service';
       timeOut: 10000,
       preventDuplicates: false,
     }) ,
-    FormsModule
-
+    FormsModule,
+    GuiGridModule,
+    AgGridModule,
+    NgbModule
   ],
   providers:[
     LoaderService,
@@ -36,7 +47,10 @@ import { AgGridSpanishService } from './services/ag-grid-spanish.service';
     AgGridSpanishService
   ],
   exports : [
-    LoaderComponent
+    LoaderComponent,
+    DatatableComponent,
+    TableAggridComponent,
+    ButtonCellRendererComponent
   ]
 })
 export class SharedModule { }

@@ -17,7 +17,26 @@
         </div>
         <div class="row mt-3">
           <div class="col-12">
-            <div class="table-responsive1 ">
+           <!--  <gui-grid [source]="data"
+                      [columns]="columns"
+                      [loading]="loading"
+                      [paging]="paging"
+                      [sorting]="sorting"
+                      [searching]="searching">
+            </gui-grid> -->
+
+            <app-table-aggrid [datos]="data"
+            [columnas]="columnDefs">
+
+            </app-table-aggrid>
+
+ <!-- <app-datatable [datos]="data"
+            [columnas]="columns"
+            > </app-datatable> -->
+
+
+           <!--  <div class="table-responsive1 ">
+
               <table class="table table-striped table-bordered">
                 <thead class="thead-dark">
                   <tr>
@@ -33,6 +52,8 @@
                     <th class="wraptxt">Total periodo</th>
                     <th class="wraptxt1">Hora extra legal lunes a sábados</th>
                     <th class="wraptxt">Total valor hora extra líquido</th>
+
+
                     <th class="wraptxt">Diferencia días sábados</th>
                     <th class="wraptxt"> Diferencia días domingos</th>
                     <th class="wraptxt">Total Bonos</th>
@@ -53,33 +74,17 @@
                   </tr>
 
                 </thead>
-                <!--   <thead>
-              <tr>
-                <th><input type="number" placeholder="Search ID" name="search-id" id="search-id"/></th>
-                <th><input type="number" placeholder="Search first name" name="search-first-name" id="search-name"/></th>
-                <th><input type="number" placeholder="Search last name" name="search-last-name"/></th>
-              </tr>
-            </thead> -->
+
                 <tbody *ngIf="data && data.length>0">
                   <tr *ngFor="let item of data;let i=index">
                     <td>
-                      <!--  <button type="button" class="btn btn-icons btn-rounded btn-outline-primary btn-sm" *ngIf="!item.isEdit" (click)="item.isEdit = true"><i
-                        class="icon-pencil"></i></button>
 
-                    <div *ngIf="item.isEdit">
-                      <button type="button" class="btn btn-icons btn-rounded btn-outline-success btn-sm" (click)="saveEditDetallePago(item)"><i
-                          class="icon-check"></i></button>
-                          <button type="button" class="btn btn-icons btn-rounded btn-outline-danger btn-sm" (click)="item.isEdit = false"><i
-                            class="icon-close"></i></button>
-                    </div> -->
 
                       <button type="button" class="btn btn-icons btn-rounded btn-outline-primary btn-sm"
                         data-toggle="modal" data-target="#modalEditarPago" (click)="editPago(item);"><i
                           class="icon-pencil "></i></button>
 
 
-                      <!--   <button type="button" class="btn btn-outline-danger btn-rounded btn-sm"><i
-                          class="icon-trash ml-1"></i></button> -->
                     </td>
                     <td>{{i+1}}</td>
 
@@ -149,7 +154,8 @@
                   </tr>
                 </tfoot>
               </table>
-            </div>
+            </div> -->
+
           </div>
         </div>
 

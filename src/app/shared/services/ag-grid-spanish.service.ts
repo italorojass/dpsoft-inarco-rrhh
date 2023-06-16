@@ -10,8 +10,8 @@ export class AgGridSpanishService {
   getLocale(){
     return {
       // for filter panel
-      page: 'Pagina',
-      more: 'Mas',
+      page: 'Página',
+      more: 'Más',
       to: 'a',
       of: 'de',
       next: 'Siguente',
@@ -24,7 +24,8 @@ export class AgGridSpanishService {
       selectAll: 'Seleccionar Todo',
       searchOoo: 'Buscar...',
       blanks: 'En blanco',
-
+      blank: 'En blanco',
+      notBlank: 'No en blanco',
       // for number filter and text filter
       filterOoo: 'Filtrar',
       applyFilter: 'Aplicar Filtro...',

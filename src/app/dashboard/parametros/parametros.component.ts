@@ -1,3 +1,4 @@
+import { ToastrService } from 'ngx-toastr';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { BuildMonthService } from 'src/app/shared/services/build-month.service';
@@ -12,7 +13,7 @@ export class ParametrosComponent implements OnInit {
 
   nombreDias = ['Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo'];
 
-  constructor(private fb : FormBuilder, private bt : BuildMonthService, private paramSV : ParametrosService) { }
+  constructor(private fb : FormBuilder, private bt : BuildMonthService, private paramSV : ParametrosService, private ToastrService : ToastrService) { }
   formDate = this.fb.group({
     inicio : [''],
     final : [''],
@@ -28,7 +29,7 @@ export class ParametrosComponent implements OnInit {
   }
 
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
-
+  bonos= [];
   get(){
     let b = {
       accion : 'C',
@@ -38,9 +39,7 @@ export class ParametrosComponent implements OnInit {
       console.log(r);
       let res = r['result'].parametros[0];
       console.log('response parametros',res);
-      r['result'].parametros.map(x=>{
-        console.log('new map',x);
-      })
+      this.bonos = r['result'].bonos;
       this.formDate.patchValue({
         inicio : res.inicio_periodo,
         final : res.final_periodo,
@@ -48,6 +47,22 @@ export class ParametrosComponent implements OnInit {
         primerDia : res.primer_dia,
       })
     })
+  }
+
+  guardarBono(){
+    if(this.bonos.length < 10){
+      this.bonos.push({
+        descripcion : this.formDate.value.nombre_bono
+      });
+      this.formDate.controls['nombre_bono'].reset();
+    }else{
+      this.ToastrService.warning('La cantidad máxima de bonos son 10','Máxima cantidad de bonos agregados')
+    }
+
+  }
+
+  deleteBono(i){
+    this.bonos.splice(i,1);
   }
 
 
