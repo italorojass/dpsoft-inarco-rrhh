@@ -1,6 +1,5 @@
-<div class="table-responsive1" >
-  <ag-grid-angular
-    #Grid
+<ag-grid-angular
+#Grid
     style="width: 100%; height: 100%;"
     class="ag-theme-alpine"
     [columnDefs]="columnas"
@@ -14,7 +13,7 @@
     [rowSelection]="rowSelection"
     [pinnedBottomRowData]="pinnedBottomRowData"
     [enableCellChangeFlash]="true"
-
+[paginationPageSize]="16"
     [suppressMaxRenderedRowRestriction]="true"
     [overlayLoadingTemplate]="overlayLoadingTemplate"
     [overlayNoRowsTemplate]="overlayNoRowsTemplate"
@@ -25,5 +24,3 @@
     (rowValueChanged)="onRowValueChanged($event)"
     [editType]="'fullRow'"
   ></ag-grid-angular>
-</div>
-

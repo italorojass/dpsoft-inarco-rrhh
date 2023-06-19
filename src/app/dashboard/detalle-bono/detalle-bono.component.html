@@ -25,7 +25,23 @@
         <div class="row pt-2">
           <div class="col-12 table-responsive1">
 
-            <table id="order-listing" class="table table-bordered">
+            <ag-grid-angular #Grid style="width: 100%; height: 100%;" class="ag-theme-alpine"
+            [columnDefs]="columnDefs"
+              [defaultColDef]="defaultColDef"
+              [rowData]="data"
+              [suppressMenuHide]="true"
+              [pagination]="true"
+              [groupSelectsChildren]="true"
+              [enableCellChangeFlash]="true"
+              [paginationPageSize]="15"
+               [suppressMaxRenderedRowRestriction]="true"
+              [overlayLoadingTemplate]="overlayLoadingTemplate"
+              [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+              [localeText]="localeText"
+              (cellValueChanged)="saveEdit($event)"
+             ></ag-grid-angular>
+
+           <!--  <table id="order-listing" class="table table-bordered">
               <thead class="thead-dark">
                 <tr class="bg-light">
                   <th></th>
@@ -59,14 +75,14 @@
                   <td>{{item.nombre}}</td>
                   <td>{{formatRut(item.rut,item.dig)}}</td>
                   <td >{{item.ficha}}</td>
-                  <!-- <td *ngFor="let item2 of [].constructor(bonos.length); let i2=index" align="right">
+                  <td *ngFor="let item2 of [].constructor(bonos.length); let i2=index" align="right">
 
                     <span *ngIf="!item.isEdit;else act"> {{item.bono+i2+1 | number}}</span>
                     <ng-template #act>
                       <input [(ngModel)]="item.bono1" name="bono1" id="bono1"
                         style='width:6em' type="number" />
                     </ng-template>
-                  </td> -->
+                  </td>
 
                   <td align="right" >
 
@@ -81,7 +97,7 @@
                       <input [(ngModel)]="item.bono2" name="bono2" id="bono2"
                         style='width:6em' type="number" />
                     </ng-template></td>
-      <!--            <td align="right">
+                 <td align="right">
                     <span *ngIf="!item.isEdit;else act2"> {{item.bono3 | number}}</span>
                     <ng-template #act2>
                       <input [(ngModel)]="item.bono3" name="bono3"
@@ -136,7 +152,7 @@
                       <input [(ngModel)]="item.bono10" name="bono9"
                         style='width:6em' type="number" />
                     </ng-template>
-                  </td>-->
+                  </td>
                   <td align="right">{{item.total_bonos | number}}</td>
 
                 </tr>
@@ -147,7 +163,7 @@
                   <td></td>
                 </tr>
               </tfoot>
-            </table>
+            </table> -->
           </div>
         </div>
       </div>

@@ -12,14 +12,14 @@ import { AgGridAngular } from 'ag-grid-angular';
 })
 export class TableAggridComponent {
   @Input() datos: any;
-  @Input() data$: Observable<any>;
   @Input() columnas = [];
   @Output() outChange = new EventEmitter<any>();
+
   @ViewChild('Grid') grid!: AgGridAngular;
+
   @Input() pinnedBottomRowData: any[]
   localeText = this.aggsv.getLocale();
-  gridApi;
-  gridColumnApi;
+
 
   defaultColDef: ColDef = {
     resizable: true,
@@ -30,8 +30,6 @@ export class TableAggridComponent {
     floatingFilter: true,
     wrapHeaderText: true,
     autoHeaderHeight: true,
-
-
   };
 
 
@@ -71,8 +69,9 @@ export class TableAggridComponent {
   }
 
   onGridReady(params: GridReadyEvent<any>) {
-    this.gridApi = params.api;
-    this.grid.api = params.api
+    this.grid.api.sizeColumnsToFit();
+  /*   this.gridApi = params.api;
+    this.grid.api = params.api */
   }
 
 }

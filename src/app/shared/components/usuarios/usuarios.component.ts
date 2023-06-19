@@ -304,16 +304,17 @@ cellClas(params){
   }
 
   deleteUser(item: any) {
+
     Swal.fire({
       title: `Está seguro que desea eliminar al usuario ${item.nombre_usuario}?`,
-
-      confirmButtonText: 'Eliminar',
-      text: 'El usuario será eliminado del sistema para siempre',
+      text: 'El usuario será eliminado del sistema, esta acción es irreversible!',
       icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Eliminar'
     }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-
         let body = {
           id: item.id,
           accion: 'E',
@@ -325,8 +326,7 @@ cellClas(params){
           this.getUsers();
 
         })
-      } else if (result.isDenied) {
-        //Swal.fire('Usuario ', '', 'info')
+
       }
     })
 

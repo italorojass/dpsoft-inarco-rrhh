@@ -64,32 +64,32 @@ export class DetallePagoComponent implements OnInit {
   };
 
   getChanges(e){
-    console.log('este cambiar',e.data);
-    let indexEspecialidad = this.especialidades.find(x=>x.descripcion == e.data.descripcion);
+    console.log('este cambiar',e);
+    let indexEspecialidad = this.especialidades.find(x=>x.descripcion.trim() == e.descripcion.trim());
     console.log('especialidad id',indexEspecialidad);
-    e.data.id_espec = indexEspecialidad.id;
 
     let body1 = {
       tipo: "pagos",
       accion: "M",
-      especialidad: e.data.id_espec,
-      sueldo_liq: e.data.sueldo_liq,
-      id_detalle: e.data.id,
+      especialidad: indexEspecialidad.id,
+      sueldo_liq: Number(e.sueldo_liq),
+      id_detalle: e.id,
       obra: this.obra.codigo,
-      dias:e.data.dias,
-      valor_hora: e.data.valor_hora,
-      ajuste_pos: e.data.ajuste_pos,
-      anticipo: e.data.anticipo,
-      dctos_varios: e.data.dctos_varios,
-      finiquito: e.data.finiquito,
-      zona10: e.data.zona10,
-      viatico: e.data.viatico,
-      asignaciones: e.data.asignaciones,
-      aguinaldo: e.data.aguinaldo,
-      finiquito_findemes: e.data.finiquito_findemes
+      dias: parseFloat(e.dias),
+      valor_hora: Number(e.valor_hora),
+      ajuste_pos: Number(e.ajuste_pos),
+      anticipo: Number(e.anticipo),
+      dctos_varios: Number(e.dctos_varios),
+      finiquito: Number(e.finiquito),
+      zona10: Number(e.zona10),
+      viatico: Number(e.viatico),
+      asignaciones: Number(e.asignaciones),
+      aguinaldo: Number(e.aguinaldo),
+      finiquito_findemes: Number(e.finiquito_findemes)
     }
     console.log('body edit', body1);
     this.dtSv.get(body1).subscribe(r => {
+      console.log
       this.getPagos();
     })
 
@@ -126,6 +126,7 @@ export class DetallePagoComponent implements OnInit {
       });
       //this.loading = false;
       this.grid.api.setRowData(this.data);
+
       let result = [{}];
       let calcTotalCols = [
         'sueldo_liq',
@@ -212,7 +213,7 @@ export class DetallePagoComponent implements OnInit {
     {
       field: 'nombre',
       headerName: 'Nombre',
-      width: 150,
+      width: 250,
       suppressSizeToFit: true,
       pinned: 'left',
       lockPinned: true,
@@ -293,7 +294,6 @@ export class DetallePagoComponent implements OnInit {
       field: 'hor_lun_sab',
       headerName: 'Hora extra legal lunes a sábado',
       width: 100, sortable: true,
-      cellRenderer: this.CurrencyCellRenderer,
       editable : false
     },
     {
@@ -446,7 +446,11 @@ export class DetallePagoComponent implements OnInit {
 
   }
 
+  CurrencyCellRenderer1(params: any) {
 
+
+    return parseFloat(params.value);
+  }
 
   CurrencyCellRenderer(params: any) {
 

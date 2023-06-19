@@ -50,6 +50,7 @@ registerLocaleData(localeEs);
     MaestroEspecialidadComponent
 
 
+
   ],
   imports: [
     CommonModule,
