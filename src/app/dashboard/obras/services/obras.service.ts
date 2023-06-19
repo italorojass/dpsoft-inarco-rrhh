@@ -16,8 +16,6 @@ export class ObrasService {
   } */
 
   getb(body){
-
-
     return this._http.post(`${environment.url}obras_rrhh.php`,body);
   }
 }

@@ -1,7 +1,13 @@
+<button type="button" class="btn btn-outline-dark btn-rounded mr-2 btn-sm" data-toggle="modal" (click)="buttonClicked('asoc')"
+                       data-target="#modalAsociarObras"><i class="icon-people"></i>Asociar
+                      obras</button>
 
-<button type="button" class="btn btn-icons btn-rounded btn-outline-primary btn-sm"
- (click)="buttonClicked();"><i
-  class="icon-pencil "></i></button>
+                    <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" data-toggle="modal" (click)="buttonClicked('edit')"
+                      data-target="#modalEditUser" ><i
+                        class="icon-pencil"></i>Modificar</button>
+
+                    <button type="button" class="btn btn-outline-danger btn-rounded btn-sm" (click)="buttonClicked('delete')"
+                     ><i class="icon-trash"></i>Eliminar</button>
 
   <!-- <button type="button" class="btn btn-icons btn-rounded btn-outline-primary btn-sm"
   data-toggle="modal" data-target="#modalEditarPago" (click)="buttonClicked();"><i

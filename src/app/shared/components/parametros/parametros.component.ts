@@ -1,7 +1,6 @@
 import { ToastrService } from 'ngx-toastr';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { BuildMonthService } from 'src/app/shared/services/build-month.service';
 import { ParametrosService } from './services/parametros.service';
 
 @Component({
@@ -13,7 +12,9 @@ export class ParametrosComponent implements OnInit {
 
   nombreDias = ['Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo'];
 
-  constructor(private fb : FormBuilder, private bt : BuildMonthService, private paramSV : ParametrosService, private ToastrService : ToastrService) { }
+  constructor(private fb : FormBuilder,
+    private paramSV : ParametrosService,
+    private ToastrService : ToastrService) { }
   formDate = this.fb.group({
     inicio : [''],
     final : [''],
@@ -28,12 +29,10 @@ export class ParametrosComponent implements OnInit {
     this.get();
   }
 
-  obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
   bonos= [];
   get(){
     let b = {
-      accion : 'C',
-      obra: this.obra.codigo
+      accion : 'C'
     }
     this.paramSV.get(b).subscribe(r=>{
       console.log(r);

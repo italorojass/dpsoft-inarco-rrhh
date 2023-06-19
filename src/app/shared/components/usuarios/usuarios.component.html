@@ -16,9 +16,67 @@
         </div>
 
         <div class="row pt-2">
+
+           <!-- <div class="col-12">
+
+
+           <gui-grid #grid id="agile-grid" [theme]="'generic'" [source]="usuarios" [rowColoring]="'none'"
+              [sorting]="sorting" [paging]="false" [columnMenu]="columnMenu" [verticalGrid]="false"
+              [horizontalGrid]="true" [cellEditing]="true" [loading]="loading"
+              [infoPanel]="false">
+
+
+
+              <gui-grid-column header="Nombre usuario" field="nombre_usuario" type="string" width="120"
+                [cellEditing]="false">
+              </gui-grid-column>
+
+              <gui-grid-column header="Usuario" field="usuario" type="string" [cellEditing]="false" width="180">
+              </gui-grid-column>
+
+              <gui-grid-column header="Mail" field="mail" type="string" [cellEditing]="false" width="100">
+              </gui-grid-column>
+              <gui-grid-column header="Estado" field="estado" type="string" [cellEditing]="false" width="100">
+                <ng-template let-value="value">
+                  <label class="badge" [ngClass]="value=='Activo' ? 'badge-success' : 'badge-danger'">{{value}}</label>
+                </ng-template>
+              </gui-grid-column>
+
+              <gui-grid-column header="Acciones">
+
+                <ng-template let-value="value" let-item="item">
+                  <button type="button" class="btn btn-outline-dark btn-rounded mr-2 btn-sm" data-toggle="modal"
+                    (click)="getObras(item)" data-target="#modalAsociarObras"><i class="icon-people"></i>Asociar
+                    obras</button>
+
+                  <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" data-toggle="modal"
+                    data-target="#modalEditUser" (click)="editModal(item)"><i class="icon-pencil"></i>Modificar</button>
+
+                  <button type="button" class="btn btn-outline-danger btn-rounded btn-sm" (click)="deleteUser(item)"><i
+                      class="icon-trash"></i>Eliminar</button>
+
+                </ng-template>
+              </gui-grid-column>
+
+            </gui-grid>
+          </div>-->
           <div class="col-12 table-responsive1">
 
-            <table id="order-listing" class="table table-bordered table-striped">
+            <ag-grid-angular #Grid style="width: 100%; height: 100%;" class="ag-theme-alpine"
+            [columnDefs]="columnDefs"
+              [defaultColDef]="defaultColDef"
+              [rowData]="usuarios"
+              [suppressMenuHide]="true"
+              [pagination]="true"
+              [groupSelectsChildren]="true"
+              [enableCellChangeFlash]="true"
+               [suppressMaxRenderedRowRestriction]="true"
+              [overlayLoadingTemplate]="overlayLoadingTemplate"
+              [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+              [localeText]="localeText"
+             ></ag-grid-angular>
+
+            <!--   <table id="order-listing" class="table table-bordered table-striped">
               <thead class="thead-dark">
                 <tr class="bg-light">
                   <th>ID</th>
@@ -47,8 +105,9 @@
                       [ngClass]="item.estado=='Activo' ? 'badge-success' : 'badge-danger'">{{item.estado}}</label>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-outline-dark btn-rounded mr-2 btn-sm" data-toggle="modal" (click)="getObras(item)"
-                      data-target="#modalAsociarObras"><i class="icon-people"></i>Asociar obras</button>
+                    <button type="button" class="btn btn-outline-dark btn-rounded mr-2 btn-sm" data-toggle="modal"
+                      (click)="getObras(item)" data-target="#modalAsociarObras"><i class="icon-people"></i>Asociar
+                      obras</button>
                     <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" data-toggle="modal"
                       data-target="#modalEditUser" (click)="editModal(item)"><i
                         class="icon-pencil"></i>Modificar</button>
@@ -68,7 +127,7 @@
                 </tbody>
               </ng-template>
 
-            </table>
+            </table> -->
           </div>
         </div>
       </div>
@@ -95,7 +154,7 @@
               <label class="col-form-label">Nombre</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control" name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo"
+              <input class="form-control" name="usuario" type="text" placeholder="Nombre de ejemplo"
                 formControlName="usuario">
             </div>
           </div>
@@ -104,8 +163,7 @@
               <label class="col-form-label">Usuario</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control" name="usuario" id="usuario" type="text" placeholder="Inarco"
-                formControlName="nombre">
+              <input class="form-control" name="nombre" type="text" placeholder="Inarco" formControlName="nombre">
             </div>
 
 
@@ -117,8 +175,7 @@
                 <label class="col-form-label">Contraseña</label>
               </div>
               <div class="col-lg-8">
-                <input class="form-control" name="pass" id="pass" type="password" placeholder="****"
-                  formControlName="pass">
+                <input class="form-control" name="pass" type="password" placeholder="****" formControlName="pass">
 
               </div>
 
@@ -129,12 +186,12 @@
                 <label class="col-form-label">Repetir contraseña</label>
               </div>
               <div class="col-lg-8">
-                <input class="form-control" name="usuario" id="usuario" type="password" placeholder="****"
+                <input class="form-control" name="confirmPass" type="password" placeholder="****"
                   formControlName="confirmPassword">
 
-                  <small *ngIf="userForm.hasError('notSame')" class="text-danger">
-                    Las contraseñas no coinciden
-                  </small>
+                <small *ngIf="userForm.hasError('notSame')" class="text-danger">
+                  Las contraseñas no coinciden
+                </small>
 
               </div>
 
@@ -149,7 +206,7 @@
               <label class="col-form-label">Mail</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control" name="email" id="email" type="email" placeholder="ejemplo@inarco.cl"
+              <input class="form-control" name="email" type="email" placeholder="ejemplo@inarco.cl"
                 formControlName="mail">
             </div>
           </div>
@@ -190,7 +247,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" >
+      <div class="modal-body">
 
         <form [formGroup]="userForm">
           <div class="form-group row">
@@ -198,7 +255,7 @@
               <label class="col-form-label">Nombre</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control" name="nombre" id="nombre" type="text" placeholder="Nombre de ejemplo"
+              <input class="form-control" name="usuario" type="text" placeholder="Nombre de ejemplo"
                 formControlName="usuario" readonly>
             </div>
           </div>
@@ -207,8 +264,8 @@
               <label class="col-form-label">Usuario</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control" name="usuario" id="usuario" type="text" placeholder="Inarco"
-                formControlName="nombre" readonly>
+              <input class="form-control" name="nombre" type="text" placeholder="Inarco" formControlName="nombre"
+                readonly>
             </div>
 
 
@@ -220,7 +277,7 @@
               <label class="col-form-label">Mail</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control" name="email" id="email" type="email" placeholder="ejemplo@inarco.cl"
+              <input class="form-control" name="email" type="email" placeholder="ejemplo@inarco.cl"
                 formControlName="mail">
             </div>
           </div>
@@ -264,10 +321,11 @@
       </div>
       <div class="modal-body">
         <div class="row" *ngIf="obrasAsociar.length>0">
-          <div class="col-md-4" *ngFor="let item of obrasAsociar" >
+          <div class="col-md-4" *ngFor="let item of obrasAsociar">
             <div style="border: 1px solid #ccc!important;padding : 5px 10px">
               <div class="mt-2">
-                <input type="checkbox" class="mr-2"  [(ngModel)]="item.isCheck" [checked]="item.isCheck"> <label class="form-title">{{item.codigo}} | {{item.nombre}} </label>
+                <input type="checkbox" class="mr-2" [(ngModel)]="item.isCheck" [checked]="item.isCheck"> <label
+                  class="form-title">{{item.codigo}} | {{item.nombre}} </label>
               </div>
 
             </div>

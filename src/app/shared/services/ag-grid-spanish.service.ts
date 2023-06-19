@@ -7,6 +7,16 @@ export class AgGridSpanishService {
 
   constructor() { }
 
+  public tooltipShowDelay = 0;
+  public tooltipHideDelay = 2000;
+  rowGroupPanelShow: 'always' | 'onlyWhenGrouping' | 'never' = 'always';
+  pivotPanelShow: 'always' | 'onlyWhenPivoting' | 'never' = 'always';
+  rowSelection: 'single' | 'multiple' = 'multiple';
+  public overlayLoadingTemplate =
+    '<span class="ag-overlay-loading-center">Recargando tabla, favor espere</span>';
+  public overlayNoRowsTemplate =
+    '<span class="padding: 10px; border: 2px solid #fff; background: #439aff;">Cargando data..</span>';
+
   getLocale(){
     return {
       // for filter panel

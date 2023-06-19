@@ -34,6 +34,38 @@
         <div class="row pt-2">
           <div class="col-12">
             <div class="table-responsive1">
+             <!--  <app-table-aggrid
+              [datos]="data"
+              [data$]="dataObs$ | async"
+            [columnas]="columnDefs"
+            (outChange)="getChanges($event)"></app-table-aggrid> -->
+
+            <ag-grid-angular
+            #heGrid
+    style="width: 100%; height: 100%;"
+    class="ag-theme-alpine"
+    [columnDefs]="columnDefs"
+    [defaultColDef]="defaultColDef"
+    [rowData]="data"
+    [suppressMenuHide]="true"
+    [suppressColumnVirtualisation]="false"
+    [suppressRowVirtualisation]="false"
+    [pagination]="true"
+    [groupSelectsChildren]="true"
+    [rowSelection]="rowSelection"
+    [enableCellChangeFlash]="true"
+    [alwaysShowHorizontalScroll]="true"
+    [alwaysShowVerticalScroll]="true"
+    [suppressMaxRenderedRowRestriction]="true"
+    [overlayLoadingTemplate]="overlayLoadingTemplate"
+    [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+    [localeText]="localeText"
+    (gridReady)="onGridReady($event)"
+    (rowValueChanged)="onRowValueChanged($event)"
+    [editType]="'fullRow'"
+  ></ag-grid-angular>
+
+<!--
               <table id="order-listing" class="table table-bordered table-striped">
                 <thead class="thead-dark">
                   <tr class="bg-light">
@@ -53,12 +85,6 @@
 
                     </th>
 
-
-                    <!--  <th class="wraptxt1">Total semana 1</th>
-                  <th class=" wraptxt1">Total semana 2</th>
-                  <th class=" wraptxt1">Total semana 3</th>
-                  <th class=" wraptxt1">Total semana 4</th>
-                  <th class=" wraptxt1">Total semana 5</th> -->
                     <th class="wraptxt1">
                       Total H. extras del mes </th>
                     <th class="wraptxt1">
@@ -328,18 +354,13 @@
                     <td>{{item.tothormes}}</td>
                     <td>${{item.valhor | number}}</td>
                     <td>${{item.totvalhor | number}}</td>
-                    <!-- <td>
-                    <button type="submit" class="btn btn-outline-success btn-rounded btn-sm mr-2"><i
-                        class="icon-pencil"></i></button>
-                    <button type="submit" class="btn btn-outline-danger btn-rounded btn-sm"><i
-                        class="icon-trash"></i></button>
-                  </td> -->
+
 
                   </tr>
 
 
                 </tbody>
-              </table>
+              </table> -->
 
             </div>
 

@@ -2,6 +2,7 @@
 @import "~@ng-select/ng-select/themes/default.theme.css";
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-alpine.css';
+@import '~handsontable/dist/handsontable.full.css';
 
 .ng-invalid:not(form)  {
   border: 1px solid #ff5e5e /* red */
@@ -29,7 +30,7 @@ thead tr th {
 }
 
 .table-responsive1 {
-  height:700px;
+  height:800px;
   z-index: 10;
   position: relative;
   overflow: auto;
@@ -44,3 +45,15 @@ thead tr th {
 .ag-root-wrapper-body.ag-layout-normal.ag-focus-managed {
   height: 100%;
 }
+.content-wrapper1 {
+  padding: 1.5rem 0;
+  width: 100%;
+  padding-right: 6px;
+  padding-left: 6px;
+  margin-right: auto;
+  margin-left: auto;
+  min-height: calc(100vh - 181px);
+  flex-grow: 1
+}
+
+

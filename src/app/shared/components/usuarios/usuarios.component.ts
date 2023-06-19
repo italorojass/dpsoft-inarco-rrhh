@@ -1,9 +1,15 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { UsuariosService } from './services/usuarios.service';
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { ObrasService } from '../obras/services/obras.service';
 import Swal from 'sweetalert2';
+import { ObrasService } from 'src/app/dashboard/obras/services/obras.service';
+import { UsuariosService } from './services/usuarios.service';
+import { GuiColumn, GuiColumnMenu, GuiRowSelection, GuiSorting, GuiSummaries } from '@generic-ui/ngx-grid';
+import { ColDef } from 'ag-grid-community';
+import { AgGridSpanishService } from '../../services/ag-grid-spanish.service';
+import { AgGridAngular } from 'ag-grid-angular';
+import { ButtonCellRendererComponent } from '../button-cell-renderer/button-cell-renderer.component';
+import { PassDataService } from '../button-cell-renderer/services/pass-data.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -11,14 +17,114 @@ import Swal from 'sweetalert2';
   styleUrls: ['./usuarios.component.css']
 })
 export class UsuariosComponent implements OnInit {
+  @ViewChild('Grid') agGrid: AgGridAngular;
 
-  constructor(private userSv: UsuariosService, private fb: FormBuilder, private toastr: ToastrService, private obrasSv: ObrasService) { }
+  constructor(private userSv: UsuariosService,
+    private fb: FormBuilder,
+    private toastr: ToastrService,
+    private obrasSv: ObrasService,
+    private aggsv : AgGridSpanishService,
+    private passData : PassDataService) { }
   userSelect: any = '';
-  obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
 
   ngOnInit(): void {
     this.getUsers();
+
+    if(this.passData.dataEdit){
+      this.passData.dataEdit.subscribe(valueEdit=>{
+        console.log('click edit ',valueEdit);
+        switch(valueEdit['accion']){
+          case 'asoc':
+            this.getObras(valueEdit['data']);
+            break;
+          case 'edit':
+            this.editModal(valueEdit['data'])
+          break;
+          case 'delete':
+          this.deleteUser(valueEdit['data'])
+          break;
+        }
+
+        //this.getObras(valueEdit)
+      })
+    }
+
   }
+
+  overlayLoadingTemplate = this.aggsv.overlayLoadingTemplate;
+  overlayNoRowsTemplate = this.aggsv.overlayNoRowsTemplate;
+  localeText = this.aggsv.getLocale();
+
+  defaultColDef: ColDef = {
+    resizable: true,
+    initialWidth: 200,
+    editable: true,
+    sortable: true,
+    filter: true,
+    floatingFilter: true,
+    wrapHeaderText: true,
+    autoHeaderHeight: true,
+
+
+  };
+  columnDefs:ColDef[] = [ {
+    headerName: 'ID',
+    field: 'correlativo',
+    filter: false,
+    floatingFilter: false,
+    editable : false
+  },
+  {
+    headerName: 'Nombre usuario',
+    field: 'nombre_usuario',
+    filter: false,
+    floatingFilter: false,
+    editable : false
+  },
+  {
+    headerName: 'Usuario',
+    field: 'usuario',
+    filter: false,
+    floatingFilter: false,
+    editable : false
+  },
+  {
+    headerName: 'Email',
+    field: 'mail',
+    filter: false,
+    floatingFilter: false,
+    editable : false
+  },
+  {
+    headerName: 'Estado',
+    field: 'estado',
+    filter: false,
+    floatingFilter: false,
+    editable : false,
+    cellClass: params =>{return this.cellClas(params.value)},
+
+  },
+  {
+      headerName: 'Acciones',
+      cellRenderer: ButtonCellRendererComponent,
+      cellRendererParams: {
+        clicked: (field: any) => {
+          console.log('item click', field);
+        }
+      },
+      filter: false,
+      floatingFilter: false,
+      width: 600,
+      autoHeight: true,
+      editable : false
+    },
+];
+
+cellClas(params){
+
+  return params ==='Activo' ? 'badge badge-success': 'badge badge-danger'
+}
+
 
   usuarios: any = [];
   getUsers() {
@@ -26,9 +132,16 @@ export class UsuariosComponent implements OnInit {
       //cod_obra : this.obra.codigo,
       accion : 'C'
     }
+    console.log('body usuraios get',b)
     this.userSv.crearEditUsuario(b).subscribe((r: any) => {
-      //console.log(r);
-      this.usuarios = r['result'].usuarios;
+      console.log(r);
+      this.agGrid.api.sizeColumnsToFit();
+      this.usuarios = r['result'].usuarios.map((x,i)=>{
+        return {
+          ...x,
+          correlativo : i+1
+        }
+      });
     })
   }
 

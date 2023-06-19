@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { DetallePagoService } from '../detalle-pago/services/detalle-pago.service';
 import { BuildMonthService } from 'src/app/shared/services/build-month.service';
 import { DifSabDomService } from './services/dif-sab-dom.service';
-
+import { ButtonCellRendererComponent } from 'src/app/shared/components/button-cell-renderer/button-cell-renderer.component';
 @Component({
   selector: 'app-diferencia-sab-dom',
   templateUrl: './diferencia-sab-dom.component.html',
@@ -11,10 +11,11 @@ import { DifSabDomService } from './services/dif-sab-dom.service';
 })
 export class DiferenciaSabDomComponent implements OnInit {
 
-  constructor(private bm: BuildMonthService, private sb: DifSabDomService, private toast : ToastrService) { }
+  constructor(private bm: BuildMonthService, private sb: DifSabDomService, private toast: ToastrService) { }
 
   ngOnInit(): void {
     this.get();
+    this.buildTbl();
     this.buildHeader();
   }
 
@@ -27,11 +28,13 @@ export class DiferenciaSabDomComponent implements OnInit {
       accion: 'C',
       obra: this.obra.codigo
     }
+    let c = 0;
     this.sb.get(body).subscribe((r: any) => {
       this.data = r.result.sab_dom.map((value) => {
-
+        c++
         return {
           ...value,
+          correlativo: c,
           isEdit: false
         }
       });
@@ -47,25 +50,248 @@ export class DiferenciaSabDomComponent implements OnInit {
     this.sem = semenas;
   }
 
-  saveEdit(item){
+  saveEdit(item) {
     item.isEdit = false;
     let b = {
       tipo: 'finde',
       accion: 'M',
       obra: this.obra.codigo,
-      id_detalle_pagos : item.id_pagos1,
-      val_sab_med : item.sab_medio_sem1,
-      val_sab_ent : item.sab_entero_sem1 ,
-      val_dom_med :item.dom_medio_sem1,
-      val_dom_ent : item.dom_entero_sem1
+      id_detalle_pagos: item.id_pagos1,
+      val_sab_med: item.sab_medio_sem1,
+      val_sab_ent: item.sab_entero_sem1,
+      val_dom_med: item.dom_medio_sem1,
+      val_dom_ent: item.dom_entero_sem1
     }
-    console.log('body',b);
+    console.log('body', b);
     this.sb.get(b).subscribe((r: any) => {
       console.log(r);
 
-      this.toast.success('Actualizado con éxito',`Pago trabajador ${item.nombre}`);
+      this.toast.success('Actualizado con éxito', `Pago trabajador ${item.nombre}`);
 
 
     })
   }
+
+  columnDefs = [
+
+  ];
+
+  buildTbl() {
+    this.columnDefs.push(
+      /* {
+      headerName: 'Acciones',
+      cellRenderer: ButtonCellRendererComponent,
+      cellRendererParams: {
+        clicked: (field: any) => {
+          console.log('item click', field);
+        }
+      },
+      pinned: 'left',
+      filter: false,
+      floatingFilter: false,
+      width: 100,
+      autoHeight: true
+    }, */
+      {
+        headerName: 'ID', field: 'correlativo',
+        width: 80,
+        pinned: 'left',
+        filter: false,
+        floatingFilter: false,
+        editable: false
+      },
+      {
+        field: 'nombre',
+        headerName: 'Nombre',
+        width: 150,
+        suppressSizeToFit: true,
+        suppressStickyLabel: true,
+        pinned: 'left',
+        lockPinned: true,
+        cellClass: 'lock-pinned',
+        editable: false
+      },
+      {
+        field: 'cargo',
+        headerName: 'Cargo',
+        width: 100,
+        sortable: true,
+        pinned: 'left',
+        editable: false
+      },
+      {
+        headerName: 'Semana 1',
+        editable: true,
+        children: [
+          {
+            headerName: 'H. extra sábado',
+            field: 'h_ex_sabado_sem1',
+            width: 100,
+            sortable: true,
+            lockPinned: false,
+            editable: false
+          },
+          {
+            field: 'valor_hora',
+            headerName: 'Valor hora',
+            width: 100,
+            sortable: true,
+            editable: false
+          },
+          {
+            field: 'total_sab_sem1',
+            headerName: 'Total',
+            width: 100,
+            sortable: true,
+            cellRenderer: this.CurrencyCellRenderer, cellRendererParams: {
+              currency: 'CLP'
+            },
+            editable: false
+          },
+          {
+            field: 'sab_medio_sem1',
+            headerName:
+              'Valor sábado 1/2 día',
+            width: 110,
+            sortable: true,
+            editable: true
+          },
+          {
+            field: 'sab_entero_sem1',
+            headerName: 'Valor día sábado',
+            width: 100,
+            sortable: true,
+            cellRenderer: this.CurrencyCellRenderer,
+            editable: true
+          },
+          {
+            field: 'h_ex_domingo_sem1',
+            headerName: 'H. extras domingo',
+            width: 150,
+            sortable: true,
+            cellRenderer: this.CurrencyCellRenderer,
+            editable: false
+          },
+          {
+            field: 'tot_dom_sem1',
+            headerName: 'Total',
+            width: 100,
+            sortable: true,
+            cellRenderer: this.CurrencyCellRenderer,
+            editable: false
+          },
+          {
+            field: 'dom_medio_sem1',
+            headerName: 'Valor domingo 1/2 día',
+            width: 180, sortable: true,
+            cellRenderer: this.CurrencyCellRenderer,
+            editable: true
+          },
+          {
+            field: 'dom_entero_sem1',
+            headerName: 'Valor día domingo',
+            width: 150,
+            sortable: true,
+            cellRenderer: this.CurrencyCellRenderer,
+            editable: true
+          },
+          {
+            field: 'dif_sab_sem1',
+            headerName: 'Diferencia días sábado',
+            width: 180,
+            sortable: true,
+            cellRenderer: this.CurrencyCellRenderer,
+            editable: false
+          },
+          {
+            field: 'dif_dom_sem1',
+            headerName: 'Diferencia día domingo',
+            width: 180,
+            sortable: true,
+            cellRenderer: this.CurrencyCellRenderer,
+            editable: false
+          },
+        ]
+      })
+    for (let i = 2; i < 6; i++) {
+      this.columnDefs.push(
+        {
+          headerName: 'Semana ' + i,
+          marryChildren: true,
+          children: [
+            {
+              field: 'h_ex_sabado_sem' + i,
+              headerName: 'H. extras Sábado ',
+              width: 120,
+              sortable: true,
+              editable: false
+            },
+            {
+              field: 'total_sab_sem' + i,
+              headerName: 'Total',
+              width: 100,
+              sortable: true,
+              editable: false
+            },
+            {
+              field: 'dif_sab_sem' + i,
+              headerName: 'Diferencia día sábado',
+              width: 130,
+              sortable: true,
+              editable: false
+            },
+            {
+              field: 'h_ex_domingo_sem' + i,
+              headerName: 'H. extras domingo ',
+              width: 110,
+              sortable: true,
+              editable: false
+            },
+            {
+              field: 'tot_dom_sem' + i,
+              headerName: 'Total',
+              width: 100,
+              sortable: true,
+              editable: false
+            },
+            {
+              field: 'dif_dom_sem' + i,
+              headerName: 'Diferencia día domingo',
+              width: 150,
+              sortable: true,
+              editable: false
+            },
+          ]
+
+        }
+      )
+    }
+
+    this.columnDefs.push({
+      field: 'total_mensual_sab',
+      headerName: 'Diferencia mensual sábado',
+      width: 120, sortable: true,
+      cellRenderer: this.CurrencyCellRenderer,
+
+      editable: false
+    },
+      {
+        field: 'total_mensual_dom',
+        headerName: 'Diferencia mensual domingo',
+        width: 120,
+        sortable: true,
+        cellRenderer: this.CurrencyCellRenderer,
+
+        editable: false
+      }
+    )
+
+  }
+
+  CurrencyCellRenderer(params: any) {
+
+    var usdFormate = new Intl.NumberFormat();
+    return usdFormate.format(params.value);
+  }
+
 }

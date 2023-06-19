@@ -33,8 +33,8 @@
                   <th>Nombre</th>
                   <th>RUT</th>
                   <th>N. de ficha</th>
-                  <th *ngFor="let item of [].constructor(10); let i=index">
-                    <span class="text-vertical"></span>
+                  <th *ngFor="let item of bonos; let i=index">
+                    <span class="text-vertical">{{item.descripcion}}</span>
                   </th>
                   <th>Total bonos del mes</th>
 
@@ -59,7 +59,16 @@
                   <td>{{item.nombre}}</td>
                   <td>{{formatRut(item.rut,item.dig)}}</td>
                   <td >{{item.ficha}}</td>
-                  <td align="right">
+                  <!-- <td *ngFor="let item2 of [].constructor(bonos.length); let i2=index" align="right">
+
+                    <span *ngIf="!item.isEdit;else act"> {{item.bono+i2+1 | number}}</span>
+                    <ng-template #act>
+                      <input [(ngModel)]="item.bono1" name="bono1" id="bono1"
+                        style='width:6em' type="number" />
+                    </ng-template>
+                  </td> -->
+
+                  <td align="right" >
 
                     <span *ngIf="!item.isEdit;else act"> {{item.bono1 | number}}</span>
                     <ng-template #act>
@@ -72,7 +81,7 @@
                       <input [(ngModel)]="item.bono2" name="bono2" id="bono2"
                         style='width:6em' type="number" />
                     </ng-template></td>
-                  <td align="right">
+      <!--            <td align="right">
                     <span *ngIf="!item.isEdit;else act2"> {{item.bono3 | number}}</span>
                     <ng-template #act2>
                       <input [(ngModel)]="item.bono3" name="bono3"
@@ -127,7 +136,7 @@
                       <input [(ngModel)]="item.bono10" name="bono9"
                         style='width:6em' type="number" />
                     </ng-template>
-                  </td>
+                  </td>-->
                   <td align="right">{{item.total_bonos | number}}</td>
 
                 </tr>

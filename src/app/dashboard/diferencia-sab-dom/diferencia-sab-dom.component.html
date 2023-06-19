@@ -7,8 +7,13 @@
 
         <div class="row pt-2">
           <div class="col-12 table-responsive1">
+            <app-table-aggrid [datos]="data"
+            [columnas]="columnDefs">
 
-            <table id="order-listing" class="table table-striped table-bordered" frame=void rules=rows>
+            </app-table-aggrid>
+
+
+           <!--  <table id="order-listing" class="table table-striped table-bordered" frame=void rules=rows>
               <thead class="thead-dark">
                 <tr>
                   <th></th>
@@ -230,7 +235,7 @@
 
 
               </tbody>
-            </table>
+            </table> -->
 
           </div>
         </div>

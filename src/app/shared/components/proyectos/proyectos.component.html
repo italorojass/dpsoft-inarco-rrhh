@@ -8,17 +8,30 @@
 
 
         <div class="row pt-2">
-          <!-- <div class="col-12">
-            <div class="ag-theme-alpine">
-              <ag-grid-angular style="width: 100%; height: 500px;" [rowData]="rowData" [columnDefs]="columnDefs"
-                [defaultColDef]="defaultColDef" [pagination]="true" [getRowId]="getRowId">
-              </ag-grid-angular>
-            </div>
 
-          </div> -->
+
 
           <div class="col-12 table-responsive1">
+            <ag-grid-angular #pGrid style="width: auto; height: 100%;" class="ag-theme-alpine"
+                [defaultColDef]="defaultColDef"
+                [gridOptions]="gridOptions"
+                [suppressMenuHide]="true"
+                [suppressColumnVirtualisation]="false"
+                [suppressRowVirtualisation]="false"
+                [pagination]="true"
+                [paginationPageSize]="15"
+                [groupSelectsChildren]="true"
+                [rowSelection]="rowSelection"
+                [enableCellChangeFlash]="true"
 
+                [suppressMaxRenderedRowRestriction]="true"
+                [overlayLoadingTemplate]="overlayLoadingTemplate"
+                [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+                [localeText]="localeText"
+                 (onGridReady)="onGridReady($event)"
+                (cellValueChanged)="onRowValueChanged($event)"
+               ></ag-grid-angular>
+<!--
             <table id="order-listing" class="table table-bordered table-striped">
               <thead class="thead-dark">
                 <tr class="bg-light">
@@ -45,7 +58,7 @@
 
 
                     <div *ngIf="!item.isEdit">
-                      <label class="badge badge-danger" *ngIf="item.estado==0;else act">Inactivo</label>
+                      <label class="badge badge-danger" *ngIf="item.estado=='Inactivo';else act">Inactivo</label>
                       <ng-template #act>
                         <label class="badge badge-success">Activo</label>
                       </ng-template>
@@ -72,7 +85,7 @@
 
 
               </tbody>
-            </table>
+            </table> -->
           </div>
         </div>
       </div>

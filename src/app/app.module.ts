@@ -10,13 +10,13 @@ import { SharedModule } from './shared/shared.module';
 import { LoginService } from './login/services/login.service';
 import { APP_BASE_HREF, HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { CookieService } from 'ngx-cookie-service';
+import { SuperAdminModule } from './super-admin/super-admin.module';
 //I keep the new line
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent
-
   ],
   imports: [
     BrowserModule,
@@ -25,12 +25,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     SharedModule,
+    SuperAdminModule,
     NgbModule,
 
 
   ],
   providers: [
     LoginService,
+    CookieService ,
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     {provide: APP_BASE_HREF, useValue: '/'}
   ],

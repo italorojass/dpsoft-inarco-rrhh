@@ -34,10 +34,9 @@
             ],
             "scripts": [
               "src/assets/vendors/js/vendor.bundle.base.js",
-              "src/assets/vendors/js/vendor.bundle.addons.js",
+              "node_modules/jquery/dist/jquery.js",
               "src/assets/jsGrid/css/js/jsgrid.min.js",
               "src/assets/js/template.js",
-              "node_modules/jquery/dist/jquery.js",
               "node_modules/datatables.net/js/jquery.dataTables.js"
 
 

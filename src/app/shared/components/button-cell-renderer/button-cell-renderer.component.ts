@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
+import { PassDataService } from './services/pass-data.service';
 
 @Component({
   selector: 'app-button-cell-renderer',
@@ -11,6 +12,10 @@ export class ButtonCellRendererComponent implements ICellRendererAngularComp {
 
   public cellValue!: string;
 
+  constructor(private passData : PassDataService){
+
+  }
+
   // gets called once before the renderer is used
   agInit(params: ICellRendererParams): void {
     this.cellValue =params.data;
@@ -18,15 +23,14 @@ export class ButtonCellRendererComponent implements ICellRendererAngularComp {
   }
 
 
-  buttonClicked() {
-    //alert(`${this.cellValue['id']} mapear en form`);
+  buttonClicked(asoc) {
+    console.log(this.cellValue)
+    let format = {
+      accion : asoc,
+      data : this.cellValue
+    }
+    this.passData.dataEdit.next(format);
   }
-
-  getValueToDisplay(params: ICellRendererParams) {
-    return params.valueFormatted ? params.valueFormatted : params.value;
-  }
-
-
 
   // gets called whenever the user gets the cell to refresh
   refresh(params: ICellRendererParams) {

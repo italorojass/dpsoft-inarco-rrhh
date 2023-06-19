@@ -1,3 +1,4 @@
+import { SuperAdminModule } from './super-admin/super-admin.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -17,7 +18,10 @@ const routes: Routes = [{
   path : 'obras',
   loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
 },
-
+{
+  path : 'admin',
+  loadChildren: () => import('./super-admin/super-admin.module').then(m => m.SuperAdminModule)
+},
 {  path: '**', redirectTo: '' }
 ];
 
