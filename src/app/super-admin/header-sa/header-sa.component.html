@@ -1,0 +1,123 @@
+ <!-- partial:partials/_horizontal-navbar.html -->
+ <nav class="navbar horizontal-layout col-lg-12 col-12 p-0">
+  <div class="nav-top flex-grow-1">
+    <div class="container d-flex flex-row h-100 align-items-center">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center">
+        <a class="navbar-brand brand-logo" href="/obras/inicio"><img [src]="rutaLogo" width="200" height="220" class="img-fluid"  alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="/obras/inicio"><img [src]="rutaLogo" alt="logo"/></a>
+        <h4 class="text-white pl-3">Sistema de RRHH - Administrador</h4>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between flex-grow-1">
+
+        <ul class="navbar-nav navbar-nav-right mr-0 ml-auto">
+          <li class="nav-item nav-profile dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+             <!--  <img src="https://via.placeholder.com/39x39" alt="profile"/> -->
+              <span class="nav-profile-name">{{user}}</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" data-toggle="modal" data-target="#modalCambiarClave">
+                <i class="icon-settings text-primary mr-2"></i>
+                Cambiar contraseña
+              </a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" (click)="logout()" >
+                <i class="icon-logout text-primary mr-2"></i>
+                Salir
+              </a>
+            </div>
+          </li>
+        </ul>
+        <button class="navbar-toggler align-self-center" type="button" data-toggle="minimize" (click)="toggleBar = !toggleBar">
+          <span class="icon-menu"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="nav-bottom " [ngClass]="toggleBar ? 'header-toggled' : ''">
+    <div class="container">
+      <ul class="nav page-navigation ">
+        <ng-container *ngFor="let item of menu">
+          <li class="nav-item" *ngIf="item.href;else submenu">
+            <a [routerLink]="[item.href]" class="nav-link"><i class="link-icon {{item.icon}}"></i><span class="menu-title">{{item.title}}</span></a>
+          </li>
+
+          <ng-template #submenu>
+            <li class="nav-item ">
+              <a class="nav-link"><i class="link-icon {{item.icon}}"></i><span class="menu-title">{{item.title}}</span><i class="menu-arrow"></i></a>
+              <div class="submenu">
+                <ul class="submenu-item">
+                  <li class="nav-item" *ngFor="let item of item.subitem"><a class="nav-link" [routerLink]="[item.href]">{{item.title}}</a></li>
+
+                </ul>
+              </div>
+            </li>
+          </ng-template>
+
+
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<!--Modal Cambiar clave-->
+<div class="modal fade" id="modalCambiarClave" tabindex="-1" role="dialog" aria-labelledby="modalCambiarClaveLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCambiarClaveLabel">Cambiar contraseña</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <form>
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Contraseña actual</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="nombre" id="nombre" type="password" placeholder="xxxx">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Nueva contraseña</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="usuario" id="usuario" type="password" placeholder="xxxxx">
+            </div>
+
+
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-3">
+              <label class="col-form-label">Repita contraseña</label>
+            </div>
+            <div class="col-lg-8">
+              <input class="form-control"  name="rol" id="rol" type="password" placeholder="xxxx">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-12">
+              <small >*La contraseña debe contener letras y numeros.</small><br>
+              <small >*Minimo 6 caractéres.</small>
+            </div>
+
+          </div>
+
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success">Cambiar contraseña</button>
+        <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

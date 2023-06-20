@@ -1,0 +1,94 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Proyectos</h4>
+        <hr>
+
+
+
+        <div class="row pt-2">
+
+
+
+          <div class="col-12 table-responsive1">
+            <ag-grid-angular #pGrid style="width: auto; height: 100%;" class="ag-theme-alpine"
+                [defaultColDef]="defaultColDef"
+                [gridOptions]="gridOptions"
+                [suppressMenuHide]="true"
+                [suppressColumnVirtualisation]="false"
+                [suppressRowVirtualisation]="false"
+                [pagination]="true"
+                [paginationPageSize]="15"
+                [groupSelectsChildren]="true"
+                [rowSelection]="rowSelection"
+                [enableCellChangeFlash]="true"
+
+                [suppressMaxRenderedRowRestriction]="true"
+                [overlayLoadingTemplate]="overlayLoadingTemplate"
+                [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+                [localeText]="localeText"
+                 (onGridReady)="onGridReady($event)"
+                (cellValueChanged)="onRowValueChanged($event)"
+               ></ag-grid-angular>
+
+           <!--  <table id="order-listing" class="table table-bordered table-striped">
+              <thead class="thead-dark">
+                <tr class="bg-light">
+                  <th>Correlativo</th>
+                  <th>Código</th>
+                  <th>Proyecto</th>
+                  <th>Estado</th>
+                  <th></th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of data;let i =index">
+                  <td>{{i+1}}</td>
+                  <td>{{item.codigo}}</td>
+                  <td>{{item.nombre}}</td>
+                  <td>
+                    <select class="form-control" [(ngModel)]="item.estado" *ngIf="item.isEdit" name="estado"
+                      id="estado">
+                      <option value="" disabled>Seleccionar</option>
+                      <option value="1">Activo</option>
+                      <option value="0">Inactivo</option>
+                    </select>
+
+
+                    <div *ngIf="!item.isEdit">
+                      <label class="badge badge-danger" *ngIf="item.estadoF=='Inactivo';else act">Inactivo</label>
+                      <ng-template #act>
+                        <label class="badge badge-success">Activo</label>
+                      </ng-template>
+                    </div>
+
+
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-icons btn-rounded btn-outline-primary btn-sm"
+                      *ngIf="!item.isEdit" (click)="item.isEdit = true"><i class="icon-pencil"></i></button>
+
+                    <div *ngIf="item.isEdit">
+
+                      <button type="button" class="btn btn-icons btn-rounded btn-outline-success btn-sm"
+                        (click)="saveEdit(item)"><i class="icon-check"></i></button>
+
+                      <button type="button" class="btn btn-icons btn-rounded btn-outline-danger btn-sm"
+                        (click)="item.isEdit = false"><i class="icon-close"></i></button>
+                    </div>
+
+                  </td>
+
+                </tr>
+
+
+              </tbody>
+            </table> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

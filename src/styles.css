@@ -1,9 +1,59 @@
 /* You can add global styles to this file, and also import other style files */
-input.ng-dirty.ng-invalid {
-  color: #ff5e5e
+@import "~@ng-select/ng-select/themes/default.theme.css";
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-alpine.css';
+@import '~handsontable/dist/handsontable.full.css';
+
+.ng-invalid:not(form)  {
+  border: 1px solid #ff5e5e /* red */
+}
+@import 'ngx-toastr/toastr';
+
+.text-vertical {
+  writing-mode: vertical-lr; -ms-writing-mode: tb-rl; transform: rotate(180deg)
+}
+
+.wraptxt{
+  white-space: break-spaces !important;
 }
 
 
+.wraptxt1{
+  white-space: pre-wrap !important;
+}
 
-@import 'ngx-toastr/toastr';
+thead tr th {
+  position: sticky;
+  top: 0;
+
+  background-color: #ffffff;
+}
+
+.table-responsive1 {
+  height:800px;
+  z-index: 10;
+  position: relative;
+  overflow: auto;
+}
+
+
+.sticky-col {
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+.ag-root-wrapper-body.ag-layout-normal.ag-focus-managed {
+  height: 100%;
+}
+.content-wrapper1 {
+  padding: 1.5rem 0;
+  width: 100%;
+  padding-right: 6px;
+  padding-left: 6px;
+  margin-right: auto;
+  margin-left: auto;
+  min-height: calc(100vh - 181px);
+  flex-grow: 1
+}
+
 

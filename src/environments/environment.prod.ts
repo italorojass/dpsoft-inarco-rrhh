@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  url : 'api.inarco.cl'
+  url : 'http://192.168.0.27/api_rrhh/'
 };

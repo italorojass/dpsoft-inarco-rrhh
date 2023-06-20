@@ -3,18 +3,12 @@
   <!-- partial -->
   <div class="container-fluid page-body-wrapper">
     <div class="main-panel">
-      <div class="content-wrapper">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-12">
+      <div class="container-fluid content-wrapper1">
+        <div class="row">
+          <div class="col-12">
 
-              <h3 class="text-left mb-4 text-dark"> <a [routerLink]="['/obras']"><i class="icon-action-undo mr-2"></i>{{obra}}</a></h3>
-            </div>
+            <h3 class="text-left mb-4  text-dark"> <a [routerLink]="['/obras']"><i class="icon-action-undo mr-2"></i>{{obra.codigo}} | {{obra.nombre}}</a></h3>
           </div>
-
-
-
-
         </div>
 
         <router-outlet></router-outlet>
@@ -22,7 +16,10 @@
       </div>
       <!-- content-wrapper ends -->
       <!-- partial:partials/_footer.html -->
-      <app-footer></app-footer>
+      <div >
+          <app-footer></app-footer>
+      </div>
+
 
       <!-- partial -->
     </div>

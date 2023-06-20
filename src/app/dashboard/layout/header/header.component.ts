@@ -21,13 +21,15 @@ export class HeaderComponent implements OnInit {
 
   }
 
+  rutaLogo = 'assets/images/logo-inarco-new-removebg-preview.jpg'
+
   menu = [
     {
       title: 'Inicio',
       href: '/obras/inicio',
       icon: 'icon-home'
     },
-    {
+    /* {
       title: 'Administración sistema',
       subitem: [
         {
@@ -44,15 +46,10 @@ export class HeaderComponent implements OnInit {
           title:'Parámetros',
           href : '/obras/inicio/parametros',
           icon : 'icon-layers'
-        }
-      ,{
-        title:'Maestro de especialidad',
-        href : '/obras/inicio/maestro-especialidad',
-        icon : 'icon-layers'
-      }],
+        }],
 
       icon: 'icon-settings'
-    },
+    }, */
     {
       title: 'Pagos obra',
       //href: '/obras/inicio/requerimientos',
@@ -86,5 +83,10 @@ export class HeaderComponent implements OnInit {
     }
 
   ]
+
+  toggleBar : boolean=false;
+  openBars(){
+    console.log('open menu')
+  }
 
 }

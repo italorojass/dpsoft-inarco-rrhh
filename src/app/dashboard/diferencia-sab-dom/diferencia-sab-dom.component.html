@@ -4,74 +4,262 @@
       <div class="card-body">
         <h4 class="card-title">Dif. horas sábado y domingo</h4>
         <hr>
-       <!--  <div class="row">
-          <div class="col-12">
-           <form>
-             <div class="form-row">
-               <div class="form-group col-md-4">
-                 <label for="inputEmail4">Quincena</label>
-                 <input type="radio" class="form-control" id="inputZip">
-
-               </div>
-               <div class="form-group col-md-4">
-                <label for="inputEmail4">Mes y año de trabajo</label>
-                <input type="date" class="form-control">
-               </div>
-             </div>
-
-             <div class="form-row">
-               <div class="form-group col-md-4 ">
-                 <label for="inputZip">Fin de mes</label>
-                 <input type="radio" class="form-control" id="inputZip">
-               </div>
-
-             </div>
-             <div class="d-flex justify-content-end">
-               <button type="submit" class="btn btn-success btn-rounded"><i class="icon-check"></i>Guardar</button>
-               <button type="submit" class="btn btn-danger btn-rounded"><i class="icon-close"></i>Cancelar</button>
-             </div>
-
-           </form>
-          </div>
-         </div> -->
-
 
         <div class="row pt-2">
-          <div class="col-12 table-responsive">
+          <div class="col-12 table-responsive1">
 
-            <table id="order-listing" class="table">
-              <thead>
-                <tr class="bg-light">
-                  <th>N.</th>
-                  <th>Nombre</th>
-                  <th>Periodo</th>
+            <ag-grid-angular
+            #heGrid
+    style="width: 100%; height: 100%;"
+    class="ag-theme-alpine"
+    [columnDefs]="columnDefs"
+    [defaultColDef]="defaultColDef"
+    [rowData]="data"
+    [suppressMenuHide]="true"
+    [suppressColumnVirtualisation]="false"
+    [suppressRowVirtualisation]="false"
+    [pagination]="true"
+    [groupSelectsChildren]="true"
+    [rowSelection]="rowSelection"
+    [enableCellChangeFlash]="true"
+    [alwaysShowHorizontalScroll]="true"
+    [alwaysShowVerticalScroll]="true"
+    [suppressMaxRenderedRowRestriction]="true"
+    [overlayLoadingTemplate]="overlayLoadingTemplate"
+    [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+    [localeText]="localeText"
+    (gridReady)="onGridReady($event)"
+    (rowValueChanged)="onRowValueChanged($event)"
+    [editType]="'fullRow'"
+  ></ag-grid-angular>
+
+
+
+
+           <!--  <table id="order-listing" class="table table-striped table-bordered" frame=void rules=rows>
+              <thead class="thead-dark">
+                <tr>
+                  <th></th>
+                  <th>Correlativo</th>
+                  <th >Nombre</th>
                   <th>Cargo</th>
-                  <th>H. extra sabado</th>
-                  <th>Valor hora</th>
-                  <th>Total</th>
 
-                  <th>Acciones</th>
+                  <th><span class="text-vertical">H. extra sabado</span> </th>
+                  <th><span class="text-vertical">Valor hora</span></th>
+                  <th><span class="text-vertical">Total</span></th>
+                  <th>Valor sábado 1/2 día</th>
+                  <th>Valor sábado día</th>
+                  <th><span class="text-vertical">H. extras domingo</span></th>
+                  <th><span class="text-vertical">Total</span></th>
+                  <th>Valor domingo 1/2 día</th>
+                  <th>Valor domingo día</th>
+                  <th>Diferencia día sábado</th>
+                  <th>Diferencia día domingo</th>
+
+                  <th><span class="text-vertical">H. extras Sábado </span></th>
+                  <th><span class="text-vertical">Total</span></th>
+                  <th><span class="text-vertical">Diferencia día sábado</span></th>
+                  <th><span class="text-vertical">H. extras domingos</span></th>
+                  <th><span class="text-vertical">Total</span></th>
+                  <th><span class="text-vertical">Diferencia día domingo</span></th>
+
+                  <th><span class="text-vertical">H. extras Sábado </span></th>
+                  <th><span class="text-vertical">Total</span></th>
+                  <th><span class="text-vertical">Diferencia día sábado</span></th>
+                  <th><span class="text-vertical">H. extras domingos</span></th>
+                  <th><span class="text-vertical">Total</span></th>
+                  <th><span class="text-vertical">Diferencia día domingo</span></th>
+
+                  <th><span class="text-vertical">H. extras Sábado </span></th>
+                  <th><span class="text-vertical">Total</span></th>
+                  <th><span class="text-vertical">Diferencia día sábado</span></th>
+                  <th><span class="text-vertical">H. extras domingos</span></th>
+                  <th><span class="text-vertical">Total</span></th>
+                  <th><span class="text-vertical">Diferencia día domingo</span></th>
+
+                  <th><span class="text-vertical">H. extras Sábado </span></th>
+                  <th><span class="text-vertical">Total</span></th>
+                  <th><span class="text-vertical">Diferencia día sábado</span></th>
+                  <th><span class="text-vertical">H. extras domingos</span></th>
+                  <th><span class="text-vertical">Total</span></th>
+                  <th><span class="text-vertical">Diferencia día domingo</span></th>
+
+
+                  <th>Diferencia mensual sábado</th>
+                  <th>Diferencia mensual domingo</th>
+
                 </tr>
               </thead>
               <tbody>
-                <tr >
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
+                <tr *ngFor="let item of data;let i=index">
                   <td>
-                    <button type="submit" class="btn btn-outline-success btn-rounded btn-sm mr-2"><i class="icon-pencil"></i>Modificar</button>
-                    <button type="submit" class="btn btn-outline-danger btn-rounded btn-sm"><i class="icon-trash"></i>Eliminar</button>
+                    <button type="button" class="btn btn-icons btn-rounded btn-outline-primary btn-sm"
+                      *ngIf="!item.isEdit" (click)="item.isEdit = true"><i class="icon-pencil"></i></button>
+
+                    <div *ngIf="item.isEdit">
+
+                      <button type="button" class="btn btn-icons btn-rounded btn-outline-success btn-sm"
+                        (click)="saveEdit(item)"><i class="icon-check"></i></button>
+
+                      <button type="button" class="btn btn-icons btn-rounded btn-outline-danger btn-sm"
+                        (click)="item.isEdit = false"><i class="icon-close"></i></button>
+                    </div>
+                  </td>
+                  <td>
+                    {{i+1}}
+                  </td>
+                  <td>{{item.nombre}}</td>
+                  <td>{{item.cargo}}</td>
+                  <td align="right">
+                    {{item.h_ex_sabado_sem1 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.valor_hora | number}}
+                  </td>
+                  <td align="right">
+                    {{item.total_sab_sem1 | number}}
+                  </td>
+                  <td align="right">
+
+
+                    <span *ngIf="!item.isEdit;else act"> {{item.sab_medio_sem1 | number}}</span>
+                    <ng-template #act>
+                      <input [(ngModel)]="item.sab_medio_sem1" name="sab_medio_sem1" id="sab_medio_sem1"
+                        style='width:6em' type="number" />
+                    </ng-template>
+
+                  </td>
+                  <td align="right">
+                    <input style='width:6em' [(ngModel)]="item.sab_entero_sem1" *ngIf="item.isEdit;else act1"
+                      name="sab_entero_sem1" id="sab_entero_sem1" type="number" />
+
+                    <ng-template #act1>
+                      {{item.sab_entero_sem1 | number}}
+                    </ng-template>
+
+                  </td>
+                  <td align="right">
+                    {{item.h_ex_domingo_sem1 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.tot_dom_sem1 | number}}
+                  </td>
+                  <td align="right">
+                    <input style='width:6em' [(ngModel)]="item.dom_medio_sem1" *ngIf="item.isEdit;else act2"
+                      name="dom_medio_sem1" id="dom_medio_sem1" type="number" />
+
+                    <ng-template #act2>
+                      {{item.dom_medio_sem1 | number}}
+                    </ng-template>
+
+                  </td>
+                  <td align="right">
+                    <input style='width:6em' [(ngModel)]="item.dom_entero_sem1" *ngIf="item.isEdit;else act3"
+                      name="dom_entero_sem1" id="dom_entero_sem1" type="number" />
+
+                    <ng-template #act3>
+                      {{item.dom_entero_sem1 | number}}
+                    </ng-template>
+
+                  </td>
+                  <td align="right">
+                    {{item.dif_sab_sem1 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.dif_dom_sem1 | number}}
+                  </td>
+
+                  <td align="right">
+                    {{item.h_ex_sabado_sem2 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.total_sab_sem2 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.dif_sab_sem2 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.h_ex_domingo_sem2 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.tot_dom_sem2 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.dif_dom_sem2 | number}}
+                  </td>
+
+
+                  <td align="right">
+                    {{item.h_ex_sabado_sem3 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.total_sab_sem3 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.dif_sab_sem3 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.h_ex_domingo_sem3 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.tot_dom_sem3 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.dif_dom_sem3 | number}}
+                  </td>
+
+                  <td align="right">
+                    {{item.h_ex_sabado_sem4 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.total_sab_sem4 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.dif_sab_sem4 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.h_ex_domingo_sem4 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.tot_dom_sem4 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.dif_dom_sem4 | number}}
+                  </td>
+
+                  <td align="right">
+                    {{item.h_ex_sabado_sem5 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.total_sab_sem5 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.dif_sab_sem5 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.h_ex_domingo_sem5 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.tot_dom_sem5 | number}}
+                  </td>
+                  <td align="right">
+                    {{item.dif_dom_sem5 | number}}
+                  </td>
+
+
+                  <td align="right">
+                    {{item.total_mensual_sab}}
+                  </td>
+                  <td align="right">
+                    {{item.total_mensual_dom}}
                   </td>
 
                 </tr>
 
 
               </tbody>
-            </table>
+            </table> -->
+
           </div>
         </div>
       </div>

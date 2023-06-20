@@ -1,0 +1,70 @@
+<!-- <gui-grid [source]="datos"
+[columns]="columnas"
+[loading]="loading"
+ [paging]="paging"
+ [sorting]="sorting"
+ [searching]="searching"
+ [verticalGrid]="false"
+		  [horizontalGrid]="true"
+      [columnMenu]="columnMenu"
+      [localization]="localization"
+      [virtualScroll]="true"
+      [infoPanel]="true"
+      [maxHeight]="400">
+
+
+</gui-grid>
+ -->
+
+<gui-grid [source]="datos" [loading]="loading" [paging]="paging" [sorting]="sorting" [searching]="searching"
+  [verticalGrid]="true" [infoPanel]="infoPanel" [horizontalGrid]="true" [columnMenu]="columnMenu"
+  [localization]="localization" [virtualScroll]="true" [infoPanel]="true" [autoResizeWidth]="true" [maxHeight]="600"
+  [theme]="'light'"
+  [summaries]="summaries">
+
+  <gui-grid-column header="" width="80">
+    <ng-template let-item="item">
+      <button type="button" class="btn btn-icons btn-rounded btn-outline-primary btn-sm" data-toggle="modal"
+        data-target="#modalEditarPago" (click)="edit(item);"><i class="icon-pencil "></i></button>
+    </ng-template>
+  </gui-grid-column>
+
+  <gui-grid-column header="#" width="20">
+    <ng-template let-index="index">
+      {{index+1}}
+    </ng-template>
+  </gui-grid-column>
+
+
+
+  <gui-grid-column *ngFor="let item of columnas" [header]="item.header" [field]="item.field"  width="200" >
+    <ng-template let-value="value">
+      <span *ngIf="item.type;else normal">{{value | number}}</span>
+      <ng-template #normal>
+        <div class="badge badge-pill" [ngClass]="getBadgeFicha(value)" *ngIf="validFicha(value);else norm">{{value}}
+        </div>
+        <ng-template #norm >
+          <span class="wraptxt1">{{value}}</span>
+        </ng-template>
+
+      </ng-template>
+    </ng-template>
+  </gui-grid-column>
+  <!--
+  <gui-grid-column header="N. ficha" field="ficha" width="60">
+		<ng-template let-value="value">
+			{{value}}
+		</ng-template>
+	</gui-grid-column>
+
+	<gui-grid-column header="Especialidad" field="descripcion" >
+		<ng-template let-value="value">
+			<i>{{value}}</i>
+		</ng-template>
+	</gui-grid-column>
+
+   -->
+
+
+
+</gui-grid>
