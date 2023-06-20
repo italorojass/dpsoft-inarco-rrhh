@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { ObrasService } from 'src/app/dashboard/obras/services/obras.service';
 import { UsuariosService } from './services/usuarios.service';
 import { GuiColumn, GuiColumnMenu, GuiRowSelection, GuiSorting, GuiSummaries } from '@generic-ui/ngx-grid';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, ICellEditorParams } from 'ag-grid-community';
 import { AgGridSpanishService } from '../../services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ButtonCellRendererComponent } from '../button-cell-renderer/button-cell-renderer.component';
@@ -54,6 +54,17 @@ export class UsuariosComponent implements OnInit {
   overlayLoadingTemplate = this.aggsv.overlayLoadingTemplate;
   overlayNoRowsTemplate = this.aggsv.overlayNoRowsTemplate;
   localeText = this.aggsv.getLocale();
+cellCellEditorParams = (params: ICellEditorParams<any>) => {
+   //
+   const selectedCountry = params.data.id;
+   console.log('SELECTED', selectedCountry);
+   let keys=['Activo','Inactivo']
+
+  return {
+    values: keys,
+    formatValue: (value) => `${value} (${selectedCountry})`,
+  };
+  };
 
   defaultColDef: ColDef = {
     resizable: true,
@@ -102,7 +113,10 @@ export class UsuariosComponent implements OnInit {
     filter: false,
     floatingFilter: false,
     editable : false,
+    cellEditor: 'agSelectCellEditor',
+    cellEditorParams: this.cellCellEditorParams,
     cellClass: params =>{return this.cellClas(params.value)},
+
 
   },
   {
@@ -125,6 +139,7 @@ cellClas(params){
 
   return params ==='Activo' ? 'badge badge-success': 'badge badge-danger'
 }
+
 
 
   usuarios: any = [];
