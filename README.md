@@ -1,8 +1,10 @@
-# dpsoft-inarco-rrhh
-Sistema de administración de recursos humanos
+# Sistema recursos humanos adminstración de pagos a trabajadores 
+Sistema encargado de la administración de pagos de los trabajadores de las diferentes 
+obras de construcción y proyectos futuros de la constructora Inarco
 
-Realizado con Bootstrap 4 y Angular 14
+*Se requiere conexión a VPN de la constructora para poder ingresar a la aplicación
 
-
-# DEMO
-https://inarco-postventa.web.app/
+- Backend -> PHP 8.1
+- Front-end -> Angular
+- CSS -> Boostrap 4
+- Ag-grid custom
