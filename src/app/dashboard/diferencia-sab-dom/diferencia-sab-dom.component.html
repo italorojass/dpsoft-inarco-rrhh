@@ -7,10 +7,33 @@
 
         <div class="row pt-2">
           <div class="col-12 table-responsive1">
-            <app-table-aggrid [datos]="data"
-            [columnas]="columnDefs">
 
-            </app-table-aggrid>
+            <ag-grid-angular
+            #heGrid
+    style="width: 100%; height: 100%;"
+    class="ag-theme-alpine"
+    [columnDefs]="columnDefs"
+    [defaultColDef]="defaultColDef"
+    [rowData]="data"
+    [suppressMenuHide]="true"
+    [suppressColumnVirtualisation]="false"
+    [suppressRowVirtualisation]="false"
+    [pagination]="true"
+    [groupSelectsChildren]="true"
+    [rowSelection]="rowSelection"
+    [enableCellChangeFlash]="true"
+    [alwaysShowHorizontalScroll]="true"
+    [alwaysShowVerticalScroll]="true"
+    [suppressMaxRenderedRowRestriction]="true"
+    [overlayLoadingTemplate]="overlayLoadingTemplate"
+    [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+    [localeText]="localeText"
+    (gridReady)="onGridReady($event)"
+    (rowValueChanged)="onRowValueChanged($event)"
+    [editType]="'fullRow'"
+  ></ag-grid-angular>
+
+
 
 
            <!--  <table id="order-listing" class="table table-striped table-bordered" frame=void rules=rows>

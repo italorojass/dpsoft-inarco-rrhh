@@ -4,6 +4,7 @@ import { CellClassParams, ColDef, GetRowIdFunc, GetRowIdParams, ICellEditorParam
 import { ObrasService } from 'src/app/dashboard/obras/services/obras.service';
 import { AgGridSpanishService } from '../../services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-proyectos',
@@ -13,7 +14,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 export class ProyectosComponent implements OnInit {
   @ViewChild('pGrid') grid!: AgGridAngular;
 
-  constructor(private obrasSv: ObrasService, private aggsv : AgGridSpanishService) { }
+  constructor(private toast: ToastrService,private obrasSv: ObrasService, private aggsv : AgGridSpanishService) { }
 
   data: any = [];
   overlayLoadingTemplate = this.aggsv.overlayLoadingTemplate;
@@ -48,7 +49,7 @@ export class ProyectosComponent implements OnInit {
     },
     {
       headerName: 'Estado',
-      field: 'estado',
+      field: 'estadoF',
       editable: true,
       filter: false,
       floatingFilter: false,
@@ -122,7 +123,7 @@ export class ProyectosComponent implements OnInit {
       this.data = datarev.map((x, i) => {
         return {
           ...x,
-          estado : x.estado==1 ? 'Activo' : 'Inactivo',
+          estadoF : x.estado==1 ? 'Activo' : 'Inactivo',
           correlativo : i+1
         }
       });
@@ -142,12 +143,13 @@ export class ProyectosComponent implements OnInit {
     console.log('modificado', item);
     let b = {
       accion: 'M',
-      ...item,
-      estado: item.estado =='Activo' ? 1 : 0
+      codigo : Number(item.codigo),
+      estado: item.estadoF =='Activo' ? "1" : "0"
     }
-    console.log(b);
+    //console.log(b);
     this.obrasSv.getb(b).subscribe(r => {
-      console.log(r);
+      //console.log(r);
+      this.toast.success('Actualizado con éxito', `Proyecto ${item.codigo} | ${item.nombre}`);
       this.get();
     })
   }

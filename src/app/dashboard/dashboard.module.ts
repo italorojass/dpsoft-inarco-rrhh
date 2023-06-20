@@ -30,6 +30,7 @@ import { BonosService } from './detalle-bono/services/bonos.service';
 import { SharedModule } from '../shared/shared.module';
 import { AgGridModule } from 'ag-grid-angular';
 import { HorasExtraComponent } from './horas-extra/horas-extra.component';
+import { LoaderService } from '../shared/services/loader.service';
 
 // Registra el idioma español
 registerLocaleData(localeEs);
@@ -66,7 +67,7 @@ registerLocaleData(localeEs);
     AgGridModule
   ],
   providers : [
-
+    LoaderService,
     {
       provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true
     },

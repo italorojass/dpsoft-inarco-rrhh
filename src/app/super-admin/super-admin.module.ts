@@ -37,6 +37,9 @@ import { HomeComponent } from './home/home.component';
     {
       provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true
     },
+    {
+      provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorInterceptor, multi: true
+    },
   ]
 })
 export class SuperAdminModule { }

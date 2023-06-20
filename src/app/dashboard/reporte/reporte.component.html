@@ -4,35 +4,105 @@
       <div class="card-body">
         <h4 class="card-title">Reportes</h4>
         <div class="row">
-          <div class="col-8">
-            <form [formGroup]="f">
-              <label class="">Selecciona el archivo a comparar para generar el reporte</label>
-              <input type="file" class="form-control" (change)="handleFileInput($event)" formControlName="file" name="file" />
-            </form>
+          <div class="col-12">
+            <ul class="list-ticked">
+              <li>Solo archivos .xlsx o .xls</li>
 
+            </ul>
+
+
+
+             <form [formGroup]="f">
+              <div class="input-group">
+                <input type="file" class="form-control" (change)="handleFileInput($event)" formControlName="file" placeholder="Seleccione un archivo excel"
+                name="file" />
+                <div class="input-group-append">
+                  <button class="btn btn-outline-danger btn-rounded mb-2 " (click)="this.f.reset();showbtn=false;data=[];dataPagos=[]" *ngIf="showbtn"><i
+                    class="fa fa-trash"></i></button>
+
+
+                </div>
+              </div>
+
+          </form>
           </div>
-          <div class="col-4">
-            <div class="mt-4" *ngIf="showbtn">
 
-              <button class="btn btn-outline-primary mr-2 btn-rounded" (click)="getPagos();">Procesar ( {{data.length}} )<i class="fa fa-check ml-2"></i></button>
-                <button class="btn btn-outline-danger btn-rounded" (click)="this.f.reset();showbtn=false;this.data=[]"><i class="fa fa-trash"></i></button>
+        </div>
+        <div class="row">
 
+          <div class="col-12">
+
+            <table class="table table-borderless" *ngIf="showbtn">
+              <tbody>
+                <tr>
+                  <td>
+                    <h6>Datos del archivo {{fileName}}</h6>
+                    <p class="text-muted mb-0">Cantidad de trabajadores procesados para comparar  </p>
+                  </td>
+                  <td>
+                    <h3 class="text-primary">
+                      {{data.length}}
+                    </h3>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <h6>Datos del sistema </h6>
+                    <p class="text-muted mb-0">Datos obtenidos desde <a [routerLink]="['/obras/inicio/detalle-pagos']">detalle pago</a> </p>
+                  </td>
+                  <td>
+                    <h3 class="text-success">
+                      {{dataPagos.length}}
+                    </h3>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <h6>Coincidencia </h6>
+                    <p class="text-muted mb-0">Los datos los puedes ver en la grilla de abajo </p>
+                  </td>
+                  <td>
+                    <h3 class="text-info">
+                      {{dataGrid.length}}
+                    </h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h6>Diferencia </h6>
+                    <p class="text-muted mb-0">Cantidad de trabajadores que no existen en <a [routerLink]="['/obras/inicio/detalle-pagos']">detalle pago</a> </p>
+                  </td>
+                  <td>
+                    <h3 class="text-danger">
+                      {{data.length - dataPagos.length}}
+                    </h3>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+        </div>
+        <div class="row mt-2" *ngIf="this.dataPagos.length>0">
+          <div class="col-12">
+            <div class="float-right">
+              <button class="btn btn-outline-success btn-rounded mb-2" (click)="exportexc()">Exportar a excel<i
+                class="fa fa-file-excel-o ml-2"></i></button>
             </div>
           </div>
         </div>
         <div class="row mt-2" *ngIf="this.dataPagos.length>0">
           <div class="col-12">
-            <div class="ml-auto">
-
-            </div>
-            <button class="btn btn-outline-success btn-rounded mb-2" (click)="exportexc()">Exportar a excel<i class="fa fa-file-excel-o ml-2"></i></button>
-            <label>Datos del sistema a comparar {{dataPagos.length}}</label>
             <div class="table-responsive1">
               <app-table-aggrid #dtGrid [datos]="dataGrid" [columnas]="columnDefs"></app-table-aggrid>
             </div>
-
           </div>
         </div>
+
+
 
       </div>
     </div>

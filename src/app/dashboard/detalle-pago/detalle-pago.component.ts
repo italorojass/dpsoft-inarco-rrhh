@@ -89,8 +89,9 @@ export class DetallePagoComponent implements OnInit {
     }
     console.log('body edit', body1);
     this.dtSv.get(body1).subscribe(r => {
-      console.log
+      this.toastr.success('Actualizado con éxito', `Pago trabajador ${e.nombre}`);
       this.getPagos();
+
     })
 
   }
@@ -552,8 +553,6 @@ export class DetallePagoComponent implements OnInit {
     this.dtSv.get(body1).subscribe(r => {
       //console.log('response edit',r);
 
-      this.resetForm();
-      this.closeModalEdit.nativeElement.click();
       this.getPagos();
     })
   }

@@ -172,13 +172,13 @@ dictFicha: any = {
       obra: this.obra.codigo,
      ...item.data
     }
-    console.log('body',b);
+    console.log('body',b, item);
     this.bonoSV.get(b).subscribe((r: any) => {
       console.log(r);
      /*  let reemplazar = this.data.findIndex(x=>x.id == r['result'].bonos[0].id);
       this.data[reemplazar] = r['result'].bonos[0]; */
       this.get();
-      this.toast.success('Actualizado con éxito',`Bono de ${item.nombre}`);
+      this.toast.success('Actualizado con éxito',`Bono de ${item.data.nombre}`);
 
 
     })

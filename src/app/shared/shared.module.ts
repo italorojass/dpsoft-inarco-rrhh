@@ -52,10 +52,7 @@ import { PassDataService } from './components/button-cell-renderer/services/pass
     ReactiveFormsModule
   ],
   providers:[
-    LoaderService,
-    {
-      provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorInterceptor, multi: true
-    },
+
     { provide: HTTP_INTERCEPTORS, useClass: ErrorsInterceptor, multi: true },
     AuthGuard,
     AgGridSpanishService,

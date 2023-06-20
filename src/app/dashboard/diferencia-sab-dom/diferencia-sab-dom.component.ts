@@ -1,9 +1,12 @@
 import { ToastrService } from 'ngx-toastr';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DetallePagoService } from '../detalle-pago/services/detalle-pago.service';
 import { BuildMonthService } from 'src/app/shared/services/build-month.service';
 import { DifSabDomService } from './services/dif-sab-dom.service';
 import { ButtonCellRendererComponent } from 'src/app/shared/components/button-cell-renderer/button-cell-renderer.component';
+import { ColDef, GridReadyEvent, RowValueChangedEvent } from 'ag-grid-community';
+import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
+import { AgGridAngular } from 'ag-grid-angular';
 @Component({
   selector: 'app-diferencia-sab-dom',
   templateUrl: './diferencia-sab-dom.component.html',
@@ -11,7 +14,9 @@ import { ButtonCellRendererComponent } from 'src/app/shared/components/button-ce
 })
 export class DiferenciaSabDomComponent implements OnInit {
 
-  constructor(private bm: BuildMonthService, private sb: DifSabDomService, private toast: ToastrService) { }
+  constructor(private bm: BuildMonthService, private sb: DifSabDomService, private toast: ToastrService,
+    private aggsv: AgGridSpanishService) { }
+    @ViewChild('heGrid') grid!: AgGridAngular;
 
   ngOnInit(): void {
     this.get();
@@ -38,7 +43,8 @@ export class DiferenciaSabDomComponent implements OnInit {
           isEdit: false
         }
       });
-      console.log(this.data)
+      console.log(this.data);
+
     })
   }
 
@@ -75,7 +81,22 @@ export class DiferenciaSabDomComponent implements OnInit {
   columnDefs = [
 
   ];
+  api: any;
+  columnApi;
+  onGridReady(params: GridReadyEvent<any>) {
+    this.api = params.api;
+    this.columnApi = params.columnApi;
+    console.log('grid on ready', params)
+  }
 
+
+
+  onRowValueChanged(event: RowValueChangedEvent) {
+    var data = event.data;
+    console.log(data);
+    this.saveEdit(data)
+
+  }
   buildTbl() {
     this.columnDefs.push(
       /* {
@@ -103,7 +124,7 @@ export class DiferenciaSabDomComponent implements OnInit {
       {
         field: 'nombre',
         headerName: 'Nombre',
-        width: 150,
+        width: 250,
         suppressSizeToFit: true,
         suppressStickyLabel: true,
         pinned: 'left',
@@ -114,7 +135,7 @@ export class DiferenciaSabDomComponent implements OnInit {
       {
         field: 'cargo',
         headerName: 'Cargo',
-        width: 100,
+        width: 250,
         sortable: true,
         pinned: 'left',
         editable: false
@@ -288,6 +309,21 @@ export class DiferenciaSabDomComponent implements OnInit {
 
   }
 
+  rowSelection = this.aggsv.rowSelection;
+  overlayLoadingTemplate = this.aggsv.overlayLoadingTemplate;
+  overlayNoRowsTemplate = this.aggsv.overlayNoRowsTemplate;
+  localeText = this.aggsv.getLocale();
+
+  defaultColDef: ColDef = {
+    resizable: true,
+    initialWidth: 200,
+    editable: true,
+    sortable: true,
+    filter: true,
+    floatingFilter: true,
+    wrapHeaderText: true,
+    autoHeaderHeight: true,
+  };
   CurrencyCellRenderer(params: any) {
 
     var usdFormate = new Intl.NumberFormat();

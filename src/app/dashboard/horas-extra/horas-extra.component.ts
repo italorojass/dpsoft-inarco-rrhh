@@ -6,6 +6,7 @@ import { ColDef, GridApi, GridReadyEvent, RowValueChangedEvent } from 'ag-grid-c
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-horas-extra',
@@ -19,6 +20,7 @@ export class HorasExtraComponent implements OnInit {
     private bt: BuildMonthService,
     private fb: FormBuilder,
     private paramSV: ParametrosService,
+    private toastr: ToastrService,
     private aggsv: AgGridSpanishService) { }
   @ViewChild('heGrid') grid!: AgGridAngular;
 
@@ -177,9 +179,7 @@ export class HorasExtraComponent implements OnInit {
 
   }
   gridApi!: GridApi<any>;
-  getChanges(e) {
 
-  }
 
   getPeriodo() {
     let b = {
@@ -256,6 +256,7 @@ export class HorasExtraComponent implements OnInit {
     this.dtSv.get(body).subscribe((r: any) => {
 
       //item.isEdit = false
+      this.toastr.success('Actualizado con éxito', `Hora extra del trabajador ${item.nombre}`);
       this.getHoraExtra()
 
     })

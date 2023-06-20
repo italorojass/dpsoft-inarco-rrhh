@@ -25,26 +25,26 @@ export class ReporteComponent implements OnInit {
   })
 
   columnDefs: ColDef[] = [
-    /*   {
-        headerName: 'Correlativo',
+      {
+        headerName: 'ID',
         field: 'correlativo',
-        filter: false,
-        floatingFilter: false,
+        filter: true,
+        floatingFilter: true,
         editable : false,
         width: 80
-      }, */
+      },
     {
       headerName: 'Nombre completo',
       field: 'nombre',
-      filter: false,
-      floatingFilter: false,
+      filter: true,
+      floatingFilter: true,
       editable: false
     },
     {
       headerName: 'Ficha',
       field: 'ficha',
-      filter: false,
-      floatingFilter: false,
+      filter: true,
+      floatingFilter: true,
       editable: false,
       width: 80,
       cellClass: params => {
@@ -54,22 +54,22 @@ export class ReporteComponent implements OnInit {
     {
       headerName: 'RUT',
       field: 'rut',
-      filter: false,
-      floatingFilter: false,
+      filter: true,
+      floatingFilter: true,
       editable: false
     },
     {
       headerName: 'Especialidad',
       field: 'cargo',
-      filter: false,
-      floatingFilter: false,
+      filter: true,
+      floatingFilter: true,
       editable: false
     },
     {
       headerName: 'Monto libro remuneraciones',
       field: 'sueldo',
-      filter: false,
-      floatingFilter: false,
+      filter: true,
+        floatingFilter: true,
       editable: false,
       cellRenderer: this.CurrencyCellRenderer
     },
@@ -117,6 +117,7 @@ export class ReporteComponent implements OnInit {
       let auxData = [];
 
       this.data.forEach(exl => {
+
         this.dataPagos.forEach(ePagos => {
           if (ePagos.rutF == exl.rut && ePagos.ficha == exl.ficha) {
             let diferencia = Math.abs(ePagos.liq_apagar - exl.sueldo);
@@ -133,9 +134,9 @@ export class ReporteComponent implements OnInit {
             } */
           }
         });
-
-
       });
+
+      console.log(this.dataDiff)
 
       this.dataGrid = auxData;
       console.log('datos del excel formated', this.dataGrid);
@@ -143,8 +144,8 @@ export class ReporteComponent implements OnInit {
       this.columnDefs.push({
         headerName: 'Monto sistema web',
         field: 'montoWeb',
-        filter: false,
-        floatingFilter: false,
+        filter: true,
+        floatingFilter: true,
         editable: false,
         cellRenderer: this.CurrencyCellRenderer
       },
@@ -177,8 +178,12 @@ export class ReporteComponent implements OnInit {
   showbtn: boolean;
   data: any = [];
   dataGrid: any = [];
+  dataDiff : any=[];
+  fileName:string;
   handleFileInput(event: any): void {
     const file = event.target.files[0];
+    this.fileName = file.name;
+    console.log(file);
     if (file.name.includes('xls')) {
       this.showbtn = true;
 
@@ -217,7 +222,7 @@ export class ReporteComponent implements OnInit {
 
         });
 
-
+        this.getPagos()
 
         //console.log('dataformat del excel',this.data)
 

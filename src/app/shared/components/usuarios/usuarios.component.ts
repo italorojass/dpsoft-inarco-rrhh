@@ -92,6 +92,7 @@ export class UsuariosComponent implements OnInit {
     headerName: 'Email',
     field: 'mail',
     filter: false,
+    width : 250,
     floatingFilter: false,
     editable : false
   },

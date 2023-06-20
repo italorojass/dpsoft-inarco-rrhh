@@ -31,8 +31,8 @@
                  (onGridReady)="onGridReady($event)"
                 (cellValueChanged)="onRowValueChanged($event)"
                ></ag-grid-angular>
-<!--
-            <table id="order-listing" class="table table-bordered table-striped">
+
+           <!--  <table id="order-listing" class="table table-bordered table-striped">
               <thead class="thead-dark">
                 <tr class="bg-light">
                   <th>Correlativo</th>
@@ -58,7 +58,7 @@
 
 
                     <div *ngIf="!item.isEdit">
-                      <label class="badge badge-danger" *ngIf="item.estado=='Inactivo';else act">Inactivo</label>
+                      <label class="badge badge-danger" *ngIf="item.estadoF=='Inactivo';else act">Inactivo</label>
                       <ng-template #act>
                         <label class="badge badge-success">Activo</label>
                       </ng-template>
