@@ -164,7 +164,7 @@ export class DetallePagoComponent implements OnInit {
 
 
       this.grid.api.setPinnedBottomRowData(result);
-
+      this.defaultColDef.editable = (o) => !o.node.isRowPinned();
       //this.pinnedBottomRowData = this.createPinnedData(this.data)
     })
   }

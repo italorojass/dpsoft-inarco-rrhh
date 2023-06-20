@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { ObrasService } from 'src/app/dashboard/obras/services/obras.service';
 import { UsuariosService } from './services/usuarios.service';
 import { GuiColumn, GuiColumnMenu, GuiRowSelection, GuiSorting, GuiSummaries } from '@generic-ui/ngx-grid';
-import { ColDef, ICellEditorParams } from 'ag-grid-community';
+import { ColDef, GridReadyEvent, ICellEditorParams } from 'ag-grid-community';
 import { AgGridSpanishService } from '../../services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ButtonCellRendererComponent } from '../button-cell-renderer/button-cell-renderer.component';
@@ -135,6 +135,12 @@ cellCellEditorParams = (params: ICellEditorParams<any>) => {
     },
 ];
 
+onGridReady(params: GridReadyEvent<any>) {
+/*   this.gridApi = params.api;
+  this.grid.api = params.api */
+}
+
+
 cellClas(params){
 
   return params ==='Activo' ? 'badge badge-success': 'badge badge-danger'
@@ -151,7 +157,7 @@ cellClas(params){
     console.log('body usuraios get',b)
     this.userSv.crearEditUsuario(b).subscribe((r: any) => {
       console.log(r);
-      this.agGrid.api.sizeColumnsToFit();
+
       this.usuarios = r['result'].usuarios.map((x,i)=>{
         return {
           ...x,

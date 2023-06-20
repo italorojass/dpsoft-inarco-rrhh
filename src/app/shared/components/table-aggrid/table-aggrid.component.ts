@@ -41,12 +41,19 @@ export class TableAggridComponent {
 
 
 
-  constructor(private aggsv : AgGridSpanishService) { }
+  constructor(private aggsv: AgGridSpanishService) { }
   rowData = [];
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    this.getRowId = params => params.datos.id;
+
+
+    if (this.aggsv.dataNex) {
+      this.aggsv.dataNex.subscribe(data => {
+        this.grid.api.sizeColumnsToFit();
+        this.getRowId = params => params.datos.id;
+      })
+    }
 
   }
 
@@ -70,8 +77,8 @@ export class TableAggridComponent {
 
   onGridReady(params: GridReadyEvent<any>) {
     this.grid.api.sizeColumnsToFit();
-  /*   this.gridApi = params.api;
-    this.grid.api = params.api */
+    /*   this.gridApi = params.api;
+      this.grid.api = params.api */
   }
 
 }
