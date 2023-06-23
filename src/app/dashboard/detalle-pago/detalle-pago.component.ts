@@ -135,7 +135,7 @@ export class DetallePagoComponent implements OnInit {
         'total_periodo',
 
         'val_lun_sab',
-        'difer_sabado',
+
         'difer_domingo',
         'total_bonos',
         'zona10',
@@ -304,13 +304,13 @@ export class DetallePagoComponent implements OnInit {
       cellRenderer: this.CurrencyCellRenderer,
       editable : false
     },
-    {
+   /*  {
       field: 'difer_sabado',
       headerName: 'Diferencia días sábados',
       width: 150, sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
       editable : false
-     },
+     }, */
     {
       field: 'difer_domingo',
       headerName: 'Diferencia días domingo',
