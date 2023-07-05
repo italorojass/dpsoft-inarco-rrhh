@@ -1,12 +1,14 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import ChileanRutify from 'chilean-rutify';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BuildMonthService {
 
-  constructor() { }
+  constructor(private HttpClient : HttpClient) { }
   formatDate(date: any) {
     const d = new Date(date);
     let month = '' + (d.getMonth() + 1);
@@ -97,6 +99,10 @@ export class BuildMonthService {
   formatRut(rut,dig){
 
     return ChileanRutify.formatRut(`${rut}-${dig}`);
+  }
+
+  changePass(item){
+    return this.HttpClient.post(`${environment.url}usuarios_clave.php`,item);
   }
 
 }

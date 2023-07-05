@@ -81,6 +81,7 @@ export class DetallePagoComponent implements OnInit {
       anticipo: Number(e.anticipo),
       dctos_varios: Number(e.dctos_varios),
       finiquito: Number(e.finiquito),
+      finiq : e.finiq,
       zona10: Number(e.zona10),
       viatico: Number(e.viatico),
       asignaciones: Number(e.asignaciones),
@@ -115,7 +116,9 @@ export class DetallePagoComponent implements OnInit {
     }
     this.dtSv.get(body).subscribe((r: any) => {
       // this.data = r.result.pagos;
+      console.log(r)
       let c = 0;
+      this.collectionSize = r.result.pagos.length;
       this.data = r.result.pagos.map(x => {
         c++;
 
@@ -135,7 +138,7 @@ export class DetallePagoComponent implements OnInit {
         'total_periodo',
 
         'val_lun_sab',
-
+        'difer_sabado',
         'difer_domingo',
         'total_bonos',
         'zona10',
@@ -164,6 +167,7 @@ export class DetallePagoComponent implements OnInit {
 
 
       this.grid.api.setPinnedBottomRowData(result);
+      this.grid.api.getDisplayedRowCount();
       this.defaultColDef.editable = (o) => !o.node.isRowPinned();
       //this.pinnedBottomRowData = this.createPinnedData(this.data)
     })
@@ -202,7 +206,7 @@ export class DetallePagoComponent implements OnInit {
       autoHeight: true,
       editable : false
     }, */
-    {
+    /* {
       headerName: 'ID',
       field: 'correlativo',
       width: 80,
@@ -210,7 +214,17 @@ export class DetallePagoComponent implements OnInit {
       filter: false,
       floatingFilter: false,
       editable : false
-    },
+    }, */
+    {
+      field: 'finiq',
+      headerName: 'Finiq.',
+      width: 100,
+      sortable: true,
+      lockPinned: true,
+      pinned: 'left',
+      //cellRenderer: this.CurrencyCellRenderer,
+      editable : true
+     },
     {
       field: 'nombre',
       headerName: 'Nombre',
@@ -223,17 +237,6 @@ export class DetallePagoComponent implements OnInit {
       editable : false
     },
     {
-      field: 'ficha',
-      headerName: 'Ficha',
-      width: 100,
-      sortable: true,
-      pinned: 'left',
-      editable : false,
-      cellClass: params => {
-        return this.dictFicha[params.value];
-    }
-    },
-    {
       field: 'rutF',
       headerName: 'Rut',
       width: 140,
@@ -243,6 +246,17 @@ export class DetallePagoComponent implements OnInit {
       cellClass: 'lock-pinned',
       editable : false
     },
+    {
+      field: 'ficha',
+      headerName: 'Ficha',
+      width: 100,
+      sortable: true,
+      editable : false,
+      cellClass: params => {
+        return this.dictFicha[params.value];
+    }
+    },
+
     {
       field: 'descripcion',
       headerName: 'Especialidad',
@@ -304,13 +318,13 @@ export class DetallePagoComponent implements OnInit {
       cellRenderer: this.CurrencyCellRenderer,
       editable : false
     },
-   /*  {
+    {
       field: 'difer_sabado',
       headerName: 'Diferencia días sábados',
       width: 150, sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
       editable : false
-     }, */
+     },
     {
       field: 'difer_domingo',
       headerName: 'Diferencia días domingo',
@@ -390,12 +404,7 @@ export class DetallePagoComponent implements OnInit {
       cellRenderer: this.CurrencyCellRenderer,
       editable : true
      },
-    {
-      field: 'difer_sabado',
-      headerName: 'Diferencia días sábados',
-      width: 200, sortable: true,
-      cellRenderer: this.CurrencyCellRenderer,
-      editable : false  },
+
     {
       field: 'a_pagar',
       headerName: 'Remuneración a pagar',
@@ -404,22 +413,24 @@ export class DetallePagoComponent implements OnInit {
       cellRenderer: this.CurrencyCellRenderer,
       editable : false
      },
+     {
+      field: 'finiquito_findemes',
+      headerName: 'Finiq. fin de mes',
+      width: 120,
+      sortable: true,
+
+      cellRenderer: this.CurrencyCellRenderer,
+      editable : true
+     },
     {
       field: 'finiquito',
-      headerName: 'Finiquito quincena',
+      headerName: 'Finiq. quincena',
       width: 200,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
       editable : true
      },
-    {
-      field: 'finiquito_findemes',
-      headerName: 'Finiquito',
-      width: 100,
-      sortable: true,
-      cellRenderer: this.CurrencyCellRenderer,
-      editable : true
-     },
+
     {
       field: 'liq_apagar',
       headerName: 'Líquido a pagar',
@@ -501,6 +512,7 @@ export class DetallePagoComponent implements OnInit {
     anticipo: [0],
     dctos_varios: [0],
     finiquito: [0],
+    finiq : [''],
     zona10: [0],
     viatico: [0],
     aguinaldo: [0],
@@ -543,6 +555,7 @@ export class DetallePagoComponent implements OnInit {
       anticipo: this.editPagoForm.value.anticipo,
       dctos_varios: this.editPagoForm.value.dctos_varios,
       finiquito: this.editPagoForm.value.finiquito,
+      finiq:  this.editPagoForm.value.finiq,
       zona10: this.editPagoForm.value.zona10,
       viatico: this.editPagoForm.value.viatico,
       asignaciones: this.editPagoForm.value.asignaciones,
@@ -567,8 +580,9 @@ export class DetallePagoComponent implements OnInit {
       accion: 'A',
       rut: this.editPagoForm.value.rut,
       dig: this.editPagoForm.value.dig,
-      nombre: this.editPagoForm.value.nombre,
+      nombre: this.editPagoForm.value.nombre.toUpperCase(),
       ficha: this.editPagoForm.value.ficha,
+      especialidad : this.editPagoForm.value.especialidad,
       sueldo_liq: this.editPagoForm.value.sueldo_liq,
       dias: this.editPagoForm.value.dias,
       valor_hora: this.editPagoForm.value.valor_hora,

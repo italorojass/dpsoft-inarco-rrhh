@@ -14,8 +14,10 @@ export class ObrasComponent implements OnInit {
   obras:any = [];
   usuario : any;
   ngOnInit(): void {
-    this.usuario = JSON.parse(sessionStorage.getItem('user')!)
-    this.obras =  JSON.parse(sessionStorage.getItem('obras')!)
+    this.usuario = JSON.parse(sessionStorage.getItem('user')!);
+    this.obras =  JSON.parse(sessionStorage.getItem('obras')!);
+
+
    /*  this.obrasSv.get().subscribe((r:any)=>{
       console.log(r);
       this.obras = r.result.obras;

@@ -10,6 +10,25 @@
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between flex-grow-1">
 
         <ul class="navbar-nav navbar-nav-right mr-0 ml-auto">
+        <!--   <li class="nav-item dropdown d-none d-lg-flex nav-language">
+            <div class="nav-link">
+              Estas viendo:
+              <span class="dropdown-toggle btn btn-sm" id="languageDropdown" data-toggle="dropdown" aria-expanded="false">{{obra.codigo}} | {{obra.nombre}}
+
+              </span>
+
+              <div class="dropdown-menu navbar-dropdown" >
+
+                <a class="dropdown-item " *ngFor="let item of obras" (click)="changeData(item)">
+                  {{item.codigo}} | {{item.nombre}}
+
+                </a>
+
+
+              </div>
+            </div>
+          </li> -->
+
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
              <!--  <img src="https://via.placeholder.com/39x39" alt="profile"/> -->
@@ -73,15 +92,16 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      <form [formGroup]="changePassForm" (ngSubmit)="changePass()">
       <div class="modal-body">
 
-        <form>
+
           <div class="form-group row">
             <div class="col-lg-3">
               <label class="col-form-label">Contraseña actual</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="nombre" id="nombre" type="password" placeholder="xxxx">
+              <input class="form-control"  name="actual" id="actual" type="password" placeholder="xxxx" formControlName="actual">
             </div>
           </div>
           <div class="form-group row">
@@ -89,7 +109,7 @@
               <label class="col-form-label">Nueva contraseña</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="usuario" id="usuario" type="password" placeholder="xxxxx">
+              <input class="form-control"  name="nueva" id="nueva" type="password" placeholder="xxxxx" formControlName="nueva">
             </div>
 
 
@@ -99,7 +119,7 @@
               <label class="col-form-label">Repita contraseña</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="rol" id="rol" type="password" placeholder="xxxx">
+              <input class="form-control"  name="rol" id="rol" type="password" placeholder="xxxx" formControlName="repetir">
             </div>
           </div>
 
@@ -112,12 +132,13 @@
           </div>
 
 
-        </form>
+
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success">Cambiar contraseña</button>
+        <button type="submit" class="btn btn-success" [disabled]="!changePassForm.valid">Cambiar contraseña</button>
         <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
       </div>
+    </form>
     </div>
   </div>
 </div>

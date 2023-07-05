@@ -44,7 +44,7 @@ export class HorasExtraComponent implements OnInit {
     autoHeaderHeight: true,
   };
 
- rowSelection = this.aggsv.rowSelection;
+  rowSelection = this.aggsv.rowSelection;
   overlayLoadingTemplate = this.aggsv.overlayLoadingTemplate;
   overlayNoRowsTemplate = this.aggsv.overlayNoRowsTemplate;
   localeText = this.aggsv.getLocale();
@@ -52,6 +52,7 @@ export class HorasExtraComponent implements OnInit {
   ngOnInit() {
 
     this.getPeriodo().subscribe(r => {
+      console.log('response', r);
       this.columnDefs.push({
         headerName: 'ID',
         field: 'correlativo',
@@ -65,6 +66,7 @@ export class HorasExtraComponent implements OnInit {
           field: 'nombre',
           headerName: 'Nombre',
           width: 250,
+          minWidth: 170,
           suppressSizeToFit: true,
           pinned: 'left',
           lockPinned: true,
@@ -94,9 +96,13 @@ export class HorasExtraComponent implements OnInit {
               children: [{
                 field: `dia${i + 1}`,
                 headerName: cabecera[i].nombre.includes('totsem') ? ! `${cabecera[i].nombre}` : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
-                width: 150,
+                headerClass: 'text-vertical',
+                width: 80,
                 suppressSizeToFit: true,
-                editable: true
+                filter: false,
+                floatingFilter: false,
+                editable: true,
+                cellClass: 'badge badge-danger'
               }]
 
             })
@@ -106,23 +112,48 @@ export class HorasExtraComponent implements OnInit {
               // headerName:`Semana ${counTotalSemana}`,
               children: [{
                 headerName: `Total semana ${counTotalSemana}`,
+
                 field: `totsem${counTotalSemana}`,
-                width: 150,
+                width: 100,
                 suppressSizeToFit: true,
-                editable: false
+                filter: false,
+                floatingFilter: false,
+                editable: false,
+                cellClass: 'badge badge-primary'
               }
               ],
             })
         } else {
-          this.columnDefs.push(
-            {
-              field: `dia${i + 1}`,
-                headerName: cabecera[i].nombre.includes('totsem') ? ! `${cabecera[i].nombre}` : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
-                width: 150,
-                suppressSizeToFit: true,
-                editable: true
 
-            })//arma cabecera ok
+          if (cabecera[i].nombre.includes('Sábado')) {
+            this.columnDefs.push(
+              {
+                field: `dia${i + 1}`,
+                headerName: cabecera[i].nombre.includes('totsem') ? ! `${cabecera[i].nombre}` : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
+                headerClass: 'text-vertical',
+                width: 80,
+                suppressSizeToFit: true,
+                filter: false,
+                floatingFilter: false,
+                editable: true,
+                cellClass: 'badge badge-success'
+              })
+          } else {
+            this.columnDefs.push(
+              {
+                field: `dia${i + 1}`,
+                headerName: cabecera[i].nombre.includes('totsem') ? ! `${cabecera[i].nombre}` : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
+                headerClass: 'text-vertical',
+                width: 100,
+                suppressSizeToFit: true,
+                filter: false,
+                floatingFilter: false,
+                editable: true,
+
+
+              })
+          }
+
         }
 
       }
@@ -130,23 +161,48 @@ export class HorasExtraComponent implements OnInit {
         {
           field: `tothormes`,
           headerName: 'Total h. extras del mes',
-          width: 150,
+          headerClass: 'text-vertical',
+          width: 80,
           suppressSizeToFit: true,
-          editable: false
+          filter: false,
+          floatingFilter: false,
+          editable: false,
+          lockPinned: true,
+          pinned: 'right',
         },
         {
           field: `valhor`,
           headerName: 'Valor líquido hora extra',
-          width: 150,
+          headerClass: 'text-vertical',
+          width: 100,
           suppressSizeToFit: true,
-          editable: false
+          filter: false,
+          floatingFilter: false,
+          editable: false,
+          lockPinned: true,
+          pinned: 'right',
+          cellRenderer: this.CurrencyCellRenderer,
+
+          cellRendererParams: {
+            currency: 'CLP'
+          },
         },
         {
           field: `totvalhor`,
           headerName: 'Valor líquido total horas del mes',
-          width: 150,
+          headerClass: 'text-vertical',
+          width: 100,
           suppressSizeToFit: true,
-          editable: false
+          filter: false,
+
+          floatingFilter: false,
+          editable: false,
+          lockPinned: true,
+          pinned: 'right',
+          cellRenderer: this.CurrencyCellRenderer,
+          cellRendererParams: {
+            currency: 'CLP'
+          },
         }) //los ultimos/.
       console.log('columDef Final', this.columnDefs);
 
@@ -161,7 +217,14 @@ export class HorasExtraComponent implements OnInit {
 
   }
 
+  CurrencyCellRenderer(params: any) {
 
+    var usdFormate = new Intl.NumberFormat();
+    return usdFormate.format(params.value);
+  }
+
+  public groupHeaderHeight = 45;
+  public headerHeight = 100;
   api: any;
   columnApi;
   onGridReady(params: GridReadyEvent<any>) {

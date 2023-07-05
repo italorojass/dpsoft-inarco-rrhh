@@ -59,16 +59,16 @@ export class DiferenciaSabDomComponent implements OnInit {
   saveEdit(item) {
     item.isEdit = false;
     let b = {
-      tipo: 'finde',
       accion: 'M',
-      obra: this.obra.codigo,
+      //obra: this.obra.codigo,
       id_detalle_pagos: item.id_pagos1,
-      val_sab_med: item.sab_medio_sem1,
-      val_sab_ent: item.sab_entero_sem1,
-      val_dom_med: item.dom_medio_sem1,
-      val_dom_ent: item.dom_entero_sem1
+      val_sab_med: Number(item.sab_medio_sem1),
+      val_sab_ent: Number(item.sab_entero_sem1),
+      val_dom_med: Number(item.dom_medio_sem1),
+      val_dom_ent: Number(item.dom_entero_sem1)
     }
-    console.log('body', b);
+
+    console.log('body edit', b);
     this.sb.get(b).subscribe((r: any) => {
       console.log(r);
 
@@ -147,6 +147,7 @@ export class DiferenciaSabDomComponent implements OnInit {
           {
             headerName: 'H. extra sábado',
             field: 'h_ex_sabado_sem1',
+
             width: 100,
             sortable: true,
             lockPinned: false,
@@ -157,7 +158,10 @@ export class DiferenciaSabDomComponent implements OnInit {
             headerName: 'Valor hora',
             width: 100,
             sortable: true,
-            editable: false
+            editable: false,
+            cellRenderer: this.CurrencyCellRenderer, cellRendererParams: {
+              currency: 'CLP'
+            },
           },
           {
             field: 'total_sab_sem1',
@@ -175,7 +179,10 @@ export class DiferenciaSabDomComponent implements OnInit {
               'Valor sábado 1/2 día',
             width: 110,
             sortable: true,
-            editable: true
+            editable: true,
+            cellRenderer: this.CurrencyCellRenderer, cellRendererParams: {
+              currency: 'CLP'
+            },
           },
           {
             field: 'sab_entero_sem1',
@@ -293,7 +300,8 @@ export class DiferenciaSabDomComponent implements OnInit {
       headerName: 'Diferencia mensual sábado',
       width: 120, sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-
+      pinned: 'right',
+      lockPinned: true,
       editable: false
     },
       {
@@ -302,7 +310,8 @@ export class DiferenciaSabDomComponent implements OnInit {
         width: 120,
         sortable: true,
         cellRenderer: this.CurrencyCellRenderer,
-
+        pinned: 'right',
+        lockPinned: true,
         editable: false
       }
     )

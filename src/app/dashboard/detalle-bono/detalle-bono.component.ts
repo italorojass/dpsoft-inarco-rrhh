@@ -50,14 +50,19 @@ export class DetalleBonoComponent implements OnInit {
     filter: false,
     floatingFilter: false,
     editable : false,
-    width:80
+    width:80,
+    pinned: 'left',
+    lockPinned: true,
   },
   {
     headerName: 'Nombre',
     field: 'nombre',
     filter: true,
+    width:250,
     floatingFilter: true,
-    editable : false
+    editable : false,
+    pinned: 'left',
+    lockPinned: true,
   },
   {
     headerName: 'RUT',
@@ -65,7 +70,9 @@ export class DetalleBonoComponent implements OnInit {
     filter: true,
     floatingFilter: true,
     editable : false,
-    width:200
+    width:200,
+    pinned: 'left',
+    lockPinned: true,
   },
   {
     headerName: 'N. de ficha',
@@ -74,6 +81,8 @@ export class DetalleBonoComponent implements OnInit {
     floatingFilter: false,
     editable : false,
     width:80,
+    pinned: 'left',
+    lockPinned: true,
     cellClass: params =>{return this.dictFicha[params.value];},
   },
 
@@ -130,19 +139,24 @@ dictFicha: any = {
           this.columnDefs.push({
             headerName: this.bonos[i].descripcion,
             field: `bono${i+1}`,
+            width:100,
             filter: false,
             floatingFilter: false,
-            editable : true
+            editable : true,
+            cellRenderer: this.CurrencyCellRenderer, cellRendererParams: {
+              currency: 'CLP'
+            },
           })
-        }/* else{
+        }else{
           this.columnDefs.push({
             headerName: '',
             field: `bono${i+1}`,
+            width:100,
             filter: false,
             floatingFilter: false,
             editable : false
           })
-        } */
+        }
       }
 
       this.columnDefs.push({
@@ -150,13 +164,23 @@ dictFicha: any = {
         field: `total_bonos`,
         filter: false,
         floatingFilter: false,
-        editable : false
+
+        editable : false,
+        cellRenderer: this.CurrencyCellRenderer, cellRendererParams: {
+          currency: 'CLP'
+        },
       });
 
       this.agGrid.api.setColumnDefs(this.columnDefs);
 
 
+
     })
+  }
+  CurrencyCellRenderer(params: any) {
+
+    var usdFormate = new Intl.NumberFormat();
+    return usdFormate.format(params.value);
   }
 
   formatRut(rut,dig){

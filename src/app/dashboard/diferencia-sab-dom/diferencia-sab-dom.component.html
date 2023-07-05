@@ -2,7 +2,16 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Dif. horas sábado y domingo</h4>
+       <!--  <h4 class="card-title">Dif. horas sábado y domingo</h4> -->
+        <div class="row">
+          <div class="col-4">
+            <h4 class="text-left mb-4  text-dark"> <a [routerLink]="['/obras']"><i class="icon-action-undo mr-2"></i>{{obra.codigo}} | {{obra.nombre}}</a></h4>
+          </div>
+          <div class="col-sm-6 col-4">
+            <h3 id="quote">Dif. horas sábado y domingo</h3>
+          </div>
+
+      </div>
         <hr>
 
         <div class="row pt-2">
@@ -29,6 +38,7 @@
     [overlayNoRowsTemplate]="overlayNoRowsTemplate"
     [localeText]="localeText"
     (gridReady)="onGridReady($event)"
+    [paginationPageSize]="15"
     (rowValueChanged)="onRowValueChanged($event)"
     [editType]="'fullRow'"
   ></ag-grid-angular>

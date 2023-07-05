@@ -143,10 +143,10 @@ export class ProyectosComponent implements OnInit {
     console.log('modificado', item);
     let b = {
       accion: 'M',
-      codigo : Number(item.codigo),
+      cod_obra : item.codigo,
       estado: item.estadoF =='Activo' ? "1" : "0"
     }
-    //console.log(b);
+    console.log('body edit',b);
     this.obrasSv.getb(b).subscribe(r => {
       //console.log(r);
       this.toast.success('Actualizado con éxito', `Proyecto ${item.codigo} | ${item.nombre}`);

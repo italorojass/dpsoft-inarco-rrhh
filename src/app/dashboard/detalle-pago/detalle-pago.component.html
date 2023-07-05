@@ -2,19 +2,30 @@
   <div class="col-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Detalle pagos</h4>
-        <hr>
+
         <div class="row">
-          <div class="col-12">
-            <div class="d-flex justify-content-start">
-              <button type="button" class="btn btn-outline-primary btn-rounded " data-toggle="modal"
-                (click)="getEspecialidad();resetForm()" data-target="#modalNuevoPago"><i
-                  class="icon-note"></i>Nuevo</button>
-              <!--   <button type="submit" class="btn btn-outline-success btn-rounded ml-2"><i
-                  class="icon-paper-clip"></i>Descargar excel</button> -->
-            </div>
+          <div class="col-4">
+            <h4 class="text-left mb-4  text-dark"> <a [routerLink]="['/obras']"><i class="icon-action-undo mr-2"></i>{{obra.codigo}} | {{obra.nombre}}</a></h4>
           </div>
-        </div>
+          <div class="col-sm-6 col-4">
+            <h3 id="quote">Detalle pagos</h3>
+          </div>
+          <div class="col-sm-2 col-12">
+              <button type="button" class="btn btn-outline-primary btn-rounded pull-right" data-toggle="modal" data-target="#modalNuevoPago"
+              (click)="getEspecialidad();resetForm()" ><i
+                class="icon-note"></i>Nuevo</button>
+          </div>
+      </div>
+
+        <!-- <div class="row">
+          <div class="col-12 d-flex">
+            <h4 class="card-title">Detalle pagos</h4>
+            <button type="button" class="btn btn-outline-primary btn-rounded" data-toggle="modal"
+            (click)="getEspecialidad();resetForm()" data-target="#modalNuevoPago"><i
+              class="icon-note"></i>Nuevo</button>
+          </div>
+        </div> -->
+        <hr>
         <div class="row mt-3">
           <div class="col-12">
             <!--   <app-table-aggrid [datos]="data"
@@ -27,7 +38,7 @@
 
 
             <div class="table-responsive1 ">
-
+              <strong>Total trabajadores: {{collectionSize}}</strong>
               <ag-grid-angular #dtGrid style="width: 100%; height: 100%;" class="ag-theme-alpine"
                 [defaultColDef]="defaultColDef"
                 [gridOptions]="gridOptions"
@@ -44,9 +55,10 @@
                 [overlayLoadingTemplate]="overlayLoadingTemplate"
                 [overlayNoRowsTemplate]="overlayNoRowsTemplate"
                 [localeText]="localeText"
-                [paginationPageSize]="13"
+                [paginationPageSize]="15"
                 [pinnedBottomRowData]="pinnedBottomRowData"
                 (rowValueChanged)="onRowValueChanged($event)" [editType]="'fullRow'"></ag-grid-angular>
+
               <!--  <table class="table table-striped table-bordered">
                 <thead class="thead-dark">
                   <tr>

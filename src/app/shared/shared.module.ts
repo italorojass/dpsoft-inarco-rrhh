@@ -27,6 +27,7 @@ import { ParametrosService } from './components/parametros/services/parametros.s
 import { UsuariosComponent } from './components/usuarios/usuarios.component';
 import { UsuariosService } from './components/usuarios/services/usuarios.service';
 import { PassDataService } from './components/button-cell-renderer/services/pass-data.service';
+import { ObraSelectService } from './services/obra-select.service';
 @NgModule({
   declarations: [
     LoaderComponent,
@@ -61,7 +62,8 @@ import { PassDataService } from './components/button-cell-renderer/services/pass
     ProyectosService,
     ParametrosService,
     UsuariosService,
-    PassDataService
+    PassDataService,
+    ObraSelectService
   ],
   exports : [
     LoaderComponent,
