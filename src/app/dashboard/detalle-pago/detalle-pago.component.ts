@@ -4,10 +4,18 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { DetallePagoService } from './services/detalle-pago.service';
 import { ToastrService } from 'ngx-toastr';
 import ChileanRutify from 'chilean-rutify';
-import { ColDef, ICellEditorParams, RowValueChangedEvent } from 'ag-grid-community';
+import { ColDef, ICellEditorParams, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ProyectosService } from 'src/app/shared/components/proyectos/services/proyectos.service';
+
+import { CurrencyPipe } from '@angular/common';
+import jsPDF from 'jspdf';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import htmlToPdfmake from 'html-to-pdfmake';
+
 @Component({
   selector: 'app-detalle-pago',
   templateUrl: './detalle-pago.component.html',
@@ -65,7 +73,7 @@ export class DetallePagoComponent implements OnInit {
 
   getChanges(e){
     console.log('este cambiar',e);
-    let indexEspecialidad = this.especialidades.find(x=>x.descripcion.trim() == e.descripcion.trim());
+    let indexEspecialidad = this.especialidades.find(x=>x.descripcion == e.descripcion);
     console.log('especialidad id',indexEspecialidad);
 
     let body1 = {
@@ -107,7 +115,6 @@ export class DetallePagoComponent implements OnInit {
   page = 1;
   pageSize = 4;
   collectionSize: number;
-
    getPagos() {
     let body = {
       tipo: 'pagos',
@@ -166,11 +173,200 @@ export class DetallePagoComponent implements OnInit {
       });
 
 
+
       this.grid.api.setPinnedBottomRowData(result);
       this.grid.api.getDisplayedRowCount();
       this.defaultColDef.editable = (o) => !o.node.isRowPinned();
       //this.pinnedBottomRowData = this.createPinnedData(this.data)
     })
+  }
+
+  rowClassRules: RowClassRules = {
+    // row style function
+    'sick-days-warning': (params) => {
+
+      return params.data.ciefindemes === 'S';
+    },
+    // row style expression
+
+  };
+
+
+  @ViewChild('pdfTable') pdfTable: ElementRef;
+  createPDF(action = 'open') {
+    let tableHeader = [
+      {text:'N°',alignment: 'center',margin: [0, 10]},
+      {text:'Nombre completo',fontSize:25,bold:true,alignment: 'center',margin: [0, 10]},
+      {text:'N° de ficha',alignment: 'center',margin: [0, 10]},
+      {text:'Rut',alignment: 'center',margin: [0, 10]},
+      {text:'Especialidad',alignment: 'center',margin: [0, 10]},
+      {text:'Dias a pago',alignment: 'center',margin: [0, 10]},
+      {text:'Total periodo',alignment: 'center',margin: [0, 10]},
+      {text:'Horas extras legal lunes a sábado',alignment: 'center',margin: [0, 10]},
+      {text:'Total valor hora líquido',alignment: 'center',margin: [0, 10]},
+      {text:'Diferencia de días sábado',alignment: 'center',margin: [0, 10]},
+      {text:'TOTAL BONOS',alignment: 'center',margin: [0, 10]},
+      {text:'Asignaciones',alignment: 'center',margin: [0, 10]},
+      {text:'Total ganado',alignment: 'center',margin: [0, 10]},
+      {text:'Anticipo',alignment: 'center',margin: [0, 10]},
+      {text:'Descuentos varios',alignment: 'center',margin: [0, 10]},
+      {text:'Remuneración',alignment: 'center',margin: [0, 10]},
+      {text:'Finiquito fin de mes',alignment: 'center',margin: [0, 10]},
+      {text:'Líquido a pagar',alignment: 'center',margin: [0, 10]}]
+    let bodyTable= this.data.map((p,i) => {
+
+      return  [
+        i+1,
+        {text : p.nombre,alignment: 'center'},
+        {text : p.ficha,alignment: 'center'},
+        {text : `${p.rut}-${p.dig}`,alignment: 'center'},
+        {text : p.descripcion.trim(),alignment: 'center'},
+        {text : p.dias,alignment: 'center'},
+        {text : p.total_periodo.toLocaleString('es-ES'),alignment: 'center'},
+        {text : Number(p.hor_lun_sab).toLocaleString('es-ES'),alignment: 'center'},
+        {text : Number(p.valor_hora).toLocaleString('es-ES'),alignment: 'center'},
+        {text : p.difer_sabado.toLocaleString('es-ES'),alignment: 'center'},
+        {text : p.total_bonos.toLocaleString('es-ES'),alignment: 'center'},
+        {text : p.asignaciones.toLocaleString('es-ES'),alignment: 'center'},
+        {text : p.total_ganado.toLocaleString('es-ES'),alignment: 'center'},
+        {text : p.anticipo.toLocaleString('es-ES'),alignment: 'center'},
+        {text : p.dctos_varios.toLocaleString('es-ES'),alignment: 'center'},
+        {text : p.a_pagar.toLocaleString('es-ES'),alignment: 'center'},
+        {text : p.finiquito_findemes.toLocaleString('es-ES'),alignment: 'center'},
+        {text : p.liq_apagar.toLocaleString('es-ES'),alignment: 'center'},
+      ]
+    });
+
+    console.log(bodyTable)
+    let docDefinition = {
+      pageBreak: 'after',
+      pageOrientation: 'landscape',
+      pageSize: 'A2',
+      pageMargins: [ 40, 60, 40, 60 ],
+      info: {
+        title: 'Reporte detalle pagos',
+
+      },
+      //watermark: { text: 'test watermark', color: 'blue', opacity: 0.3, bold: true, italics: false },
+      content: [
+          // Previous configuration
+          {
+            text: 'REPORTE DETALLE PAGOS',
+            fontSize: 16,
+            alignment: 'center',
+            color: '#047886',
+            margin: [0, 10]
+          },
+
+
+        {
+          table: {
+            headerRows: 1,
+
+            widths: [
+              15,
+              250,
+              '*',
+              80,
+              200,
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto',
+              'auto'],
+
+              body: [
+                 tableHeader,...bodyTable,
+
+
+                  [
+                    {},
+                    {},
+                    {},
+                    {},
+                    { text: 'TOTALES PERIODOS', colspan : 3,bold:true,alignment: 'center'},
+                    {text:this.data.reduce((sum,p)=>sum+p.dias,0),alignment: 'center'},
+                    {text:this.data.reduce((sum,p)=>sum+p.total_periodo,0).toLocaleString('es-ES'),alignment: 'center'},
+                    {text:this.data.reduce((sum,p)=>sum+Number(p.hor_lun_sab),0).toLocaleString('es-ES'),alignment: 'center'},
+                    {text:this.data.reduce((sum,p)=>sum+p.valor_hora,0).toLocaleString('es-ES'),alignment: 'center'},
+                    {text:this.data.reduce((sum,p)=>sum+p.difer_sabado,0).toLocaleString('es-ES'),alignment: 'center'},
+                    {text:this.data.reduce((sum,p)=>sum+p.total_bonos,0).toLocaleString('es-ES'),alignment: 'center'},
+                    {text:this.data.reduce((sum,p)=>sum+p.asignaciones,0).toLocaleString('es-ES'),alignment: 'center'},
+                    {text:this.data.reduce((sum,p)=>sum+p.total_ganado,0).toLocaleString('es-ES'),alignment: 'center'},
+                    {text:this.data.reduce((sum,p)=>sum+p.anticipo,0).toLocaleString('es-ES'),alignment: 'center'},
+                    {text:this.data.reduce((sum,p)=>sum+p.dctos_varios,0).toLocaleString('es-ES'),alignment: 'center'},
+                    {text:this.data.reduce((sum,p)=>sum+p.a_pagar,0).toLocaleString('es-ES'),alignment: 'center'},
+                    {text:this.data.reduce((sum,p)=>sum+p.finiquito_findemes,0).toLocaleString('es-ES'),alignment: 'center'},
+                    {text:this.data.reduce((sum,p)=>sum+p.liq_apagar,0).toLocaleString('es-ES'),alignment: 'center'}
+                  ]
+              ],
+              alignment: 'center'
+
+
+          },
+      },
+      {
+        columns : [
+        {
+          width: 250,text : '',
+        },
+          {
+            width: 250,
+            text : 'V°B° Admnistrador de obra',
+            margin: [0, 100],
+            decoration : 'overline'
+          },
+          {
+            width: 250,
+            text : 'V°B° Gerente de obra',
+            margin: [20, 100],
+            decoration : 'overline',
+
+          },
+        ]
+      },
+
+      ],
+      styles: {
+          sectionHeader: {
+              bold: true,
+              decoration: 'underline',
+              fontSize: 14,
+              margin: [0, 15, 0, 15],
+              alignment: 'center'
+
+          },
+          tableHeader: {
+            bold: true,
+            fontSize: 13,
+            color: 'black',
+            alignment: 'center'
+          },
+          anotherStyle: {
+            italics: true,
+            alignment: 'center'
+          }
+      }
+
+  }
+
+    if(action==='download'){
+      pdfMake.createPdf(docDefinition).download('reporte_detalle_pagos.pdf');
+    }else if(action === 'print'){
+      pdfMake.createPdf(docDefinition).print();
+    }else{
+      pdfMake.createPdf(docDefinition,{filename : 'detalle_pagos.pdf'}).open();
+    }
+
+
   }
 
   @ViewChild('dtGrid') grid!: AgGridAngular;
@@ -215,6 +411,14 @@ export class DetallePagoComponent implements OnInit {
       floatingFilter: false,
       editable : false
     }, */
+    /* {
+      field: 'ciequincena',
+      headerName: 'Cierre fin de mes',
+      width: 100,
+      sortable: true,
+      editable : false,
+      cellClass: 'badge badge-danger'
+     }, */
     {
       field: 'finiq',
       headerName: 'Finiq.',
@@ -223,7 +427,7 @@ export class DetallePagoComponent implements OnInit {
       lockPinned: true,
       pinned: 'left',
       //cellRenderer: this.CurrencyCellRenderer,
-      editable : true
+      editable : (params) => params.data.ciefindemes !== 'S',
      },
     {
       field: 'nombre',
@@ -262,7 +466,8 @@ export class DetallePagoComponent implements OnInit {
       headerName: 'Especialidad',
       width: 280,
       sortable: true,
-      editable : true,
+      editable : (params) => params.data.ciefindemes !== 'S',
+
       cellEditor: 'agSelectCellEditor',
       cellEditorParams: this.cellCellEditorParams,
       suppressMenu: true
@@ -280,7 +485,7 @@ export class DetallePagoComponent implements OnInit {
       cellRendererParams: {
         currency: 'CLP'
       },
-      editable : true
+      editable : (params) => params.data.ciefindemes !== 'S',
     },
     {
       field: 'dias',
@@ -288,7 +493,7 @@ export class DetallePagoComponent implements OnInit {
         'Días a pago',
       width: 110,
       sortable: true,
-      editable : true
+      editable : (params) => params.data.ciefindemes !== 'S',
     },
     {
       field: 'valor_hora',
@@ -296,12 +501,13 @@ export class DetallePagoComponent implements OnInit {
       width: 100,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
+      editable : (params) => params.data.ciefindemes !== 'S',
     },
     {
       field: 'total_periodo',
       headerName: 'Total periodo',
-      width: 100, sortable: true,
+      width: 100,
+      sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
       editable : false
     },
@@ -347,7 +553,7 @@ export class DetallePagoComponent implements OnInit {
       width: 100,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer ,
-      editable : true
+      editable : (params) => params.data.ciefindemes !== 'S',
     },
     {
       field: 'viatico',
@@ -356,7 +562,7 @@ export class DetallePagoComponent implements OnInit {
        sortable: true,
        cellRenderer:
        this.CurrencyCellRenderer,
-       editable : true
+       editable : (params) => params.data.ciefindemes !== 'S',
        },
     {
       field: 'aguinaldo',
@@ -364,7 +570,7 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
+      editable : (params) => params.data.ciefindemes !== 'S',
      },
     {
       field: 'asignaciones',
@@ -372,7 +578,7 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
+      editable : (params) => params.data.ciefindemes !== 'S',
      },
     {
       field: 'ajuste_pos',
@@ -380,7 +586,7 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
+      editable : (params) => params.data.ciefindemes !== 'S',
      },
     {
       field: 'total_ganado',
@@ -395,14 +601,14 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
+      editable : (params) => params.data.ciefindemes !== 'S',
     },
     {
       field: 'dctos_varios',
       headerName: 'Descuentos varios',
       width: 200, sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
+      editable : (params) => params.data.ciefindemes !== 'S',
      },
 
     {
@@ -420,7 +626,7 @@ export class DetallePagoComponent implements OnInit {
       sortable: true,
 
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
+      editable : (params) => params.data.ciefindemes !== 'S',
      },
     {
       field: 'finiquito',
@@ -428,8 +634,9 @@ export class DetallePagoComponent implements OnInit {
       width: 200,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
+      editable : (params) => params.data.ciefindemes !== 'S',
      },
+
 
     {
       field: 'liq_apagar',
@@ -495,7 +702,8 @@ export class DetallePagoComponent implements OnInit {
     private toastr: ToastrService,
     private ps: ProyectosService,
     private aggsv : AgGridSpanishService,
-    private BuildMonthService: BuildMonthService) { }
+    private BuildMonthService: BuildMonthService,
+    private currencyPipe: CurrencyPipe) { }
 
   editPagoForm = this.fb.group({
     rut: ['', [Validators.required, Validators.maxLength(8)]],

@@ -296,7 +296,6 @@ export class HorasExtraComponent implements OnInit {
         return {
           ...value,
           correlativo: c,
-          isEdit: false
         }
       });
     })
@@ -304,6 +303,16 @@ export class HorasExtraComponent implements OnInit {
 
   }
 
+
+
+  headings = [[
+    'Empleado',
+    'Código de ficha',
+    'Horas extras 50%',
+    'Horas extras 100%',
+    'Horas extras 25%',
+    'Horas extras 35%',
+]];
 
 
 

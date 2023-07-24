@@ -2,6 +2,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ParametrosService } from './services/parametros.service';
+import { ObrasService } from 'src/app/dashboard/obras/services/obras.service';
 
 @Component({
   selector: 'app-parametros',
@@ -14,7 +15,9 @@ export class ParametrosComponent implements OnInit {
 
   constructor(private fb : FormBuilder,
     private paramSV : ParametrosService,
-    private ToastrService : ToastrService) { }
+    private ToastrService : ToastrService,
+    private obras: ObrasService) { }
+
   formDate = this.fb.group({
     inicio : [''],
     final : [''],
@@ -24,19 +27,57 @@ export class ParametrosComponent implements OnInit {
     primerDia : [],
     nombre_bono : ['']
   })
+  opcionSeleccionada: string;
+  obraSelect: string;
   daysTable:any=[];
   ngOnInit(): void {
     this.get();
+    this.getObras();
+  }
+
+  arrobras = [];
+  getObras(){
+
+    this.obras.getb({accion : 'C'}).subscribe(r=>{
+      console.log(r,r['result'].obras);
+      this.arrobras = r['result'].obras.filter(x=>x.estado=='1');
+      console.log(this.arrobras);
+    })
+  }
+
+  cierre(tipo,msj){
+    console.log(this.obraSelect)
+    let body = {accion : tipo, obra : this.obraSelect};
+    console.log(body)
+    this.paramSV.cierre({accion : tipo, obra : this.obraSelect}).subscribe(r=>{
+      console.log(r);
+      this.ToastrService.success('Realizado con éxito',msj);
+      this.obraSelect= '';
+      this.opcionSeleccionada='';
+
+    })
+  }
+
+  validbtn(){
+    let e = true;
+    if(this.obraSelect)
+      if(this.opcionSeleccionada)
+        e=false;
+
+    return e;
   }
 
   bonos= [];
+  /* obra = JSON.parse(sessionStorage.getItem('obraSelect')); */
+
   get(){
     let b = {
-      accion : 'C'
+      accion : 'C',
+      obra : this.obraSelect
     }
     this.paramSV.get(b).subscribe(r=>{
       console.log(r);
-      let res = r['result'].parametros[0];
+      let res = r['result'].parametros;
       console.log('response parametros',res);
       this.bonos = r['result'].bonos;
       this.formDate.patchValue({

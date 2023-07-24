@@ -20,14 +20,13 @@ export class DiferenciaSabDomComponent implements OnInit {
 
   ngOnInit(): void {
     this.get();
-    this.buildTbl();
-    this.buildHeader();
+
   }
 
   data: any = [];
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
   get() {
-
+    this.data=[];
     let body = {
       tipo: 'finde',
       accion: 'C',
@@ -39,13 +38,14 @@ export class DiferenciaSabDomComponent implements OnInit {
         c++
         return {
           ...value,
-          correlativo: c,
-          isEdit: false
+          correlativo: c
         }
       });
       console.log(this.data);
-
+      this.buildTbl();
+      this.buildHeader();
     })
+
   }
 
   sem: any = [];
@@ -73,7 +73,7 @@ export class DiferenciaSabDomComponent implements OnInit {
       console.log(r);
 
       this.toast.success('Actualizado con éxito', `Pago trabajador ${item.nombre}`);
-
+      this.get()
 
     })
   }
@@ -98,6 +98,7 @@ export class DiferenciaSabDomComponent implements OnInit {
 
   }
   buildTbl() {
+    this.columnDefs=[];
     this.columnDefs.push(
       /* {
       headerName: 'Acciones',

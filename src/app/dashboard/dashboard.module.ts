@@ -31,6 +31,7 @@ import { SharedModule } from '../shared/shared.module';
 import { AgGridModule } from 'ag-grid-angular';
 import { HorasExtraComponent } from './horas-extra/horas-extra.component';
 import { LoaderService } from '../shared/services/loader.service';
+import { ReportePdfComponent } from './detalle-pago/reporte-pdf/reporte-pdf.component';
 
 // Registra el idioma español
 registerLocaleData(localeEs);
@@ -48,7 +49,8 @@ registerLocaleData(localeEs);
     HorasExtraComponent,
     DiferenciaSabDomComponent,
     DetalleBonoComponent,
-    MaestroEspecialidadComponent
+    MaestroEspecialidadComponent,
+    ReportePdfComponent
 
 
 
@@ -80,7 +82,8 @@ registerLocaleData(localeEs);
     BuildMonthService,
     HoraextraService,
     DifSabDomService,
-    BonosService
+    BonosService,
+    CurrencyPipe
   ]
 })
 export class DashboardModule { }

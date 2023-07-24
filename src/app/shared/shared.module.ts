@@ -28,6 +28,9 @@ import { UsuariosComponent } from './components/usuarios/usuarios.component';
 import { UsuariosService } from './components/usuarios/services/usuarios.service';
 import { PassDataService } from './components/button-cell-renderer/services/pass-data.service';
 import { ObraSelectService } from './services/obra-select.service';
+import { BtnReporteExcelComponent } from './components/btn-reporte-excel/btn-reporte-excel.component';
+import { InputHeaderComponent } from './components/table-aggrid/input-header/input-header.component';
+import { InputHeaderService } from './components/table-aggrid/input-header/input-header.service';
 @NgModule({
   declarations: [
     LoaderComponent,
@@ -37,7 +40,9 @@ import { ObraSelectService } from './services/obra-select.service';
     CustomPinnedRowRendererComponent,
     ProyectosComponent,
     ParametrosComponent,
-    UsuariosComponent
+    UsuariosComponent,
+    BtnReporteExcelComponent,
+    InputHeaderComponent
   ],
   imports: [
     CommonModule,
@@ -63,7 +68,8 @@ import { ObraSelectService } from './services/obra-select.service';
     ParametrosService,
     UsuariosService,
     PassDataService,
-    ObraSelectService
+    ObraSelectService,
+    InputHeaderService
   ],
   exports : [
     LoaderComponent,
@@ -73,7 +79,9 @@ import { ObraSelectService } from './services/obra-select.service';
     CustomPinnedRowRendererComponent,
     ProyectosComponent,
     ParametrosComponent,
-    UsuariosComponent
+    UsuariosComponent,
+    BtnReporteExcelComponent,
+    InputHeaderComponent
   ]
 })
 export class SharedModule { }

@@ -13,6 +13,12 @@
   border: 1px solid #487783;
 }
 
+.badge-cierre {
+  color: #a83939;
+  border: 1px solid #a83939;
+}
+
+
 
 .form-control{
   font-size: 0.90rem !important;

@@ -102,14 +102,14 @@
 
         </div>
         <hr>
-        <div class="row mt-2" *ngIf="this.dataPagos.length>0">
+        <div class="row mt-2" *ngIf="dataGrid.length>0">
           <div class="col-12">
             <div class="d-flex justify-content-center"><button class="btn btn-outline-success btn-rounded mb-2" (click)="exportexc()">Exportar a excel<i
               class="fa fa-file-excel-o ml-2"></i></button></div>
 
           </div>
         </div>
-        <div class="row mt-2" *ngIf="this.dataPagos.length>0">
+        <div class="row mt-2" *ngIf="dataGrid.length>0">
           <div class="col-12">
             <div class="table-responsive1">
               <app-table-aggrid [datos]="dataGrid" [columnas]="columnDefs"></app-table-aggrid>

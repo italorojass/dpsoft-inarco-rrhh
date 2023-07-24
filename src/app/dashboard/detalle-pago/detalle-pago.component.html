@@ -11,9 +11,19 @@
             <h3 id="quote">Detalle pagos</h3>
           </div>
           <div class="col-sm-2 col-12">
+            <div class="btn-group">
               <button type="button" class="btn btn-outline-primary btn-rounded pull-right" data-toggle="modal" data-target="#modalNuevoPago"
               (click)="getEspecialidad();resetForm()" ><i
                 class="icon-note"></i>Nuevo</button>
+
+                <button type="button" class="btn btn-outline-dark btn-rounded pull-right ml-2"
+                (click)="createPDF()" ><i
+                  class="icon-doc"></i>Reporte PDF</button>
+            </div>
+
+
+
+
           </div>
       </div>
 
@@ -37,7 +47,7 @@
             > </app-datatable> -->
 
 
-            <div class="table-responsive1 ">
+            <div class="table-responsive1 " >
               <strong>Total trabajadores: {{collectionSize}}</strong>
               <ag-grid-angular #dtGrid style="width: 100%; height: 100%;" class="ag-theme-alpine"
                 [defaultColDef]="defaultColDef"
@@ -57,6 +67,7 @@
                 [localeText]="localeText"
                 [paginationPageSize]="15"
                 [pinnedBottomRowData]="pinnedBottomRowData"
+                [rowClassRules]="rowClassRules"
                 (rowValueChanged)="onRowValueChanged($event)" [editType]="'fullRow'"></ag-grid-angular>
 
               <!--  <table class="table table-striped table-bordered">

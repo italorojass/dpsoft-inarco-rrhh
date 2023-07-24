@@ -14,4 +14,13 @@ export class ParametrosService {
     //console.log(`${environment.url}ws_estadopago_rrhh.php`,body);
     return this._http.post(`${environment.url}ws_parame_rrhh.php`,body);
   }
+
+  getBonos(body){
+    return this._http.post(`${environment.url}ws_bonos_rrhh.php`,body);
+  }
+
+  cierre(body){
+    return this._http.post(`${environment.url}ws_cierre_rrhh.php`,body);
+
+  }
 }

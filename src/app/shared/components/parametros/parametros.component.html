@@ -2,84 +2,77 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Parámetros</h4>
+        <h4 class="card-title">Parámetros del sistema</h4>
         <hr>
         <form [formGroup]="formDate">
           <div class="row">
+            <div class="d-flex justify-content-center">
+              <div class="col-md-4">
+                <div class="form-row">
 
-            <div class="col-md-4">
 
-              <div class="form-row">
-                <div class="form-group ">
-                  <label for="inputEmail4">Quincena</label>
-                  <input type="radio" class="ml-2" id="inputZip" formControlName="quincena" name="quincena">
-
+                  <div class="form-group ">
+                    <label for="inputEmail4">Primer día Lunes del período</label>
+                    <input type="date" class="form-control " formControlName="inicio" name="date">
+                  </div>
                 </div>
+               <!--  -->
               </div>
-              <div class="form-row">
-                <div class="form-group ">
-                  <label for="inputZip">Fin de mes</label>
-                  <input type="radio" class="ml-2" id="inputZip" formControlName="finmes" name="finmes">
+
+              <div class="col-md-4">
+                <div class="form-row">
+                  <div class="form-group ">
+                    <label for="inputEmail4">Último día del período</label>
+                    <input type="date" class="form-control " formControlName="final" name="date">
+                  </div>
                 </div>
+
+
               </div>
 
             </div>
-            <div class="col-md-4">
-              <div class="form-row">
 
-                <div class="form-group ">
-                  <label for="inputEmail4">Inicio periodo</label>
-                  <input type="date" class="form-control " formControlName="inicio" name="date">
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group ">
-                  <label for="inputEmail4">Final periodo</label>
-                  <input type="date" class="form-control " formControlName="final" name="date">
-                </div>
-              </div>
-            </div>
 
-            <div class="col-md-4">
-              <div class="form-row">
-
-                <div class="form-inline ">
-                  <label for="inputEmail4">Nombre del bono</label>
-                  <input type="text" class="form-control " formControlName="nombre_bono" name="nombre_bono">
-                    <button class="btn btn-icons btn-rounded btn-outline-primary" type="button" name="btnAdd" (click)="guardarBono()"><i
-                        class="fa fa-plus"></i></button>
-                </div>
-              </div>
-              <div class="table-responsive">
-                <table class="table table-bordered table-striped sortable-table" *ngIf="bonos.length >0">
-                  <thead class="thead-dark">
-                    <tr>
-                      <th>Correlativo</th>
-                      <th>Descripción</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let item of bonos;let i=index">
-                      <td>
-                        {{i+1}}
-                      </td>
-                      <td>
-                        {{item.descripcion}}
-                      </td>
-                      <td>
-                        <button class="btn btn-icons btn-rounded btn-outline-danger pl-2" type="button" name="btnAdd" (click)="deleteBono(i)"><i
-                            class="fa fa-trash"></i></button>
-
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
           </div>
         </form>
+        <hr>
+        <div class="row">
 
+          <div class="d-flex justify-content-center">
+
+
+            <div class="col-md-4">
+              <div class="form-row mb-3">
+                <div class="form-group ">
+                  <label for="inputEmail4">Obra</label>
+                 <select class="form-control" name="obra" id="obra" [(ngModel)]="obraSelect">
+                  <option value="" disabled>Seleccionar obra</option>
+                  <option *ngFor="let item of arrobras" [value]="item.codigo">{{item.codigo}} | {{item.nombre}}</option>
+
+                 </select>
+                </div>
+              </div>
+            <div class="form-row">
+              <div class="form-group ">
+                <label for="inputEmail4">Quincena</label>
+                <input type="radio" class="ml-2" id="inputZip" name="cierre" value="Q" [(ngModel)]="opcionSeleccionada">
+                <button class="btn btn-primary btn-rounded ml-2" [disabled]="validbtn() || opcionSeleccionada == 'F'" (click)="cierre('Q','Cierre quincena')">Cierre de quincena</button>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group ">
+                <label for="inputZip">Fin de mes</label>
+                <input type="radio" class="ml-2" id="inputZip" name="cierre" value="F" [(ngModel)]="opcionSeleccionada" >
+                <button class="btn btn-primary btn-rounded ml-2" [disabled]="validbtn() || opcionSeleccionada == 'Q'" (click)="cierre('F','Cierre fin de mes')">Cierre fin de mes</button>
+              </div>
+            </div>
+
+          </div>
+          </div>
+
+
+
+        </div>
 
 
         <!--   <div class="row pt-2">

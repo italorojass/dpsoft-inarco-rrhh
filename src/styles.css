@@ -36,6 +36,9 @@ thead tr th {
   overflow: auto;
 }
 
+.sick-days-warning {
+  background-color: #f0b7b7 !important;
+}
 
 .sticky-col {
   position: -webkit-sticky;
@@ -56,4 +59,6 @@ thead tr th {
   flex-grow: 1
 }
 
-
+.form-control{
+  font-size: 0.90rem !important;
+}
