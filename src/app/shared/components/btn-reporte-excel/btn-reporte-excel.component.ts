@@ -30,22 +30,18 @@ export class BtnReporteExcelComponent {
       break;
 
       case 'bonos' :
-        excelData = this.data.map(x=>{
-
-          if(x.total_bonos > 0){
-            let b =  {
-              rut : `${x.rut}-${x.dig}`,
-              ficha : x.ficha,
-              valor : Number(x.total_bonos),
-              detalle : ''
-            }
-
-            return b;
+        excelData = this.data.filter(x=> x.total_bonos > 0).map(x=>{
+          let b =  {
+            rut : x.rutF,
+            ficha : x.ficha,
+            valor : Number(x.total_bonos),
+            detalle : ''
           }
 
+          return b;
+        });
 
-          return 0;
-        })
+
       break;
     }
 

@@ -7,6 +7,8 @@ import { ButtonCellRendererComponent } from 'src/app/shared/components/button-ce
 import { ColDef, GridReadyEvent, RowValueChangedEvent } from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 @Component({
   selector: 'app-diferencia-sab-dom',
   templateUrl: './diferencia-sab-dom.component.html',
@@ -317,6 +319,137 @@ export class DiferenciaSabDomComponent implements OnInit {
       }
     )
 
+  }
+
+  createPDF(action = 'open'){
+    let tableHeader = [
+      { text: 'N°', alignment: 'right', margin: [0, 10] },
+      { text: 'RUT', alignment: 'left', margin: [0, 10] },
+      { text: 'AP PATERNO', alignment: 'left', margin: [0, 10] },
+      { text: 'AP MATERNO', alignment: 'left', margin: [0, 10] },
+      { text: 'NOMBRES', alignment: 'left', margin: [0, 10] },
+      { text: 'CARGO', alignment: 'left', margin: [0, 10] },
+      { text: 'DÍAS TRABAJADOS', alignment: 'right', margin: [0, 10] },
+      { text: 'ASIG. ESPECIAL', alignment: 'right', margin: [0, 10] },
+      { text: 'ANTICIPO DE SUELDO', alignment: 'right', margin: [0, 10] },
+      { text: 'SUELDO LÍQUIDO', alignment: 'right', margin: [0, 10] }
+    ]
+    let objreport = Object.assign([], this.data);
+    let newob = objreport.filter(x => x.total_bonos > 0)
+    let bodyTable = newob.map((p, i) => {
+
+      return [
+        { text: i+1, alignment: 'right' },
+        { text: p.nombre, alignment: 'center' },
+        { text: p.rutF, alignment: 'center' },
+        { text: p.ficha, alignment: 'center' },
+
+        { text: p.total_bonos.toLocaleString('es-ES'), alignment: 'center' },
+      ]
+    });
+
+    let wids = [];
+    for(let i=0;i<tableHeader.length;i++){
+      wids.push('auto')
+    }
+
+    let today = new Date();
+let docDefinition = {
+
+  pageOrientation: 'landscape',
+  pageSize: 'A3',
+  pageMargins: [40, 60, 40, 60],
+  info: {
+    title: 'Reporte diferencia sábado y domingo',
+
+  },
+  //watermark: { text: 'test watermark', color: 'blue', opacity: 0.3, bold: true, italics: false },
+  content: [
+    // Previous configuration
+    {
+      text: 'REPORTE DIFERENCIA SÁBADO Y DOMINGO',
+      fontSize: 16,
+      alignment: 'center',
+      color: '#047886',
+      margin: [0, 10],
+
+    },
+    {
+      text : 'Libro: Remuneraciones',
+      style: 'subheader',
+      bold: true,
+      fontSize: 10,
+    },
+    {
+      text : 'Empresa: CONSTRUCTORA INARCO S.A. (96.513.310-0)',
+      style: 'subheader',
+      bold: true,
+      fontSize: 10,
+    },
+    {
+      text : 'Libro: Remuneraciones',
+      style: 'subheader',
+      bold: true,
+      fontSize: 10,
+    },
+    {
+      text : 'Periodo: Remuneraciones',
+      style: 'subheader',
+      bold: true,
+      fontSize: 10,
+    },
+    {
+      text : 'Fecha generación: '+today.toLocaleDateString(),
+      style: 'subheader',
+      bold: true,
+      fontSize: 10,
+    },
+    {
+     /*  table: {
+        headerRows: 1,
+
+        widths: wids,
+
+        body: [
+          tableHeader, ...bodyTable,
+
+        ],
+        alignment: 'center'
+
+
+      }, */
+    },
+  ],
+  styles: {
+    sectionHeader: {
+      bold: true,
+      decoration: 'underline',
+      fontSize: 14,
+      margin: [0, 15, 0, 15],
+      alignment: 'center'
+
+    },
+    tableHeader: {
+      bold: true,
+      fontSize: 13,
+      color: 'black',
+      alignment: 'center'
+    },
+    anotherStyle: {
+      italics: true,
+      alignment: 'center'
+    }
+  }
+
+}
+
+if (action === 'download') {
+  pdfMake.createPdf(docDefinition).download('reporte_detalle_pagos.pdf');
+} else if (action === 'print') {
+  pdfMake.createPdf(docDefinition).print();
+} else {
+  pdfMake.createPdf(docDefinition, { filename: 'detalle_pagos.pdf' }).open();
+}
   }
 
   rowSelection = this.aggsv.rowSelection;

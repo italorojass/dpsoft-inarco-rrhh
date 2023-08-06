@@ -7,16 +7,30 @@
           <div class="col-4">
             <h4 class="text-left mb-4  text-dark"> <a [routerLink]="['/obras']"><i class="icon-action-undo mr-2"></i>{{obra.codigo}} | {{obra.nombre}}</a></h4>
           </div>
-          <div class="col-sm-6 col-4">
+          <div class="col-sm-4 col-4">
             <h3 id="quote">Detalle pagos</h3>
           </div>
-          <div class="col-sm-2 col-12">
-            <div class="btn-group">
+          <div class="col-sm-4 col-4">
+            <div class="btn-group pull-right">
               <button type="button" class="btn btn-outline-primary btn-rounded pull-right" data-toggle="modal" data-target="#modalNuevoPago"
               (click)="getEspecialidad();resetForm()" ><i
                 class="icon-note"></i>Nuevo</button>
 
-                <button type="button" class="btn btn-outline-dark btn-rounded pull-right ml-2"
+                <input
+                type="file"
+                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                #file (change)="handleFileInput($event)"
+                 style="display: none;">
+
+
+               <!--  <div class="input-group-append">
+                    <button class="btn btn-outline-danger btn-rounded mb-2 " (click)="showbtn=false;datosExcel=[]" *ngIf="showbtn"><i
+                      class="fa fa-trash"></i></button>
+
+
+                  </div> -->
+
+                <button type="button" class="btn btn-outline-dark btn-rounded"
                 (click)="createPDF()" ><i
                   class="icon-doc"></i>Reporte PDF</button>
             </div>
@@ -383,6 +397,11 @@
 
           </div>
           <div class="modal-footer">
+            <button type="button" class="btn btn-success  "  (click)="file.click()" placeholder="Seleccione un archivo excel"
+                name="file"
+                 ><i
+                  class="icon-cloud-upload"></i>Carga masiva <span *ngIf="datosExcel.length>0">{{datosExcel.length}}</span>
+                </button>
             <button type="submit" class="btn btn-success" [disabled]="!editPagoForm.valid">Guardar</button>
             <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
           </div>

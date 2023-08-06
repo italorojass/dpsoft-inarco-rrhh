@@ -15,6 +15,9 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import htmlToPdfmake from 'html-to-pdfmake';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-detalle-pago',
@@ -367,6 +370,63 @@ export class DetallePagoComponent implements OnInit {
     }
 
 
+  }
+
+
+  datosExcel=[];
+  showbtn : boolean;
+  handleFileInput(event: any): void {
+    const file = event.target.files[0];
+    //this.fileName = file.name;
+    console.log(file);
+    if (file.name.includes('xls')) {
+      this.showbtn = true;
+
+      let target = event.target
+      const reader: FileReader = new FileReader();
+      reader.readAsBinaryString(target.files[0]);
+      reader.onload = (e: any) => {
+
+        const binarystr: string = e.target.result;
+        const wb: XLSX.WorkBook = XLSX.read(binarystr, { type: 'binary' });
+
+        const wsname: string = wb.SheetNames[0];
+        const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+        console.log(ws)
+
+        const data = XLSX.utils.sheet_to_json(ws, { header: 0, raw: false, blankrows: false });
+
+        console.log(data);
+        if(data.length>0){
+          data.forEach((element, i) => {
+          let sueldoLiq = element['Sueldo Liquido*'];
+          let rut = element['Empleado*'].split('-');
+          let ficha = element['Código de Ficha'];
+          let nombre = `${element['Nombre ']} `;
+          let especialidad = element['Especialidad*'];
+          //console.log('comprar este valor',rut,ficha,sueldoLiq)
+          this.datosExcel.push({
+            nombre: nombre,
+            rut: rut[0],
+            dig : rut[1],
+            ficha: ficha,
+            sueldo_liq: Number(sueldoLiq),
+            especialidad: especialidad
+          })
+        });
+        }
+
+
+        //this.getPagos()
+
+        console.log('dataformat del excel',this.datosExcel)
+
+
+      };
+    } else {
+      Swal.fire('Formato no permitido', 'Solo se admite formato .xls/.xlsx', 'warning');
+      //this.f.reset();
+    }
   }
 
   @ViewChild('dtGrid') grid!: AgGridAngular;

@@ -26,7 +26,7 @@ export class InputHeaderComponent implements IHeaderAngularComp {
   agInit(params: IHeaderParams): void {
     this.params = params;
     this.form.patchValue({inputValue : this.params['label']});
-    console.log(params);
+    //console.log(params);
     let replace = this.params.displayName.replace('Bono','nombre');
 
     this.inputSv.bod[replace] = this.form.value.inputValue ?  this.form.value.inputValue: '';
@@ -38,14 +38,14 @@ export class InputHeaderComponent implements IHeaderAngularComp {
   }
 
   changef(){
-    console.log('change f',this.params, this.inputSv.bod);
+    //console.log('change f',this.params, this.inputSv.bod);
 
     let replace = this.params.displayName.replace('Bono','nombre');
 
     this.inputSv.bod[replace] = this.form.value.inputValue;
 
 
-    console.log('guardar',this.inputSv.bod);
+    //console.log('guardar',this.inputSv.bod);
 
     this.bonos.insert(this.inputSv.bod).subscribe(r=>{
       this.toastr.success('Guardado con éxito','Bono '+this.form.value.inputValue);

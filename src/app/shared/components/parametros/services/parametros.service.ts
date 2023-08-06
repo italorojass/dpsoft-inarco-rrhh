@@ -16,7 +16,7 @@ export class ParametrosService {
   }
 
   getBonos(body){
-    return this._http.post(`${environment.url}ws_bonos_rrhh.php`,body);
+    return this._http.post(`${environment.url}ws_nombrebonos_rrhh.php`,body);
   }
 
   cierre(body){
