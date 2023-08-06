@@ -7,15 +7,13 @@ import { ColDef } from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { InputHeaderComponent } from 'src/app/shared/components/table-aggrid/input-header/input-header.component';
-import jsPDF from 'jspdf';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-import htmlToPdfmake from 'html-to-pdfmake';
 @Component({
   selector: 'app-detalle-bono',
   templateUrl: './detalle-bono.component.html',
-  styleUrls: ['./detalle-bono.component.css']
+  styleUrls: ['./detalle-bono.component.css'],
 })
 export class DetalleBonoComponent implements OnInit {
   @ViewChild('Grid') agGrid: AgGridAngular;
@@ -25,7 +23,8 @@ export class DetalleBonoComponent implements OnInit {
     private BuildMonthService: BuildMonthService,
     private toast: ToastrService,
     private paramSV: ParametrosService,
-    private aggsv: AgGridSpanishService) { }
+    private aggsv: AgGridSpanishService
+  ) {}
 
   overlayLoadingTemplate = this.aggsv.overlayLoadingTemplate;
   overlayNoRowsTemplate = this.aggsv.overlayNoRowsTemplate;
@@ -34,7 +33,6 @@ export class DetalleBonoComponent implements OnInit {
   ngOnInit() {
     this.get();
     this.getBonos();
-
   }
   defaultColDef: ColDef = {
     resizable: true,
@@ -45,105 +43,98 @@ export class DetalleBonoComponent implements OnInit {
     floatingFilter: true,
     wrapHeaderText: true,
     autoHeaderHeight: true,
-
-
   };
 
-  columnDefs: ColDef[] = [{
-    headerName: 'ID',
-    field: 'correlativo',
-    filter: false,
-    floatingFilter: false,
-    editable: false,
-    width: 80,
-    pinned: 'left',
-    lockPinned: true,
-  },
-  {
-    headerName: 'Nombre',
-    field: 'nombre',
-    filter: true,
-    width: 250,
-    floatingFilter: true,
-    editable: false,
-    pinned: 'left',
-    lockPinned: true,
-  },
-  {
-    headerName: 'RUT',
-    field: 'rutF',
-    filter: true,
-    floatingFilter: true,
-    editable: false,
-    width: 200,
-    pinned: 'left',
-    lockPinned: true,
-  },
-  {
-    headerName: 'N. de ficha',
-    field: 'ficha',
-    filter: false,
-    floatingFilter: false,
-    editable: false,
-    width: 80,
-    pinned: 'left',
-    lockPinned: true,
-    cellClass: params => { return this.dictFicha[params.value]; },
-  },
-
+  columnDefs: ColDef[] = [
+    {
+      headerName: 'ID',
+      field: 'correlativo',
+      filter: false,
+      floatingFilter: false,
+      editable: false,
+      width: 80,
+      pinned: 'left',
+      lockPinned: true,
+    },
+    {
+      headerName: 'Nombre',
+      field: 'nombre',
+      filter: true,
+      width: 250,
+      floatingFilter: true,
+      editable: false,
+      pinned: 'left',
+      lockPinned: true,
+    },
+    {
+      headerName: 'RUT',
+      field: 'rutF',
+      filter: true,
+      floatingFilter: true,
+      editable: false,
+      width: 200,
+      pinned: 'left',
+      lockPinned: true,
+    },
+    {
+      headerName: 'N. de ficha',
+      field: 'ficha',
+      filter: false,
+      floatingFilter: false,
+      editable: false,
+      width: 90,
+      pinned: 'left',
+      lockPinned: true,
+      cellClass: (params) => {
+        return this.dictFicha[params.value];
+      },
+    },
   ];
-  headings = [[
-    'RUT',
-    'Código de ficha',
-    'Valor',
-    'Detalle'
-  ]];
+  headings = [['RUT', 'Código de ficha', 'Valor', 'Detalle']];
 
   dictFicha: any = {
     F1: 'badge-outline-primary',
     F2: 'badge-outline-info2',
     F3: 'badge-outline-warning2',
     F4: 'badge-outline-info',
-    F5: 'badge-outline-danger2'
-  }
+    F5: 'badge-outline-danger2',
+  };
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
   data: any = [];
   get() {
     let body = {
       tipo: 'bonos',
       obra: this.obra.codigo,
-      accion: 'C'
-    }
+      accion: 'C',
+    };
     this.bonoSV.get(body).subscribe((r: any) => {
       //this.data = r.result.bonos;
       this.data = r.result.bonos.map((value, i) => {
-
         return {
           ...value,
           correlativo: i + 1,
           rutF: this.formatRut(value.rut, value.dig),
-          isEdit: false
-        }
+          isEdit: false,
+        };
       });
       this.agGrid.api.sizeColumnsToFit();
-      console.log(this.data)
-    })
+      console.log(this.data);
+    });
   }
 
   bonos = [];
   getBonos() {
     let b = {
-
       accion: 'C',
-      obra: this.obra.codigo
-    }
-    this.paramSV.getBonos(b).subscribe(r => {
+      obra: this.obra.codigo,
+    };
+    this.paramSV.getBonos(b).subscribe((r) => {
       console.log(r);
       this.bonos = r['result'].bonos.map((x, i) => {
         return {
           key: `bono${i + 1}`,
-          descripcion: x.descripcion
-        }
+          descripcion: x.descripcion,
+        };
       });
       console.log('response parametros bonos agregados', this.bonos);
       for (let i = 0; i < 10; i++) {
@@ -152,7 +143,7 @@ export class DetalleBonoComponent implements OnInit {
             headerComponent: InputHeaderComponent,
             headerComponentParams: {
               label: this.bonos[i].descripcion,
-              index: i
+              index: i,
             },
             //headerName: this.bonos[i].descripcion,
             field: `bono${i + 1}`,
@@ -160,25 +151,24 @@ export class DetalleBonoComponent implements OnInit {
             filter: false,
             floatingFilter: false,
             editable: true,
-            cellRenderer: this.CurrencyCellRenderer, cellRendererParams: {
-              currency: 'CLP'
+            cellRenderer: this.CurrencyCellRenderer,
+            cellRendererParams: {
+              currency: 'CLP',
             },
-          })
+          });
         } else {
           this.columnDefs.push({
-
             headerComponent: InputHeaderComponent,
             headerComponentParams: {
-
-              index: i
+              index: i,
             },
             // headerName: '',
             field: `bono${i + 1}`,
             width: 150,
             filter: false,
             floatingFilter: false,
-            editable: true
-          })
+            editable: true,
+          });
         }
       }
 
@@ -189,53 +179,48 @@ export class DetalleBonoComponent implements OnInit {
         floatingFilter: false,
 
         editable: false,
-        cellRenderer: this.CurrencyCellRenderer, cellRendererParams: {
-          currency: 'CLP'
+        cellRenderer: this.CurrencyCellRenderer,
+        cellRendererParams: {
+          currency: 'CLP',
         },
       });
 
       this.agGrid.api.setColumnDefs(this.columnDefs);
-
-
-
-    })
+    });
   }
   CurrencyCellRenderer(params: any) {
-
     var usdFormate = new Intl.NumberFormat();
     return usdFormate.format(params.value);
   }
 
   formatRut(rut, dig) {
-
     return this.BuildMonthService.formatRut(rut, dig);
   }
 
   saveEdit(item) {
-
     let b = {
       tipo: 'bonos',
       accion: 'M',
       obra: this.obra.codigo,
-      ...item.data
-    }
+      ...item.data,
+    };
     console.log('body', b, item);
     this.bonoSV.get(b).subscribe((r: any) => {
       console.log(r);
       /*  let reemplazar = this.data.findIndex(x=>x.id == r['result'].bonos[0].id);
        this.data[reemplazar] = r['result'].bonos[0]; */
       this.get();
-      this.toast.success('Actualizado con éxito', `Bono de ${item.data.nombre}`);
-
-
-    })
+      this.toast.success(
+        'Actualizado con éxito',
+        `Bono de ${item.data.nombre}`
+      );
+    });
   }
 
   createPDF(action = 'open') {
     let objreport = Object.assign([], this.data);
-    console.log('data base', objreport)
-    let newob = objreport.filter(x => x.total_bonos > 0);
-
+    console.log('data base', objreport);
+    let newob = objreport.filter((x) => x.total_bonos > 0);
 
     let tableHeader = [
       { text: 'N°', alignment: 'center', margin: [0, 10] },
@@ -243,29 +228,32 @@ export class DetalleBonoComponent implements OnInit {
       { text: 'RUT', alignment: 'center', margin: [0, 10] },
       { text: 'N° de ficha', alignment: 'center', margin: [0, 10] },
       //{ text: 'Total bonos del mes', alignment: 'center', margin: [0, 10] }
-    ]
+    ];
     //
-    let nn =[]
-    for(let i=0;i<10;i++){
+    let nn = [];
+    for (let i = 0; i < 10; i++) {
+      if (this.bonos[i]) {
+        nn.push('bono' + (i + 1));
 
-      if(this.bonos[i]){
-        nn.push('bono'+(i+1));
-
-        tableHeader.push({text:this.bonos[i].descripcion.trim(),alignment: 'center',margin: [0, 10]});
-      }else{
-        tableHeader.push({text:'-',alignment: 'center',margin: [0, 10]});
+        tableHeader.push({
+          text: this.bonos[i].descripcion.trim(),
+          alignment: 'center',
+          margin: [0, 10],
+        });
+      } else {
+        tableHeader.push({ text: '-', alignment: 'center', margin: [0, 10] });
       }
     }
 
-    console.log('los q tienen',newob, 'matchear', nn);
+    console.log('los q tienen', newob, 'matchear', nn);
 
-for(var key in newob){
-  let solobonos = newob[key];
-  console.log('objeto con bono',solobonos)
-}
+    for (var key in newob) {
+      let solobonos = newob[key];
+      console.log('objeto con bono', solobonos);
+    }
     let bodyTable = newob.map((p, i) => {
       return [
-        { text: i+1, alignment: 'right' },
+        { text: i + 1, alignment: 'right' },
         { text: p.nombre, alignment: 'center' },
         { text: p.rutF, alignment: 'center' },
         { text: p.ficha, alignment: 'center' },
@@ -280,22 +268,24 @@ for(var key in newob){
         { text: p.bono9.toLocaleString('es-ES'), alignment: 'center' },
         { text: p.bono10.toLocaleString('es-ES'), alignment: 'center' },
         { text: p.total_bonos.toLocaleString('es-ES'), alignment: 'center' },
-      ]
+      ];
     });
-        tableHeader.push({text:'Total bonos del mes',alignment: 'center',margin: [0, 10]});
-        console.log(tableHeader,bodyTable)
-        let wids = [];
-        for(let i=0;i<tableHeader.length;i++){
-          wids.push('auto')
-        }
-    let docDefinition = {
+    tableHeader.push({
+      text: 'Total bonos del mes',
+      alignment: 'center',
+      margin: [0, 10],
+    });
 
+    let wids = [];
+    for (let i = 0; i < tableHeader.length; i++) {
+      wids.push('auto');
+    }
+    let docDefinition = {
       pageOrientation: 'vertical',
       pageSize: 'A4',
       pageMargins: [40, 60, 40, 60],
       info: {
         title: 'Reporte detalle de bonos',
-
       },
       //watermark: { text: 'test watermark', color: 'blue', opacity: 0.3, bold: true, italics: false },
       content: [
@@ -305,9 +295,8 @@ for(var key in newob){
           fontSize: 16,
           alignment: 'center',
           color: '#047886',
-          margin: [0, 10]
+          margin: [0, 10],
         },
-
 
         {
           table: {
@@ -315,13 +304,8 @@ for(var key in newob){
 
             widths: wids,
 
-            body: [
-              tableHeader, ...bodyTable,
-
-            ],
-            alignment: 'center'
-
-
+            body: [tableHeader, ...bodyTable],
+            alignment: 'center',
           },
         },
       ],
@@ -331,33 +315,29 @@ for(var key in newob){
           decoration: 'underline',
           fontSize: 14,
           margin: [0, 15, 0, 15],
-          alignment: 'center'
-
+          alignment: 'center',
         },
         tableHeader: {
           bold: true,
           fontSize: 13,
           color: 'black',
-          alignment: 'center'
+          alignment: 'center',
         },
         anotherStyle: {
           italics: true,
-          alignment: 'center'
-        }
-      }
-
-    }
+          alignment: 'center',
+        },
+      },
+    };
 
     if (action === 'download') {
       pdfMake.createPdf(docDefinition).download('reporte_detalle_pagos.pdf');
     } else if (action === 'print') {
       pdfMake.createPdf(docDefinition).print();
     } else {
-      pdfMake.createPdf(docDefinition, { filename: 'detalle_pagos.pdf' }).open();
+      pdfMake
+        .createPdf(docDefinition, { filename: 'detalle_pagos.pdf' })
+        .open();
     }
-
-
   }
-
-
 }

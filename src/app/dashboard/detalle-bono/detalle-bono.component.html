@@ -4,45 +4,62 @@
       <div class="card-body">
         <div class="row">
           <div class="col-4">
-            <h4 class="text-left mb-4  text-dark"> <a [routerLink]="['/obras']"><i class="icon-action-undo mr-2"></i>{{obra.codigo}} | {{obra.nombre}}</a></h4>
+            <h4 class="text-left mb-4 text-dark">
+              <a [routerLink]="['/obras']"
+                ><i class="icon-action-undo mr-2"></i>{{ obra.codigo }} |
+                {{ obra.nombre }}</a
+              >
+            </h4>
           </div>
-          <div class="col-sm-6 col-4">
+          <div class="col-sm-4 col-4">
             <h3 id="quote">Detalle de bonos</h3>
           </div>
-          <div class="col-sm-2 col-12">
-            <div class="btn-group">
-               <app-btn-reporte-excel [data]="data"
-            [_from]="'bonos'"
-            [headings]="headings"
-            [sheetName]="'Hoja1'"
-              [fileName]="'Reporte_bonos'">
+          <div class="col-sm-4 col-12">
+            <div class="pull-right">
+              <app-btn-reporte-excel
+                [data]="data"
+                [_from]="'bonos'"
+                [headings]="headings"
+                [sheetName]="'Hoja1'"
+                [fileName]="'Reporte_bonos'"
+              >
+              </app-btn-reporte-excel>
 
-            </app-btn-reporte-excel>
-
-            <button type="button" class="btn btn-outline-dark btn-rounded ml-2"
-                (click)="createPDF()" ><i
-                  class="icon-doc"></i>Reporte PDF</button>
+              <button
+                type="button"
+                class="btn btn-outline-dark btn-rounded mr-2"
+                (click)="createPDF()"
+              >
+                <i class="icon-doc"></i>Reporte PDF
+              </button>
             </div>
-
-
           </div>
-      </div>
-        <hr>
-
-
+        </div>
 
         <div class="row pt-2">
-          <div class="col-12 ">
+          <div class="col-12">
             <div class="table-responsive1">
-              <strong>Total trabajadores: {{data.length}} </strong>
-              <ag-grid-angular #Grid style="width: 100%; height: 100%;" class="ag-theme-alpine"
-                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [rowData]="data" [suppressMenuHide]="true"
-                [pagination]="true" [groupSelectsChildren]="true" [enableCellChangeFlash]="true"
-                [paginationPageSize]="15" [suppressMaxRenderedRowRestriction]="true" [editType]="'fullRow'"
-                [overlayLoadingTemplate]="overlayLoadingTemplate" [overlayNoRowsTemplate]="overlayNoRowsTemplate"
-                [localeText]="localeText" (cellValueChanged)="saveEdit($event)"></ag-grid-angular>
+              <strong>Total trabajadores: {{ data.length }} </strong>
+              <ag-grid-angular
+                #Grid
+                style="width: 100%; height: 100%"
+                class="ag-theme-alpine"
+                [columnDefs]="columnDefs"
+                [defaultColDef]="defaultColDef"
+                [rowData]="data"
+                [suppressMenuHide]="true"
+                [pagination]="true"
+                [groupSelectsChildren]="true"
+                [enableCellChangeFlash]="true"
+                [paginationPageSize]="15"
+                [suppressMaxRenderedRowRestriction]="true"
+                [editType]="'fullRow'"
+                [overlayLoadingTemplate]="overlayLoadingTemplate"
+                [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+                [localeText]="localeText"
+                (cellValueChanged)="saveEdit($event)"
+              ></ag-grid-angular>
             </div>
-
 
             <!--  <table id="order-listing" class="table table-bordered">
               <thead class="thead-dark">
