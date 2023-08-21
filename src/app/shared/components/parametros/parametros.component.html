@@ -1,40 +1,48 @@
-<div class="row">
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">Parámetros del sistema</h4>
+    <hr>
+    <div class="row">
+      <div class="col grid-margin stretch-card">
+        PERIODO ACTUAL: <label *ngIf="paramss" class="ml-3"> {{paramss.computed}}</label>
+      </div>
+
+      <div class="col grid-margin stretch-card">
+        Primer dia Lunes del periodo: <br>
+        <label *ngIf="paramss" class="ml-3"> {{paramss.inicio_periodo}}</label>
+      </div>
+      <div class="col grid-margin stretch-card">
+        Último dia del periodo: <br>
+          <label *ngIf="paramss" class="ml-3"> {{paramss.final_periodo}}</label>
+      </div>
+      <div class="col grid-margin stretch-card">
+        Quincena: <br>
+       <!--  <input type="radio" class="ml-2" id="inputZip" name="cierre" value="Q" [(ngModel)]="opcionSeleccionada"> -->
+        <button class="btn btn-primary btn-rounded ml-2"  (click)="cierre('Q','quincena')"  *ngIf="paramss">
+          Cierre de quincena
+        </button>
+      </div>
+      <div class="col grid-margin stretch-card">
+       Fin de mes: <br>
+       <!-- <input type="radio" class="ml-2" id="inputZip" name="cierre" value="Q" [(ngModel)]="opcionSeleccionada"> -->
+       <button class="btn btn-primary btn-rounded ml-2"  (click)="cierre('S','fin de mes')"  *ngIf="paramss" >Cierre fin de mes</button>
+      </div>
+
+
+    </div>
+
+  </div>
+</div>
+
+<!-- <div class="row">
+
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Parámetros del sistema</h4>
+
         <hr>
-        <form [formGroup]="formDate">
-          <div class="row">
-            <div class="d-flex justify-content-center">
-              <div class="col-md-4">
-                <div class="form-row">
 
 
-                  <div class="form-group ">
-                    <label for="inputEmail4">Primer día Lunes del período</label>
-                    <input type="date" class="form-control " formControlName="inicio" name="date">
-                  </div>
-                </div>
-               <!--  -->
-              </div>
-
-              <div class="col-md-4">
-                <div class="form-row">
-                  <div class="form-group ">
-                    <label for="inputEmail4">Último día del período</label>
-                    <input type="date" class="form-control " formControlName="final" name="date">
-                  </div>
-                </div>
-
-
-              </div>
-
-            </div>
-
-
-          </div>
-        </form>
         <hr>
         <div class="row">
 
@@ -75,7 +83,7 @@
         </div>
 
 
-        <!--   <div class="row pt-2">
+          <div class="row pt-2">
           <div class="col-12 table-responsive1">
 
             <table id="order-listing" class="table table-bordered table-striped" *ngIf="daysTable.length >0">
@@ -93,8 +101,8 @@
             </table>
 
           </div>
-        </div> -->
-        <!--
+        </div>
+
         <div class="row pt-2">
           <div class="col-12 ">
               <small><strong>H =</strong> Hábil </small>
@@ -103,9 +111,9 @@
               <br>
               <small> <strong>F =</strong> Feriado</small>
           </div>
-        </div> -->
+        </div>
 
       </div>
     </div>
   </div>
-</div>
+</div> -->

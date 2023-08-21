@@ -23,14 +23,19 @@ export class DetalleBonoComponent implements OnInit {
     private BuildMonthService: BuildMonthService,
     private toast: ToastrService,
     private paramSV: ParametrosService,
-    private aggsv: AgGridSpanishService
+    private aggsv: AgGridSpanishService,
+    private ParametrosService : ParametrosService
   ) {}
 
   overlayLoadingTemplate = this.aggsv.overlayLoadingTemplate;
   overlayNoRowsTemplate = this.aggsv.overlayNoRowsTemplate;
   localeText = this.aggsv.getLocale();
-
+  titlepage ='';
   ngOnInit() {
+    this.ParametrosService.get({accion:'C'}).subscribe((r:any)=>{
+      console.log(r);
+      r.result.parametros[0].tipo_mes =='Q'? this.titlepage ='quincena' : this.titlepage ='fin de mes'
+    })
     this.get();
     this.getBonos();
   }
@@ -270,19 +275,51 @@ export class DetalleBonoComponent implements OnInit {
         { text: p.total_bonos.toLocaleString('es-ES'), alignment: 'center' },
       ];
     });
+    let bodyFooter = [
+      { text: '', alignment: 'right' },
+      { text: '', alignment: 'center' },
+      { text: '', alignment: 'center' },
+      { text: 'Totales', alignment: 'center' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono1; }, 0).toLocaleString('es-ES'), alignment: 'center' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono2; }, 0).toLocaleString('es-ES'), alignment: 'center' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono3; }, 0).toLocaleString('es-ES'), alignment: 'center' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono4; }, 0).toLocaleString('es-ES'), alignment: 'center' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono5; }, 0).toLocaleString('es-ES'), alignment: 'center' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono6; }, 0).toLocaleString('es-ES'), alignment: 'center' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono7; }, 0).toLocaleString('es-ES'), alignment: 'center' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono8; }, 0).toLocaleString('es-ES'), alignment: 'center' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono9; }, 0).toLocaleString('es-ES'), alignment: 'center' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono10; }, 0).toLocaleString('es-ES'), alignment: 'center' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.total_bonos; }, 0).toLocaleString('es-ES'), alignment: 'center' },
+    ];
+
     tableHeader.push({
       text: 'Total bonos del mes',
       alignment: 'center',
       margin: [0, 10],
     });
+    let today = new Date().toLocaleString();
 
+    console.log(tableHeader,bodyTable,bodyFooter);
     let wids = [];
     for (let i = 0; i < tableHeader.length; i++) {
       wids.push('auto');
     }
     let docDefinition = {
+      footer: function(currentPage, pageCount, pageSize) {
+        // you can apply any logic and return any valid pdfmake element
+        return [{ text: 'Página ' + currentPage.toString() + ' de ' + pageCount, alignment: 'center' ,margin: [0, 5]}];
+
+      },
+      header: function(currentPage, pageCount, pageSize) {
+        // you can apply any logic and return any valid pdfmake element
+        return [{ text: 'Página ' + currentPage.toString() + ' de ' + pageCount, alignment: 'center' ,margin: [0, 20]}];
+
+      },
+      pageBreak: 'after',
       pageOrientation: 'vertical',
       pageSize: 'A4',
+
       pageMargins: [40, 60, 40, 60],
       info: {
         title: 'Reporte detalle de bonos',
@@ -294,9 +331,22 @@ export class DetalleBonoComponent implements OnInit {
           text: 'REPORTE DETALLE DE BONOS',
           fontSize: 16,
           alignment: 'center',
-          color: '#047886',
+          color: '#000',
           margin: [0, 10],
         },
+        {
+          columns: [
+          {
+            width: 300,
+            text: `Obra: ${this.obra.codigo } | ${this.obra.nombre }` ,margin: [0, 10]
+          },
+          {
+            width: '*',
+            text: 'Fecha: '+today.split('T'),
+            alignment: 'right',
+            margin: [0, 10]
+          },
+        ]},
 
         {
           table: {
@@ -304,9 +354,30 @@ export class DetalleBonoComponent implements OnInit {
 
             widths: wids,
 
-            body: [tableHeader, ...bodyTable],
+            body: [tableHeader, ...bodyTable,bodyFooter],
             alignment: 'center',
           },
+        },
+        {
+          columns : [
+            {
+              width: 50,
+              text : '',
+            },
+            {
+              width: 250,
+              text : 'V°B° Admnistrador de obra',
+              margin: [0, 120],
+              decoration : 'overline'
+            },
+            {
+              width: 250,
+              text : 'V°B° Gerente de obra',
+              margin: [20, 120],
+              decoration : 'overline',
+
+            },
+          ]
         },
       ],
       styles: {

@@ -13,16 +13,25 @@
             </h4>
           </div>
           <div class="col-sm-6 col-4">
-            <h3 id="quote">Dif. horas sábado y domingo</h3>
+            <h3 id="quote">Dif. horas sábado y domingo {{titlepage}}</h3>
           </div>
           <div class="col-sm-2 col-12">
-            <button
+            <app-btn-reporte-excel
+            [data]="data"
+            [headings]="headings"
+            [sheetName]="'Hoja1'"
+            [_from]="'sabdom'"
+            [fileName]="'Reporte_Diferencia_sabdom'"
+          >
+          </app-btn-reporte-excel>
+
+           <!--  <button
               type="button"
               class="btn btn-outline-dark btn-rounded ml-2 pull-right"
               (click)="createPDF()"
             >
               <i class="icon-doc"></i>Reporte PDF
-            </button>
+            </button> -->
           </div>
         </div>
 

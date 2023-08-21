@@ -31,6 +31,8 @@ import { ObraSelectService } from './services/obra-select.service';
 import { BtnReporteExcelComponent } from './components/btn-reporte-excel/btn-reporte-excel.component';
 import { InputHeaderComponent } from './components/table-aggrid/input-header/input-header.component';
 import { InputHeaderService } from './components/table-aggrid/input-header/input-header.service';
+import { BtnEliminarDetallePagoComponent } from './components/btn-eliminar-detalle-pago/btn-eliminar-detalle-pago.component';
+import { EliminarPagoService } from './components/btn-eliminar-detalle-pago/service/eliminar-pago.service';
 @NgModule({
   declarations: [
     LoaderComponent,
@@ -42,14 +44,18 @@ import { InputHeaderService } from './components/table-aggrid/input-header/input
     ParametrosComponent,
     UsuariosComponent,
     BtnReporteExcelComponent,
-    InputHeaderComponent
+    InputHeaderComponent,
+    BtnEliminarDetallePagoComponent
   ],
   imports: [
     CommonModule,
     HttpClientModule,
     ToastrModule.forRoot({
-      timeOut: 10000,
-      preventDuplicates: false,
+      timeOut: 3000,
+      preventDuplicates: true,
+      positionClass: 'toast-top-center',
+      closeButton : true,
+      progressBar : true
     }) ,
     FormsModule,
     GuiGridModule,
@@ -69,7 +75,8 @@ import { InputHeaderService } from './components/table-aggrid/input-header/input
     UsuariosService,
     PassDataService,
     ObraSelectService,
-    InputHeaderService
+    InputHeaderService,
+    EliminarPagoService
   ],
   exports : [
     LoaderComponent,
@@ -81,7 +88,8 @@ import { InputHeaderService } from './components/table-aggrid/input-header/input
     ParametrosComponent,
     UsuariosComponent,
     BtnReporteExcelComponent,
-    InputHeaderComponent
+    InputHeaderComponent,
+    BtnEliminarDetallePagoComponent
   ]
 })
 export class SharedModule { }

@@ -9,6 +9,8 @@ import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.se
 import { AgGridAngular } from 'ag-grid-angular';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
+
 @Component({
   selector: 'app-diferencia-sab-dom',
   templateUrl: './diferencia-sab-dom.component.html',
@@ -16,13 +18,16 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 })
 export class DiferenciaSabDomComponent implements OnInit {
 
-  constructor(private bm: BuildMonthService, private sb: DifSabDomService, private toast: ToastrService,
+  constructor(private bm: BuildMonthService, private sb: DifSabDomService, private toast: ToastrService, private ParametrosService : ParametrosService,
     private aggsv: AgGridSpanishService) { }
     @ViewChild('heGrid') grid!: AgGridAngular;
-
+    titlepage ='';
   ngOnInit(): void {
     this.get();
-
+    this.ParametrosService.get({accion:'C'}).subscribe((r:any)=>{
+      console.log(r);
+      r.result.parametros[0].tipo_mes =='Q'? this.titlepage ='quincena' : this.titlepage ='fin de mes'
+    })
   }
 
   data: any = [];
@@ -74,7 +79,10 @@ export class DiferenciaSabDomComponent implements OnInit {
     this.sb.get(b).subscribe((r: any) => {
       console.log(r);
 
-      this.toast.success('Actualizado con éxito', `Pago trabajador ${item.nombre}`);
+      this.toast.success('Actualizado con éxito', `Pago trabajador ${item.nombre}`,{
+        timeOut: 2000,
+
+      });
       this.get()
 
     })
@@ -354,7 +362,7 @@ export class DiferenciaSabDomComponent implements OnInit {
     }
 
     let today = new Date();
-let docDefinition = {
+    let docDefinition = {
 
   pageOrientation: 'landscape',
   pageSize: 'A3',
@@ -473,4 +481,14 @@ if (action === 'download') {
     return usdFormate.format(params.value);
   }
 
+  headings = [
+    [
+      'RUT',
+      'Código de ficha',
+      'Diferencia mensual Sábado',
+      'Diferencia mensual Domingo',
+      'Detalle',
+
+    ],
+  ];
 }

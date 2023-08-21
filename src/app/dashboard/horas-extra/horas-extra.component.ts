@@ -54,6 +54,11 @@ export class HorasExtraComponent implements OnInit {
   localeText = this.aggsv.getLocale();
 
   ngOnInit() {
+    this.paramSV.get({accion:'C'}).subscribe((r:any)=>{
+      console.log(r);
+      r.result.parametros[0].tipo_mes =='Q'? this.titlepage ='quincena' : this.titlepage ='fin de mes'
+    })
+
     this.getPeriodo().subscribe((r) => {
       console.log('response', r);
       this.columnDefs.push(
@@ -107,6 +112,13 @@ export class HorasExtraComponent implements OnInit {
                 filter: false,
                 floatingFilter: false,
                 editable: true,
+
+                cellEditor: 'agNumberCellEditor',
+                cellEditorParams: {
+                  min: 1,
+                  max: 100,
+                  precision: 0,
+                },
                 cellStyle: {
                   // you can use either came case or dashes, the grid converts to whats needed
                   backgroundColor: '#ff5e5e', // light green
@@ -127,6 +139,7 @@ export class HorasExtraComponent implements OnInit {
                 filter: false,
                 floatingFilter: false,
                 editable: false,
+
                 cellStyle: {
                   // you can use either came case or dashes, the grid converts to whats needed
                   backgroundColor: '#439aff', // light green
@@ -147,6 +160,12 @@ export class HorasExtraComponent implements OnInit {
               filter: false,
               floatingFilter: false,
               editable: true,
+              cellEditor: 'agNumberCellEditor',
+              cellEditorParams: {
+                min: 1,
+                max: 100,
+                precision: 0,
+              },
               cellStyle: {
                 // you can use either came case or dashes, the grid converts to whats needed
                 backgroundColor: '#7ed321', // light green
@@ -164,6 +183,12 @@ export class HorasExtraComponent implements OnInit {
               filter: false,
               floatingFilter: false,
               editable: true,
+              cellEditor: 'agNumberCellEditor',
+                cellEditorParams: {
+                  min: 1,
+                  max: 100,
+                  precision: 0,
+                },
             });
           }
         }
@@ -223,6 +248,8 @@ export class HorasExtraComponent implements OnInit {
 
     this.getHoraExtra();
   }
+
+  titlepage ='';
 
   CurrencyCellRenderer(params: any) {
     var usdFormate = new Intl.NumberFormat();

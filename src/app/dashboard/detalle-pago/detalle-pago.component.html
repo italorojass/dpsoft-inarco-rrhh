@@ -12,7 +12,7 @@
             </h4>
           </div>
           <div class="col-sm-4 col-4">
-            <h3 id="quote">Detalle pagos</h3>
+            <h3 id="quote">Detalle pagos {{titlepage}}</h3>
           </div>
           <div class="col-sm-4 col-4">
             <div class="btn-group pull-right">
@@ -504,8 +504,12 @@
               name="file"
             >
               <i class="icon-cloud-upload"></i>Carga masiva
-              <span *ngIf="datosExcel.length > 0">{{ datosExcel.length }}</span>
+
             </button>
+
+
+
+
             <button
               type="submit"
               class="btn btn-success"
