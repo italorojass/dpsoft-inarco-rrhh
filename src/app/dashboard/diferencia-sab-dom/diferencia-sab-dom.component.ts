@@ -26,7 +26,8 @@ export class DiferenciaSabDomComponent implements OnInit {
     this.get();
     this.ParametrosService.get({accion:'C'}).subscribe((r:any)=>{
       console.log(r);
-      r.result.parametros[0].tipo_mes =='Q'? this.titlepage ='quincena' : this.titlepage ='fin de mes'
+      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='quincena '+r.result.parametros[0].computed : this.titlepage ='fin de mes '+r.result.parametros[0].computed
+
     })
   }
 

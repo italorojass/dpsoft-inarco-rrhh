@@ -2,6 +2,7 @@ import { BonosService } from './../../../dashboard/detalle-bono/services/bonos.s
 import { Component, Input } from '@angular/core';
 import { from } from 'rxjs';
 import { groupBy, mergeMap, toArray } from 'rxjs/operators';
+import { DifSabDomService } from 'src/app/dashboard/diferencia-sab-dom/services/dif-sab-dom.service';
 import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-btn-reporte-excel',
@@ -16,14 +17,14 @@ export class BtnReporteExcelComponent {
   @Input() fileName : any;
   @Input() _from : any;
 
-  constructor(private BonosService : BonosService){
+  constructor(private BonosService : BonosService, private sabdom : DifSabDomService){
 
   }
 
   buildReporte(from1){
     let excelData = [];
 
-
+    let obra=JSON.parse(sessionStorage.getItem('obraSelect')).codigo
     switch(from1){
       case 'hh' :
         excelData = this.data.map(x=>{
@@ -36,18 +37,17 @@ export class BtnReporteExcelComponent {
           return b;
         })
 
-        const wb1 = XLSX.utils.book_new();
-        const ws1: any = XLSX.utils.json_to_sheet([]);
-        XLSX.utils.sheet_add_aoa(ws1, this.headings);
-        XLSX.utils.sheet_add_json(ws1, excelData, { origin: 'A2', skipHeader: true });
-        XLSX.utils.book_append_sheet(wb1, ws1, this.sheetName);
-        XLSX.writeFile(wb1, `${this.fileName}.xlsx`);
-
+        const wb = XLSX.utils.book_new();
+        const ws: any = XLSX.utils.json_to_sheet([]);
+              XLSX.utils.sheet_add_aoa(ws, this.headings);
+              XLSX.utils.sheet_add_json(ws, excelData, { origin: 'A2', skipHeader: true });
+              XLSX.utils.book_append_sheet(wb, ws, this.sheetName);
+              XLSX.writeFile(wb, `${this.fileName}.xlsx`);
       break;
 
       case 'bonos' :
         //consultar y crear el objeto que retorna
-        let obra=JSON.parse(sessionStorage.getItem('obraSelect')).codigo
+        //let obra=JSON.parse(sessionStorage.getItem('obraSelect')).codigo
         let body = {
           tipo : 0,
           accion : 'R',
@@ -59,7 +59,7 @@ export class BtnReporteExcelComponent {
 	       /*  for(let i in excelData){
             console.log("excelData",i,"-",excelData[i]);
           } */
-          console.log('data excel',excelData);
+          console.log('data excel',r.result.bonos);
           const source = from(excelData);
           //group by age
           const example = source.pipe(
@@ -99,7 +99,32 @@ export class BtnReporteExcelComponent {
 
       break;
       case 'sabdom':
-        excelData = this.data.map(x=>{
+      let body1 = {
+        tipo : 'finde',
+        accion : 'R',
+        obra : obra
+      }
+      this.sabdom.get(body1).subscribe((r:any)=>{
+
+        excelData = r.result.sab_dom.map(x=>{
+
+          return {
+            rut : x.rut,
+            ficha :x.ficha,
+            total_sab : x.total_mensual_sab,
+            total_dom : x.total_mensual_dom,
+            detalle : ''
+          }
+        })
+        const wb1 = XLSX.utils.book_new();
+        const ws1: any = XLSX.utils.json_to_sheet([]);
+        XLSX.utils.sheet_add_aoa(ws1, this.headings);
+        XLSX.utils.sheet_add_json(ws1, excelData, { origin: 'A2', skipHeader: true });
+        XLSX.utils.book_append_sheet(wb1, ws1, this.sheetName);
+        XLSX.writeFile(wb1, `${this.fileName}.xlsx`);
+      })
+
+       /*  excelData = this.data.map(x=>{
           let b =  {
             rut : x.rutF,
             ficha : x.ficha,
@@ -111,12 +136,7 @@ export class BtnReporteExcelComponent {
           return b;
         });
 
-        const wb = XLSX.utils.book_new();
-        const ws: any = XLSX.utils.json_to_sheet([]);
-              XLSX.utils.sheet_add_aoa(ws, this.headings);
-              XLSX.utils.sheet_add_json(ws, excelData, { origin: 'A2', skipHeader: true });
-              XLSX.utils.book_append_sheet(wb, ws, this.sheetName);
-              XLSX.writeFile(wb, `${this.fileName}.xlsx`);
+        */
 
       break;
     }

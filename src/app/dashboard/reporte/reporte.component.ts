@@ -7,6 +7,7 @@ import { ColDef } from 'ag-grid-community';
 import { DetallePagoService } from '../detalle-pago/services/detalle-pago.service';
 import ChileanRutify from 'chilean-rutify';
 import { AgGridAngular } from 'ag-grid-angular';
+import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
 @Component({
   selector: 'app-reporte',
   templateUrl: './reporte.component.html',
@@ -15,9 +16,14 @@ import { AgGridAngular } from 'ag-grid-angular';
 export class ReporteComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
-    private dtSv: DetallePagoService,) { }
-
+    private dtSv: DetallePagoService,private paramSV: ParametrosService,) { }
+    titlepage:string=''
   ngOnInit(): void {
+    this.paramSV.get({accion:'C'}).subscribe((r:any)=>{
+      console.log(r);
+      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='quincena '+r.result.parametros[0].computed : this.titlepage ='fin de mes '+r.result.parametros[0].computed
+
+    })
   }
 
   f = this.fb.group({
@@ -125,7 +131,8 @@ export class ReporteComponent implements OnInit {
               ...exl,
               montoWeb: ePagos.liq_apagar,
               diferencia: diferencia
-            })
+            });
+
             /* exl['montoWeb'] == ePagos.liq_apagar;
             if(ePagos.liq_apagar != exl.sueldoLiq ){
               //console.log('crear el excel');

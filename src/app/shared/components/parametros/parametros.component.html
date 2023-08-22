@@ -18,14 +18,14 @@
       <div class="col grid-margin stretch-card">
         Quincena: <br>
        <!--  <input type="radio" class="ml-2" id="inputZip" name="cierre" value="Q" [(ngModel)]="opcionSeleccionada"> -->
-        <button class="btn btn-primary btn-rounded ml-2"  (click)="cierre('Q','quincena')"  *ngIf="paramss">
+        <button class="btn btn-primary btn-rounded ml-2"  (click)="cierre('Q','quincena')"  *ngIf="paramss" [disabled]="paramss.tipo_mes=='Q'">
           Cierre de quincena
         </button>
       </div>
       <div class="col grid-margin stretch-card">
        Fin de mes: <br>
        <!-- <input type="radio" class="ml-2" id="inputZip" name="cierre" value="Q" [(ngModel)]="opcionSeleccionada"> -->
-       <button class="btn btn-primary btn-rounded ml-2"  (click)="cierre('S','fin de mes')"  *ngIf="paramss" >Cierre fin de mes</button>
+       <button class="btn btn-primary btn-rounded ml-2"  (click)="cierre('S','fin de mes')"  *ngIf="paramss" [disabled]="paramss.tipo_mes=='S' || paramss.tipo_mes=='I'">Cierre fin de mes</button>
       </div>
 
 

@@ -12,7 +12,7 @@
             </h4>
           </div>
           <div class="col-sm-6 col-4">
-            <h3 id="quote">Reportes</h3>
+            <h3 id="quote">Reportes {{titlepage}}</h3>
           </div>
         </div>
 
@@ -74,16 +74,14 @@
 
                   <tr>
                     <td>
-                      <h6>Datos del sistema</h6>
+                      <h6>Trabajadores del sistema</h6>
                       <p class="text-muted mb-0">
-                        Datos obtenidos desde
-                        <a [routerLink]="['/obras/inicio/detalle-pagos']"
-                          >detalle pago</a
-                        >
+                        Trabajadores actuales del sistema
+
                       </p>
                     </td>
                     <td>
-                      <h3 class="text-success">
+                      <h3 class="text-info">
                         {{ dataPagos.length }}
                       </h3>
                     </td>
@@ -92,12 +90,12 @@
                   <tr>
                     <td>
                       <h6>Coincidencias</h6>
-                      <p class="text-muted mb-0">
-                        Los datos los puedes ver en la grilla de abajo
+                      <p class="text-success mb-0">
+                        Los datos que coinciden los puedes ver en la grilla de abajo
                       </p>
                     </td>
                     <td>
-                      <h3 class="text-info">
+                      <h3 class="text-success">
                         {{ dataGrid.length }}
                       </h3>
                     </td>
@@ -105,11 +103,8 @@
                   <tr>
                     <td>
                       <h6>Diferencia</h6>
-                      <p class="text-muted mb-0">
-                        Cantidad de trabajadores que no existen en
-                        <a [routerLink]="['/obras/inicio/detalle-pagos']"
-                          >detalle pago</a
-                        >
+                      <p class="text-danger mb-0">
+                        No existen en el sistema los trajabadores
                       </p>
                     </td>
                     <td>
