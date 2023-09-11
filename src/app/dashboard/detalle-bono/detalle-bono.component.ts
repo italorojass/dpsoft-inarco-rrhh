@@ -3,7 +3,7 @@ import { BonosService } from './services/bonos.service';
 import { BuildMonthService } from 'src/app/shared/services/build-month.service';
 import { ToastrService } from 'ngx-toastr';
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, RowClassRules } from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { InputHeaderComponent } from 'src/app/shared/components/table-aggrid/input-header/input-header.component';
@@ -34,7 +34,7 @@ export class DetalleBonoComponent implements OnInit {
   ngOnInit() {
     this.ParametrosService.get({accion:'C'}).subscribe((r:any)=>{
       console.log(r);
-      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='quincena '+r.result.parametros[0].computed : this.titlepage ='fin de mes '+r.result.parametros[0].computed
+      r.result.parametros[0].tipo_mes !='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='quincena '+r.result.parametros[0].computed : this.titlepage ='fin de mes '+r.result.parametros[0].computed
 
     })
     this.get();
@@ -51,6 +51,15 @@ export class DetalleBonoComponent implements OnInit {
     autoHeaderHeight: true,
   };
 
+  rowClassRules: RowClassRules = {
+    // row style function
+    'sick-days-warning': (params) => {
+
+      return params.data.ciequicena === 'S';
+    },
+    // row style expression
+
+  };
   columnDefs: ColDef[] = [
     {
       headerName: 'ID',
@@ -94,6 +103,17 @@ export class DetalleBonoComponent implements OnInit {
       cellClass: (params) => {
         return this.dictFicha[params.value];
       },
+    },
+    {
+      headerName: 'Días',
+      field: 'dias',
+      filter: false,
+      floatingFilter: false,
+      editable: false,
+      width: 90,
+      pinned: 'left',
+      lockPinned: true,
+
     },
   ];
   headings = [['RUT', 'Código de ficha', 'Valor', 'Detalle']];
@@ -157,7 +177,7 @@ this.bonos=[];
             width: 150,
             filter: false,
             floatingFilter: false,
-            editable: true,
+            editable : (params) => params.data.ciequicena !== 'S',
             cellRenderer: this.CurrencyCellRenderer,
             cellRendererParams: {
               currency: 'CLP',
@@ -174,7 +194,7 @@ this.bonos=[];
             width: 150,
             filter: false,
             floatingFilter: false,
-            editable: true,
+            editable : (params) => params.data.ciequicena !== 'S',
           });
         }
       }
@@ -196,8 +216,7 @@ this.bonos=[];
     });
   }
   CurrencyCellRenderer(params: any) {
-    var usdFormate = new Intl.NumberFormat();
-    return usdFormate.format(params.value);
+    return params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
   formatRut(rut, dig) {
@@ -233,7 +252,7 @@ this.bonos=[];
       { text: 'N°', alignment: 'center', margin: [0, 10] },
       { text: 'Nombre', alignment: 'center', margin: [0, 10] },
       { text: 'RUT', alignment: 'center', margin: [0, 10] },
-      { text: 'N° de ficha', alignment: 'center', margin: [0, 10] },
+      //{ text: 'N° de ficha', alignment: 'center', margin: [0, 10] },
       //{ text: 'Total bonos del mes', alignment: 'center', margin: [0, 10] }
     ];
     //
@@ -261,38 +280,38 @@ this.bonos=[];
     let bodyTable = newob.map((p, i) => {
       return [
         { text: i + 1, alignment: 'right' },
-        { text: p.nombre, alignment: 'center' },
-        { text: p.rutF, alignment: 'center' },
-        { text: p.ficha, alignment: 'center' },
-        { text: p.bono1.toLocaleString('es-ES'), alignment: 'center' },
-        { text: p.bono2.toLocaleString('es-ES'), alignment: 'center' },
-        { text: p.bono3.toLocaleString('es-ES'), alignment: 'center' },
-        { text: p.bono4.toLocaleString('es-ES'), alignment: 'center' },
-        { text: p.bono5.toLocaleString('es-ES'), alignment: 'center' },
-        { text: p.bono6.toLocaleString('es-ES'), alignment: 'center' },
-        { text: p.bono7.toLocaleString('es-ES'), alignment: 'center' },
-        { text: p.bono8.toLocaleString('es-ES'), alignment: 'center' },
-        { text: p.bono9.toLocaleString('es-ES'), alignment: 'center' },
-        { text: p.bono10.toLocaleString('es-ES'), alignment: 'center' },
-        { text: p.total_bonos.toLocaleString('es-ES'), alignment: 'center' },
+        { text: p.nombre, alignment: 'left' },
+        { text: `${p.rutF}/${p.ficha}`, alignment: 'left' },
+        //{ text: p.ficha, alignment: 'center' },
+        { text: p.bono1.toLocaleString('es-ES'), alignment: 'right' },
+        { text: p.bono2.toLocaleString('es-ES'), alignment: 'right' },
+        { text: p.bono3.toLocaleString('es-ES'), alignment: 'right' },
+        { text: p.bono4.toLocaleString('es-ES'), alignment: 'right' },
+        { text: p.bono5.toLocaleString('es-ES'), alignment: 'right' },
+        { text: p.bono6.toLocaleString('es-ES'), alignment: 'right' },
+        { text: p.bono7.toLocaleString('es-ES'), alignment: 'right' },
+        { text: p.bono8.toLocaleString('es-ES'), alignment: 'right' },
+        { text: p.bono9.toLocaleString('es-ES'), alignment: 'right' },
+        { text: p.bono10.toLocaleString('es-ES'), alignment: 'right' },
+        { text: p.total_bonos.toLocaleString('es-ES'), alignment: 'right' },
       ];
     });
     let bodyFooter = [
       { text: '', alignment: 'right' },
-      { text: '', alignment: 'center' },
-      { text: '', alignment: 'center' },
+      { text: '', alignment: 'left' },
+      //{ text: '', alignment: 'center' },
       { text: 'Totales', alignment: 'center' },
-      { text: newob.reduce(function (acc, obj) { return acc + obj.bono1; }, 0).toLocaleString('es-ES'), alignment: 'center' },
-      { text: newob.reduce(function (acc, obj) { return acc + obj.bono2; }, 0).toLocaleString('es-ES'), alignment: 'center' },
-      { text: newob.reduce(function (acc, obj) { return acc + obj.bono3; }, 0).toLocaleString('es-ES'), alignment: 'center' },
-      { text: newob.reduce(function (acc, obj) { return acc + obj.bono4; }, 0).toLocaleString('es-ES'), alignment: 'center' },
-      { text: newob.reduce(function (acc, obj) { return acc + obj.bono5; }, 0).toLocaleString('es-ES'), alignment: 'center' },
-      { text: newob.reduce(function (acc, obj) { return acc + obj.bono6; }, 0).toLocaleString('es-ES'), alignment: 'center' },
-      { text: newob.reduce(function (acc, obj) { return acc + obj.bono7; }, 0).toLocaleString('es-ES'), alignment: 'center' },
-      { text: newob.reduce(function (acc, obj) { return acc + obj.bono8; }, 0).toLocaleString('es-ES'), alignment: 'center' },
-      { text: newob.reduce(function (acc, obj) { return acc + obj.bono9; }, 0).toLocaleString('es-ES'), alignment: 'center' },
-      { text: newob.reduce(function (acc, obj) { return acc + obj.bono10; }, 0).toLocaleString('es-ES'), alignment: 'center' },
-      { text: newob.reduce(function (acc, obj) { return acc + obj.total_bonos; }, 0).toLocaleString('es-ES'), alignment: 'center' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono1; }, 0).toLocaleString('es-ES'), alignment: 'right' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono2; }, 0).toLocaleString('es-ES'), alignment: 'right' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono3; }, 0).toLocaleString('es-ES'), alignment: 'right' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono4; }, 0).toLocaleString('es-ES'), alignment: 'right' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono5; }, 0).toLocaleString('es-ES'), alignment: 'right' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono6; }, 0).toLocaleString('es-ES'), alignment: 'right' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono7; }, 0).toLocaleString('es-ES'), alignment: 'right' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono8; }, 0).toLocaleString('es-ES'), alignment: 'right' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono9; }, 0).toLocaleString('es-ES'), alignment: 'right' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.bono10; }, 0).toLocaleString('es-ES'), alignment: 'right' },
+      { text: newob.reduce(function (acc, obj) { return acc + obj.total_bonos; }, 0).toLocaleString('es-ES'), alignment: 'right' },
     ];
 
     tableHeader.push({
@@ -305,32 +324,38 @@ this.bonos=[];
     console.log(tableHeader,bodyTable,bodyFooter);
     let wids = [];
     for (let i = 0; i < tableHeader.length; i++) {
-      wids.push('auto');
+      wids.push('*');
     }
+    wids[1]=250;
+    wids[2]=100;
     let docDefinition = {
       footer: function(currentPage, pageCount, pageSize) {
         // you can apply any logic and return any valid pdfmake element
-        return [{ text: 'Página ' + currentPage.toString() + ' de ' + pageCount, alignment: 'center' ,margin: [0, 5]}];
+        return [
+          { text: 'Página ' + currentPage.toString() + ' de ' + pageCount, alignment: 'center' ,margin: [0, 5]}
+        ];
 
       },
       header: function(currentPage, pageCount, pageSize) {
         // you can apply any logic and return any valid pdfmake element
-        return [{ text: 'Página ' + currentPage.toString() + ' de ' + pageCount, alignment: 'center' ,margin: [0, 20]}];
+        return [{ text: 'Página ' + currentPage.toString() + ' de ' + pageCount, alignment: 'center' ,margin: [0, 20]},
+       ];
 
       },
       pageBreak: 'after',
       pageOrientation: 'vertical',
-      pageSize: 'A4',
+      pageSize: 'A2',
 
       pageMargins: [40, 60, 40, 60],
       info: {
-        title: 'Reporte detalle de bonos',
+        headerRows: 1,
+        title: 'Reporte detalle de bonos '+this.titlepage,
       },
       //watermark: { text: 'test watermark', color: 'blue', opacity: 0.3, bold: true, italics: false },
       content: [
         // Previous configuration
         {
-          text: 'REPORTE DETALLE DE BONOS',
+          text: 'REPORTE DETALLE DE BONOS '+this.titlepage,
           fontSize: 16,
           alignment: 'center',
           color: '#000',
@@ -357,25 +382,25 @@ this.bonos=[];
             widths: wids,
 
             body: [tableHeader, ...bodyTable,bodyFooter],
-            alignment: 'center',
+            alignment: 'left',
           },
         },
         {
+
           columns : [
+
             {
-              width: 50,
-              text : '',
-            },
-            {
-              width: 250,
+              width: 650,
               text : 'V°B° Admnistrador de obra',
-              margin: [0, 120],
+              alignment: 'center',
+              margin: [0, 100],
               decoration : 'overline'
             },
             {
-              width: 250,
-              text : 'V°B° Gerente de obra',
-              margin: [20, 120],
+              width: 780,
+              text : 'V°B° Visitador de obra',
+              alignment: 'left',
+              margin: [20, 100],
               decoration : 'overline',
 
             },
@@ -413,4 +438,7 @@ this.bonos=[];
         .open();
     }
   }
+
+
+
 }

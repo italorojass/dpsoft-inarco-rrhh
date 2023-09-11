@@ -71,32 +71,12 @@ export class HeaderComponent implements OnInit {
 
   menu = [
     {
-      title: 'Inicio',
-      href: '/obras/inicio',
+      title: 'Obras',
+      href: '/obras',
       icon: 'icon-home'
     },
-    /* {
-      title: 'Administración sistema',
-      subitem: [
-        {
-          title: 'Proyectos',
-          href: '/obras/inicio/proyectos',
-          icon: 'icon-docs'
-        },
-        {
-          title: 'Usuarios',
-          href: '/obras/inicio/usuarios',
-          icon: 'icon-people'
-        },
-        {
-          title:'Parámetros',
-          href : '/obras/inicio/parametros',
-          icon : 'icon-layers'
-        }],
 
-      icon: 'icon-settings'
-    }, */
-    {
+    /* {
       title: 'Pagos obra',
       //href: '/obras/inicio/requerimientos',
       icon: 'icon-briefcase',
@@ -121,11 +101,26 @@ export class HeaderComponent implements OnInit {
           href : '/obras/inicio/detalle-bonos',
           icon : 'icon-layers'
         }],
+    }, */
+    {
+      title: 'Pagos',
+      href: '/obras/inicio/detalle-pagos',
+      icon: 'icon-star'
     },
     {
-      title: 'Reportes',
-      href: '/obras/inicio/reportes',
-      icon: 'icon-cloud-download'
+      title: 'Horas extras',
+      href: '/obras/inicio/horas-extras',
+      icon: 'icon-clock'
+    },
+    {
+      title:'Diferencia sab. dom.',
+      href : '/obras/inicio/diferencia-sab-dom',
+      icon : 'icon-vector'
+    },
+    {
+      title:'Bonos',
+      href : '/obras/inicio/detalle-bonos',
+      icon : 'icon-present'
     }
 
   ]

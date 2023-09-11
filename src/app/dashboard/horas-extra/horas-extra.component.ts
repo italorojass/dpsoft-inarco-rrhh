@@ -6,6 +6,7 @@ import {
   ColDef,
   GridApi,
   GridReadyEvent,
+  RowClassRules,
   RowValueChangedEvent,
 } from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
@@ -53,10 +54,20 @@ export class HorasExtraComponent implements OnInit {
   overlayNoRowsTemplate = this.aggsv.overlayNoRowsTemplate;
   localeText = this.aggsv.getLocale();
 
+  rowClassRules: RowClassRules = {
+    // row style function
+    'sick-days-warning': (params) => {
+
+      return params.data.ciequincena === 'S';
+    },
+    // row style expression
+
+  };
+
   ngOnInit() {
     this.paramSV.get({accion:'C'}).subscribe((r:any)=>{
       console.log(r);
-      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='quincena '+r.result.parametros[0].computed : this.titlepage ='fin de mes '+r.result.parametros[0].computed
+      r.result.parametros[0].tipo_mes !='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='quincena '+r.result.parametros[0].computed : this.titlepage ='fin de mes '+r.result.parametros[0].computed
 
     })
 
@@ -70,7 +81,7 @@ export class HorasExtraComponent implements OnInit {
           pinned: 'left',
           filter: false,
           floatingFilter: false,
-          editable: false,
+          editable : (params) => params.data.ciequincena !== 'S',
         },
         {
           field: 'nombre',
@@ -82,7 +93,7 @@ export class HorasExtraComponent implements OnInit {
           lockPinned: true,
           cellClass: 'lock-pinned',
 
-          editable: false,
+          editable : (params) => params.data.ciequincena !== 'S',
         }
       );
       let res = r['result'].parametros[0];
@@ -112,7 +123,7 @@ export class HorasExtraComponent implements OnInit {
                 suppressSizeToFit: true,
                 filter: false,
                 floatingFilter: false,
-                editable: true,
+                editable : (params) => params.data.ciequincena !== 'S',
 
                 cellEditor: 'agNumberCellEditor',
                 cellEditorParams: {
@@ -160,7 +171,7 @@ export class HorasExtraComponent implements OnInit {
               suppressSizeToFit: true,
               filter: false,
               floatingFilter: false,
-              editable: true,
+              editable : (params) => params.data.ciequincena !== 'S',
               cellEditor: 'agNumberCellEditor',
               cellEditorParams: {
                 min: 1,
@@ -183,7 +194,7 @@ export class HorasExtraComponent implements OnInit {
               suppressSizeToFit: true,
               filter: false,
               floatingFilter: false,
-              editable: true,
+              editable : (params) => params.data.ciequincena !== 'S',
               cellEditor: 'agNumberCellEditor',
                 cellEditorParams: {
                   min: 1,
@@ -253,8 +264,7 @@ export class HorasExtraComponent implements OnInit {
   titlepage ='';
 
   CurrencyCellRenderer(params: any) {
-    var usdFormate = new Intl.NumberFormat();
-    return usdFormate.format(params.value);
+    return params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
   public groupHeaderHeight = 45;

@@ -21,7 +21,7 @@
             [headings]="headings"
             [sheetName]="'Hoja1'"
             [_from]="'sabdom'"
-            [fileName]="'Reporte_Diferencia_sabdom'"
+            [fileName]="'Reporte_Diferencia_sabdom_'+obra.codigo+'_'+obra.nombre+'_'+titlepage"
           >
           </app-btn-reporte-excel>
 
@@ -60,6 +60,7 @@
               [localeText]="localeText"
               (gridReady)="onGridReady($event)"
               [paginationPageSize]="15"
+              [rowClassRules]="rowClassRules"
               (rowValueChanged)="onRowValueChanged($event)"
               [editType]="'fullRow'"
             ></ag-grid-angular>

@@ -4,21 +4,18 @@
       <div class="card-body">
         <div class="row">
           <div class="col-4">
-            <h4 class="text-left mb-4 text-dark">
-              <a [routerLink]="['/obras']"
-                ><i class="icon-action-undo mr-2"></i>{{ obra.codigo }} |
-                {{ obra.nombre }}</a
-              >
-            </h4>
+
           </div>
           <div class="col-sm-6 col-4">
-            <h3 id="quote">Reportes {{titlepage}}</h3>
+            <h3 id="quote">Reporte comparativo {{titlepage}}</h3>
           </div>
         </div>
+        <hr/>
 
         <div class="row">
           <div class="d-flex justify-content-center">
             <div class="col-6">
+
               <ul class="list-ticked">
                 <li>Solo archivos .xlsx o .xls</li>
               </ul>
@@ -26,43 +23,34 @@
               <form [formGroup]="f">
                 <div class="input-group">
                   <input
-                    type="file"
-                    class="form-control"
-                    (change)="handleFileInput($event)"
-                    formControlName="file"
-                    placeholder="Seleccione un archivo excel"
-                    name="file"
-                  />
-                  <div class="input-group-append">
-                    <button
-                      class="btn btn-outline-danger btn-rounded mb-2"
-                      (click)="
-                        this.f.reset();
-                        showbtn = false;
-                        data = [];
-                        dataPagos = []
-                      "
-                      *ngIf="showbtn"
-                    >
-                      <i class="fa fa-trash"></i>
-                    </button>
-                  </div>
+                  type="file"
+                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                  #file2
+                  (change)="handleFileInput($event)"
+                  style="display: none"
+                />
+
+                  <button
+                  type="button"
+                  class="btn btn-inverse-success btn-block"
+                  (click)="file2.click()"
+                  placeholder="Seleccione un archivo excel"
+                  name="file"
+                >
+                  <i class="icon-cloud-upload"></i>Libro remuneraciones
+
+                </button>
+
                 </div>
               </form>
-            </div>
-          </div>
-        </div>
-        <hr />
-        <div class="row">
-          <div class="d-flex justify-content-center">
-            <div class="col-6">
+              <hr>
               <table class="table table-borderless" *ngIf="showbtn">
                 <tbody>
                   <tr>
                     <td>
                       <h6>Datos del archivo {{ fileName }}</h6>
                       <p class="text-muted mb-0">
-                        Cantidad de trabajadores procesados para comparar
+                        Cantidad de datos procesados
                       </p>
                     </td>
                     <td>
@@ -72,7 +60,83 @@
                     </td>
                   </tr>
 
+
+                </tbody>
+              </table>
+              <br>
+
+              <div class="table-responsive1" *ngIf="dataGrid.length > 0">
+
+                <app-table-aggrid
+                  [datos]="dataGrid"
+                  [columnas]="columnDefs"
+                ></app-table-aggrid>
+                <br>
+                <!-- <div class="d-flex justify-content-center">
+                  <button
+                    class="btn btn-outline-success btn-rounded mb-2"
+                    (click)="exportexc()"
+                  >
+                    Exportar a excel<i class="fa fa-file-excel-o ml-2"></i>
+                  </button>
+                </div> -->
+              </div>
+            </div>
+            <div class="col-6">
+
+              <ul class="list-ticked">
+                <li>Solo archivos .xlsx o .xls</li>
+              </ul>
+              <form [formGroup]="f">
+                <div class="input-group">
+
+                  <input
+                  type="file"
+                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                  #fileFiniq
+                  (change)="handleFileInputFiniq($event)"
+                  style="display: none"
+                />
+
+                  <button
+                  type="button"
+                  class="btn btn-inverse-dark btn-block"
+                  (click)="fileFiniq.click()"
+                  placeholder="Seleccione un archivo excel"
+                  name="fileFiniq"
+                >
+                  <i class="icon-cloud-upload"></i>Libro Finiquitos
+
+                </button>
+             <!--    <button
+                type="button"
+                class="btn btn-danger"
+              >
+                <i class="icon-trash"></i>
+
+              </button> -->
+
+                </div>
+              </form>
+
+              <hr>
+              <table class="table table-borderless" *ngIf="showbtnFiniq">
+                <tbody>
                   <tr>
+                    <td>
+                      <h6>Datos del archivo {{ fileNameFiniq }}</h6>
+                      <p class="text-muted mb-0">
+                        Cantidad de datos procesados
+                      </p>
+                    </td>
+                    <td>
+                      <h3 class="text-primary">
+                        {{ dataFiniq.length }}
+                      </h3>
+                    </td>
+                  </tr>
+
+                <!--   <tr>
                     <td>
                       <h6>Trabajadores del sistema</h6>
                       <p class="text-muted mb-0">
@@ -109,38 +173,61 @@
                     </td>
                     <td>
                       <h3 class="text-danger">
-                        {{ data.length - dataPagos.length }}
+                        {{ dataFiniq.length - dataPagos.length }}
                       </h3>
                     </td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </table>
+              <br>
+              <div class="table-responsive1" *ngIf="dataGridFiniq.length > 0">
+
+                <app-table-aggrid
+                  [datos]="dataGridFiniq"
+                  [columnas]="columnDefsFiniq"
+                ></app-table-aggrid>
+                <br>
+
+              </div>
             </div>
           </div>
         </div>
-        <hr />
-        <div class="row mt-2" *ngIf="dataGrid.length > 0">
-          <div class="col-12">
-            <div class="d-flex justify-content-center">
-              <button
-                class="btn btn-outline-success btn-rounded mb-2"
-                (click)="exportexc()"
-              >
-                Exportar a excel<i class="fa fa-file-excel-o ml-2"></i>
-              </button>
+        <hr *ngIf="dataGrid.length > 0 && dataGridFiniq.length >0"/>
+        <div class="row" *ngIf="dataGrid.length > 0 && dataGridFiniq.length >0">
+          <div class="d-flex justify-content-center">
+            <div class="col-12">
+                <button type="button" class="btn btn-outline-success btn-block" (click)="comparar()"><i class="icon-shuffle"></i> Comparar</button>
             </div>
           </div>
         </div>
-        <div class="row mt-2" *ngIf="dataGrid.length > 0">
+        <hr  *ngIf="resultadosComparados.length > 0 && columnDefsComparados.length > 0">
+        <div class="row" *ngIf="resultadosComparados.length > 0 && columnDefsComparados.length > 0">
+          <app-btn-reporte-excel
+          [data]="resultadosComparados"
+          [headings]="headings"
+          [sheetName]="'Resultados'"
+          [_from]="'comparativo'"
+          [fileName]="'Reporte_comparativo_'+fileName+'_'+fileNameFiniq+'_'+titlepage"
+        >
+        </app-btn-reporte-excel>
           <div class="col-12">
+            <h2>Diferencias: {{resultadosComparados.length }}</h2>
+
+            <br>
+
+
             <div class="table-responsive1">
               <app-table-aggrid
-                [datos]="dataGrid"
-                [columnas]="columnDefs"
-              ></app-table-aggrid>
+                  [datos]="resultadosComparados"
+                  [columnas]="columnDefsComparados"
+                ></app-table-aggrid>
             </div>
+
+
           </div>
         </div>
+
+
       </div>
     </div>
   </div>

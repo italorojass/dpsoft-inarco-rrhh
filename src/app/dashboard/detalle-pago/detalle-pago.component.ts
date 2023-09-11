@@ -21,6 +21,7 @@ import { saveAs } from 'file-saver';
 import Swal from 'sweetalert2';
 import { BtnEliminarDetallePagoComponent } from 'src/app/shared/components/btn-eliminar-detalle-pago/btn-eliminar-detalle-pago.component';
 import { EliminarPagoService } from 'src/app/shared/components/btn-eliminar-detalle-pago/service/eliminar-pago.service';
+import { validateRut } from '@fdograph/rut-utilities';
 
 @Component({
   selector: 'app-detalle-pago',
@@ -36,7 +37,7 @@ export class DetallePagoComponent implements OnInit {
   totalRemuneracionEdit: any;
   totalDesctEdit: any;
 
-
+  numbers:any;
   constructor(private fb: FormBuilder,
     private dtSv: DetallePagoService,
     private toastr: ToastrService,
@@ -45,12 +46,25 @@ export class DetallePagoComponent implements OnInit {
     private BuildMonthService: BuildMonthService,
     private currencyPipe: CurrencyPipe,
     private deletePago : EliminarPagoService,
-    private ParametrosService : ParametrosService) { }
+    private ParametrosService : ParametrosService) {
+      this.numbers = Array(20).fill(0).map((x,i)=>i);
+    }
     titlepage ='';
+    dictFicha: any = {
+      F1: 'badge-outline-primary',
+      F2: 'badge-outline-info2',
+      F3: 'badge-outline-warning2',
+      F4: 'badge-outline-info',
+      F5: 'badge-outline-danger2'
+    }
+    datosParametros : any;
    ngOnInit() {
+
+
     this.ParametrosService.get({accion:'C'}).subscribe((r:any)=>{
       console.log(r);
-      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='quincena '+r.result.parametros[0].computed : this.titlepage ='fin de mes '+r.result.parametros[0].computed
+      this.datosParametros =r.result.parametros[0];
+      r.result.parametros[0].tipo_mes !='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='quincena '+r.result.parametros[0].computed : this.titlepage ='fin de mes '+r.result.parametros[0].computed
 
     })
      this.getEspecialidad();
@@ -159,12 +173,13 @@ export class DetallePagoComponent implements OnInit {
       ajuste_pos: Number(e.ajuste_pos),
       anticipo: Number(e.anticipo),
       dctos_varios: Number(e.dctos_varios),
-      finiquito: Number(e.finiquito),
+
       finiq : e.finiq,
       zona10: Number(e.zona10),
       viatico: Number(e.viatico),
       asignaciones: Number(e.asignaciones),
       aguinaldo: Number(e.aguinaldo),
+     finiquito: Number(e.finiquito),
       finiquito_findemes: Number(e.finiquito_findemes)
     }
     console.log('body edit', body1);
@@ -196,7 +211,8 @@ export class DetallePagoComponent implements OnInit {
       // this.data = r.result.pagos;
       console.log(r)
       let c = 0;
-      this.collectionSize = r.result.pagos.length;
+      if(r.result.pagos){
+        this.collectionSize = r.result.pagos.length;
       this.data = r.result.pagos.map(x => {
         c++;
 
@@ -248,6 +264,10 @@ export class DetallePagoComponent implements OnInit {
       this.grid.api.setPinnedBottomRowData(result);
       this.grid.api.getDisplayedRowCount();
       this.grid.defaultColDef.editable = (o) => !o.node.isRowPinned();
+      }else{
+
+      }
+
       //this.pinnedBottomRowData = this.createPinnedData(this.data)
     })
   }
@@ -268,52 +288,62 @@ export class DetallePagoComponent implements OnInit {
     let tableHeader = [
       {text:'N°',alignment: 'center',margin: [0, 10]},
       {text:'Finiq.',alignment: 'center',margin: [0, 10]},
-      {text:'Nombre completo',fontSize:25,bold:true,alignment: 'center',margin: [0, 10]},
-      {text:'N° de ficha',alignment: 'center',margin: [0, 10]},
+      {text:'Nombre completo',bold:true,alignment: 'center',margin: [0, 10]},
+      //{text:'N° de ficha',alignment: 'center',margin: [0, 10]},
       {text:'Rut',alignment: 'center',margin: [0, 10]},
-      {text:'Especialidad',alignment: 'center',margin: [0, 10]},
+      {text:'Sueldo líquido',alignment: 'center',margin: [0, 10]},
+      //{text:'Especialidad',alignment: 'center',margin: [0, 10]},
       {text:'Dias a pago',alignment: 'center',margin: [0, 10]},
+      {text:'Valor hora extra líquido',alignment: 'center',margin: [0, 10]},
       {text:'Total periodo',alignment: 'center',margin: [0, 10]},
       {text:'Horas extras legal lunes a sábado',alignment: 'center',margin: [0, 10]},
+
       {text:'Total valor hora líquido',alignment: 'center',margin: [0, 10]},
-      {text:'Diferencia de días sábado',alignment: 'center',margin: [0, 10]},
+      {text:'Diferencia días sábado',alignment: 'center',margin: [0, 10]},
+      {text:'Diferencia días domingo',alignment: 'center',margin: [0, 10]},
       {text:'TOTAL BONOS',alignment: 'center',margin: [0, 10]},
       {text:'Asignaciones',alignment: 'center',margin: [0, 10]},
       {text:'Total ganado',alignment: 'center',margin: [0, 10]},
       {text:'Anticipo',alignment: 'center',margin: [0, 10]},
       {text:'Descuentos varios',alignment: 'center',margin: [0, 10]},
-      {text:'Remuneración',alignment: 'center',margin: [0, 10]},
+      {text:'Remuneración a pagar',alignment: 'center',margin: [0, 10]},
       {text:'Finiquito Quincena',alignment: 'center',margin: [0, 10]},
       {text:'Finiquito fin de mes',alignment: 'center',margin: [0, 10]},
-
-      {text:'Líquido a pagar',alignment: 'center',margin: [0, 10]}]
-    let bodyTable= this.data.map((p,i) => {
+      {text:'Líquido a pagar',alignment: 'center',margin: [0, 10]}
+      ]
+      let dataQincena =  this.data.filter(v=>v.ciequincena != 'S' && v.finiq == 'F');
+    let bodyTable= dataQincena.map((p,i) => {
 
       return  [
         i+1,
-        {text : p.finiq,alignment: 'center'},
-        {text : p.nombre,alignment: 'center'},
-        {text : p.ficha,alignment: 'center'},
-        {text : `${p.rut}-${p.dig}`,alignment: 'center'},
-        {text : p.descripcion,alignment: 'center'},
-        {text : p.dias,alignment: 'center'},
-        {text : p.total_periodo.toLocaleString('es-ES'),alignment: 'center'},
-        {text : Number(p.hor_lun_sab).toLocaleString('es-ES'),alignment: 'center'},
-        {text : Number(p.valor_hora).toLocaleString('es-ES'),alignment: 'center'},
-        {text : p.difer_sabado.toLocaleString('es-ES'),alignment: 'center'},
-        {text : p.total_bonos.toLocaleString('es-ES'),alignment: 'center'},
-        {text : p.asignaciones.toLocaleString('es-ES'),alignment: 'center'},
-        {text : p.total_ganado.toLocaleString('es-ES'),alignment: 'center'},
-        {text : p.anticipo.toLocaleString('es-ES'),alignment: 'center'},
-        {text : p.dctos_varios.toLocaleString('es-ES'),alignment: 'center'},
-        {text : p.a_pagar.toLocaleString('es-ES'),alignment: 'center'},
-        {text : p.finiquito_findemes.toLocaleString('es-ES'),alignment: 'center'},
-        {text : p.finiquito.toLocaleString('es-ES'),alignment: 'center'},
-        {text : p.liq_apagar.toLocaleString('es-ES'),alignment: 'center'},
+        {text : p.finiq,alignment: 'left'},
+        {text : p.nombre,alignment: 'left'},
+        //{text : p.ficha,alignment: 'center'},
+        {text : `${p.rut}-${p.dig}/${p.ficha}`,alignment: 'left'},
+        {text : p.sueldo_liq.toLocaleString('es-ES'),alignment: 'right'},
+        //{text : p.descripcion,alignment: 'center'},
+        {text : p.dias,alignment: 'right'},
+        {text : p.valor_hora,alignment: 'right'},
+        {text : p.total_periodo.toLocaleString('es-ES'),alignment: 'right'},
+        {text : Number(p.hor_lun_sab).toLocaleString('es-ES'),alignment: 'right'},
+        {text : Number(p.val_lun_sab).toLocaleString('es-ES'),alignment: 'right'},
+        {text : p.difer_sabado.toLocaleString('es-ES'),alignment: 'right'},
+        {text : p.difer_domingo.toLocaleString('es-ES'),alignment: 'right'},
+        {text : p.total_bonos.toLocaleString('es-ES'),alignment: 'right'},
+        {text : p.asignaciones.toLocaleString('es-ES'),alignment: 'right'},
+        {text : p.total_ganado.toLocaleString('es-ES'),alignment: 'right'},
+        {text : p.anticipo.toLocaleString('es-ES'),alignment: 'right'},
+        {text : p.dctos_varios.toLocaleString('es-ES'),alignment: 'right'},
+        {text : p.a_pagar.toLocaleString('es-ES'),alignment: 'right'},
+        {text : p.finiquito.toLocaleString('es-ES'),alignment: 'right'},
+        {text : p.finiquito_findemes.toLocaleString('es-ES'),alignment: 'right'},
+        {text : p.liq_apagar.toLocaleString('es-ES'),alignment: 'right'},
+
       ]
     });
 let today = new Date().toLocaleString();
     console.log(bodyTable)
+
     let docDefinition = {
       footer: function(currentPage, pageCount, pageSize) {
         // you can apply any logic and return any valid pdfmake element
@@ -337,7 +367,7 @@ let today = new Date().toLocaleString();
       content: [
           // Previous configuration
           {
-            text: 'REPORTE DETALLE PAGOS',
+            text: 'REPORTE DETALLE PAGOS '+this.titlepage,
             fontSize: 16,
             alignment: 'center',
             bold: true,
@@ -350,11 +380,6 @@ let today = new Date().toLocaleString();
               width: 300,
               text: `Obra: ${this.obra.codigo } | ${this.obra.nombre }` ,margin: [0, 10]
             },
-           /*  {
-              width: 1099,
-              text: ''
-            }, */
-
 
             {
               width: '*',
@@ -364,60 +389,62 @@ let today = new Date().toLocaleString();
             },
           ]},
 
-
-
         {
           table: {
             headerRows: 1,
 
             widths: [
-              25,
-              15,
-              250,
-              '*',
-              80,
-              200,
-              'auto',
-              'auto',
-              'auto',
-              'auto',
-              'auto',
-              'auto',
-              'auto',
-              'auto',
-              'auto',
-              'auto',
-              'auto',
-              'auto',
-              'auto',
-              'auto'],
+              25,//numero
+              15,//finiq
+              200,//nombre
+              //'*',//ficha
+              100,//rut
+              'auto',//sueldo liquido
+              //200,//especialidad
+              'auto',//Dias a pago
+              'auto',//valor hora extra
+              'auto',//Total periodo
+              'auto',//Horas extras legal lunes a sábado
+              'auto',//Total valor hora líquido
+              'auto',//Diferencia de días sábado
+              'auto', //diferencia dia domingo
+              'auto',//TOTAL BONOS
+              'auto',//Asignaciones
+              'auto',//Total ganado
+              'auto',//Anticipo
+              'auto',//Descuentos varios
+              'auto',//Remuneración
+              'auto',//Finiquito Quincena
+              'auto',//Finiquito fin de mes
+              'auto'//liquido a pagar
+
+            ],
 
               body: [
                  tableHeader,...bodyTable,
-
-
                   [
                     {},
                     {},
                     {},
-                    {},
-                    {},
-                    { text: 'TOTALES PERIODOS', colspan : 3,bold:true,alignment: 'center'},
-                    {text:this.data.reduce((sum,p)=>sum+p.dias,0),alignment: 'center'},
-                    {text:this.data.reduce((sum,p)=>sum+p.total_periodo,0).toLocaleString('es-ES'),alignment: 'center'},
-                    {text:this.data.reduce((sum,p)=>sum+Number(p.hor_lun_sab),0).toLocaleString('es-ES'),alignment: 'center'},
-                    {text:this.data.reduce((sum,p)=>sum+p.valor_hora,0).toLocaleString('es-ES'),alignment: 'center'},
-                    {text:this.data.reduce((sum,p)=>sum+p.difer_sabado,0).toLocaleString('es-ES'),alignment: 'center'},
-                    {text:this.data.reduce((sum,p)=>sum+p.total_bonos,0).toLocaleString('es-ES'),alignment: 'center'},
-                    {text:this.data.reduce((sum,p)=>sum+p.asignaciones,0).toLocaleString('es-ES'),alignment: 'center'},
-                    {text:this.data.reduce((sum,p)=>sum+p.total_ganado,0).toLocaleString('es-ES'),alignment: 'center'},
-                    {text:this.data.reduce((sum,p)=>sum+p.anticipo,0).toLocaleString('es-ES'),alignment: 'center'},
-                    {text:this.data.reduce((sum,p)=>sum+p.dctos_varios,0).toLocaleString('es-ES'),alignment: 'center'},
-                    {text:this.data.reduce((sum,p)=>sum+p.a_pagar,0).toLocaleString('es-ES'),alignment: 'center'},
-                    {text:this.data.reduce((sum,p)=>sum+p.finiquito,0).toLocaleString('es-ES'),alignment: 'center'},
-                    {text:this.data.reduce((sum,p)=>sum+p.finiquito_findemes,0).toLocaleString('es-ES'),alignment: 'center'},
+                    { text: 'TOTALES', colspan : 3,bold:true,alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.sueldo_liq,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.dias,0),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.valor_hora,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.total_periodo,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+Number(p.hor_lun_sab),0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.val_lun_sab,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.difer_sabado,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.difer_domingo,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.total_bonos,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.asignaciones,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.total_ganado,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.anticipo,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.dctos_varios,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.a_pagar,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.finiquito,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.reduce((sum,p)=>sum+p.finiquito_findemes,0).toLocaleString('es-ES'),alignment: 'right'},
+                    {text:dataQincena.filter(f=>f.liq_apagar>0).reduce((sum,p)=>sum+p.liq_apagar,0).toLocaleString('es-ES'),alignment: 'right'}
 
-                    {text:this.data.reduce((sum,p)=>sum+p.liq_apagar,0).toLocaleString('es-ES'),alignment: 'center'}
                   ]
               ],
               alignment: 'center'
@@ -427,18 +454,18 @@ let today = new Date().toLocaleString();
       },
       {
         columns : [
-        {
-          width: 250,text : '',
-        },
+
           {
-            width: 250,
+            width: 650,
             text : 'V°B° Admnistrador de obra',
+            alignment: 'center',
             margin: [0, 100],
             decoration : 'overline'
           },
           {
-            width: 250,
-            text : 'V°B° Gerente de obra',
+            width: 780,
+            text : 'V°B° Visitador de obra',
+            alignment: 'right',
             margin: [20, 100],
             decoration : 'overline',
 
@@ -471,16 +498,48 @@ let today = new Date().toLocaleString();
   }
 
     if(action==='download'){
-      pdfMake.createPdf(docDefinition).download('reporte_detalle_pagos.pdf');
+      pdfMake.createPdf(docDefinition).download('Reporte_DetallePagos_'+this.obra.codigo+'_'+this.obra.nombre+'_'+this.titlepage+'.pdf');
     }else if(action === 'print'){
       pdfMake.createPdf(docDefinition).print();
     }else{
-      pdfMake.createPdf(docDefinition,{filename : 'detalle_pagos.pdf'}).open();
+      pdfMake.createPdf(docDefinition,{filename : 'Reporte_DetallePagos_'+this.obra.codigo+'_'+this.obra.nombre+'_'+this.titlepage+'.pdf'}).open();
     }
 
 
   }
 
+  headings = [
+    [
+      'Finiq',
+      'Nombre',
+      'RUT',
+      'Ficha',
+      'Especialidad',
+      'Sueldo líquido',
+      'Días a pago',
+      'Valor hora extra líquido',
+      'Total periodo',
+      'Hora extra legal Lunes a Sábado',
+      'Total valor hora extra líquido',
+      'Diferencia días Sábados',
+      'Diferencia días Domingo',
+      'Total bonos',
+      'Zona 10%',
+      'Viático',
+      'Aguinaldo',
+      'Asignaciones',
+      'Ajuste positivo',
+      'Total ganado',
+      'Anticipos',
+      'Descuentos varios',
+      'Remuneración a pagar',
+      'Finiq fin de mes',
+      'Finiq quincena',
+      'Líquido a pagar',
+
+
+    ],
+  ];
 
   datosExcel=[];
   showbtn : boolean;
@@ -813,6 +872,15 @@ let today = new Date().toLocaleString();
       cellRenderer: this.CurrencyCellRenderer,
       editable : false
      },
+
+    {
+      field: 'finiquito',
+      headerName: 'Finiq. quincena',
+      width: 200,
+      sortable: true,
+      cellRenderer: this.CurrencyCellRenderer,
+      editable : (params) => params.data.ciequincena !== 'S',
+     },
      {
       field: 'finiquito_findemes',
       headerName: 'Finiq. fin de mes',
@@ -822,15 +890,6 @@ let today = new Date().toLocaleString();
       cellRenderer: this.CurrencyCellRenderer,
       editable : (params) => params.data.ciequincena !== 'S',
      },
-    {
-      field: 'finiquito',
-      headerName: 'Finiq. quincena',
-      width: 200,
-      sortable: true,
-      cellRenderer: this.CurrencyCellRenderer,
-      editable : (params) => params.data.ciequincena !== 'S',
-     },
-
 
     {
       field: 'liq_apagar',
@@ -859,25 +918,17 @@ let today = new Date().toLocaleString();
 
   }
 
-  CurrencyCellRenderer1(params: any) {
-
-
-    return parseFloat(params.value);
-  }
+ /*  */
 
   CurrencyCellRenderer(params: any) {
 
-    var usdFormate = new Intl.NumberFormat();
-    return usdFormate.format(params.value);
+    var usdFormate = new Intl.NumberFormat('es-ES');
+    //return usdFormate.format(params.value);
+
+    return params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
-  dictFicha: any = {
-    F1: 'badge-outline-primary',
-    F2: 'badge-outline-info2',
-    F3: 'badge-outline-warning2',
-    F4: 'badge-outline-info',
-    F5: 'badge-outline-danger2'
-  }
+
 
   getBadgeFicha(ficha: any) {
     return this.dictFicha[ficha];
@@ -893,7 +944,7 @@ let today = new Date().toLocaleString();
 
 
   editPagoForm = this.fb.group({
-    rut: ['', [Validators.required, Validators.maxLength(8)]],
+    rut: ['', [Validators.required, Validators.minLength(8)]],
     dig: [''],
     especialidad: [Validators.required],
     ficha: ['', Validators.required],

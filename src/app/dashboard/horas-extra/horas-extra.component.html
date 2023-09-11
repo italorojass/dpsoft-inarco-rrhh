@@ -20,7 +20,7 @@
               [headings]="headings"
               [sheetName]="'Hoja1'"
               [_from]="'hh'"
-              [fileName]="'Reporte_HoraExtra'"
+              [fileName]="'Reporte_HorasExtras_'+obra.codigo+'_'+obra.nombre+'_'+titlepage"
             >
             </app-btn-reporte-excel>
           </div>
@@ -54,6 +54,7 @@
                 [overlayNoRowsTemplate]="overlayNoRowsTemplate"
                 [localeText]="localeText"
                 [paginationPageSize]="15"
+                [rowClassRules]="rowClassRules"
                 (gridReady)="onGridReady($event)"
                 (rowValueChanged)="onRowValueChanged($event)"
                 [editType]="'fullRow'"

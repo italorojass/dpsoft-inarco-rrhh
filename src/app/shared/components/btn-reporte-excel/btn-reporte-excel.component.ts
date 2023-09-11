@@ -11,134 +11,169 @@ import * as XLSX from 'xlsx';
 })
 export class BtnReporteExcelComponent {
 
-  @Input() data :any;
-  @Input() headings:any;
-  @Input() sheetName : any;
-  @Input() fileName : any;
-  @Input() _from : any;
+  @Input() data: any;
+  @Input() headings: any;
+  @Input() sheetName: any;
+  @Input() fileName: any;
+  @Input() _from: any;
 
-  constructor(private BonosService : BonosService, private sabdom : DifSabDomService){
+  constructor(private BonosService: BonosService, private sabdom: DifSabDomService) {
 
   }
 
-  buildReporte(from1){
+  buildReporte(from1) {
     let excelData = [];
 
-    let obra=JSON.parse(sessionStorage.getItem('obraSelect')).codigo
-    switch(from1){
-      case 'hh' :
-        excelData = this.data.map(x=>{
-          let b =  {
-            rut : `${x.rut}-${x.dig}`,
-            ficha : x.ficha,
-            horasext50 : Number(x.tothormes)
+    let obra = JSON.parse(sessionStorage.getItem('obraSelect'))?.codigo
+    const wb = XLSX.utils.book_new();
+    const ws: any = XLSX.utils.json_to_sheet([]);
+    console.log('data reporte excel', this.data);
+    switch (from1) {
+      case 'dp':
+
+        excelData = this.data.filter(v => v.ciequincena != 'S').map(x => {
+          let b = {
+            finiq: x.finiq,
+            nombre: x.nombre,
+            rut: `${x.rut}-${x.dig}`,
+            ficha: x.ficha,
+            especialidad: x.descripcion,
+            sueldo_liq: Number(x.sueldo_liq),
+            dias: x.dias,
+            valor_hora: Number(x.valor_hora),
+            total_periodo: Number(x.total_periodo),
+            horaLunesSabado: x.hor_lun_sab,
+            totalValorHoraExtra: Number(x.val_lun_sab),
+            diferenciaSabado: Number(x.difer_sabado),
+            diferenciaDom: Number(x.difer_domingo),
+            totalBonos: Number(x.total_bonos),
+            zona10: Number(x.zona10),
+            viatico: Number(x.viatico),
+            aguinaldo: Number(x.aguinaldo),
+            asignaciones: Number(x.asignaciones),
+            ajuste_positivo: Number(x.ajuste_pos),
+            totalGanado: Number(x.total_ganado),
+            anticipos: Number(x.anticipo),
+            descuentos: Number(x.dctos_varios),
+            remuneracion: Number(x.a_pagar),
+            finiquitoQuincena: Number(x.finiquito),
+            finiquitoFinDemes: Number(x.finiquito_findemes),
+            liquido_apagar: Number(x.liq_apagar)
           }
 
           return b;
         })
-
-        const wb = XLSX.utils.book_new();
-        const ws: any = XLSX.utils.json_to_sheet([]);
-              XLSX.utils.sheet_add_aoa(ws, this.headings);
-              XLSX.utils.sheet_add_json(ws, excelData, { origin: 'A2', skipHeader: true });
-              XLSX.utils.book_append_sheet(wb, ws, this.sheetName);
-              XLSX.writeFile(wb, `${this.fileName}.xlsx`);
-      break;
-
-      case 'bonos' :
-        //consultar y crear el objeto que retorna
-        //let obra=JSON.parse(sessionStorage.getItem('obraSelect')).codigo
-        let body = {
-          tipo : 0,
-          accion : 'R',
-          obra : obra
-        }
-
-        this.BonosService.get(body).subscribe((r:any)=>{
-          excelData = r.result.bonos
-	       /*  for(let i in excelData){
-            console.log("excelData",i,"-",excelData[i]);
-          } */
-          console.log('data excel',r.result.bonos);
-          const source = from(excelData);
-          //group by age
-          const example = source.pipe(
-            groupBy((person:any) => person.orden),
-            // return each item in group as array
-            mergeMap((group:any) => group.pipe(toArray()))
-          );
-          example.subscribe((val:any) => {
-
-            console.log(val)
-            const wb = XLSX.utils.book_new();
-          const ws: any = XLSX.utils.json_to_sheet([]);
-        XLSX.utils.sheet_add_aoa(ws, this.headings);
-        XLSX.utils.sheet_add_json(ws, val, { origin: 'A2', skipHeader: true });
-        XLSX.utils.book_append_sheet(wb, ws, this.sheetName);
-        XLSX.writeFile(wb, `${this.fileName}_${val[0].orden.trim()}.xlsx`);
-          });
-
-          /* const wb = XLSX.utils.book_new();
-          const ws: any = XLSX.utils.json_to_sheet([]);
         XLSX.utils.sheet_add_aoa(ws, this.headings);
         XLSX.utils.sheet_add_json(ws, excelData, { origin: 'A2', skipHeader: true });
         XLSX.utils.book_append_sheet(wb, ws, this.sheetName);
-        XLSX.writeFile(wb, `${this.fileName}.xlsx`); */
 
-        })
-        /* excelData = this.data.filter(x=> x.total_bonos > 0).map(x=>{
-          let b =  {
-            rut : x.rutF,
-            ficha : x.ficha,
-            valor : Number(x.total_bonos),
-            detalle : ''
+
+        XLSX.writeFile(wb, `${this.fileName}.xlsx`);
+        break;
+      case 'hh':
+        excelData = this.data.filter(v => v.ciequincena != 'S').map(x => {
+          let b = {
+            rut: `${x.rut}-${x.dig}`,
+            ficha: x.ficha,
+            horasext50: Number(x.tothormes)
           }
 
           return b;
-        }); */
+        })
 
-      break;
+
+        XLSX.utils.sheet_add_aoa(ws, this.headings);
+        XLSX.utils.sheet_add_json(ws, excelData, { origin: 'A2', skipHeader: true });
+        XLSX.utils.book_append_sheet(wb, ws, this.sheetName);
+
+
+        XLSX.writeFile(wb, `${this.fileName}.xlsx`);
+        break;
+
+      case 'bonos':
+        //consultar y crear el objeto que retorna
+        //let obra=JSON.parse(sessionStorage.getItem('obraSelect')).codigo
+        let body = {
+          tipo: 0,
+          accion: 'R',
+          obra: obra
+        }
+
+        this.BonosService.get(body).subscribe((r: any) => {
+          excelData = r.result.bonos
+
+          console.log('data excel', r.result.bonos);
+          const source = from(excelData);
+          //group by age
+          const example = source.pipe(
+            groupBy((person: any) => person.orden),
+            // return each item in group as array
+            mergeMap((group: any) => group.pipe(toArray()))
+          );
+          let count = 0;
+          example.subscribe((val: any) => {
+            count++;
+            console.log(val);
+
+          });
+        })
+
+
+        break;
       case 'sabdom':
-      let body1 = {
-        tipo : 'finde',
-        accion : 'R',
-        obra : obra
-      }
-      this.sabdom.get(body1).subscribe((r:any)=>{
+        let body1 = {
+          tipo: 'finde',
+          accion: 'R',
+          obra: obra
+        }
+        this.sabdom.get(body1).subscribe((r: any) => {
 
-        excelData = r.result.sab_dom.map(x=>{
+          excelData = r.result.sab_dom.map(x => {
 
-          return {
-            rut : x.rut,
-            ficha :x.ficha,
-            total_sab : x.total_mensual_sab,
-            total_dom : x.total_mensual_dom,
-            detalle : ''
-          }
+            return {
+              rut: x.rut,
+              ficha: x.ficha,
+              total_sab: Number(x.total_mensual_sab),
+              total_dom: Number(x.total_mensual_dom),
+              detalle: ''
+            }
+          })
+
+          XLSX.utils.sheet_add_aoa(ws, this.headings);
+          XLSX.utils.sheet_add_json(ws, excelData, { origin: 'A2', skipHeader: true });
+          XLSX.utils.book_append_sheet(wb, ws, this.sheetName);
+          XLSX.writeFile(wb, `${this.fileName}.xlsx`);
         })
-        const wb1 = XLSX.utils.book_new();
-        const ws1: any = XLSX.utils.json_to_sheet([]);
-        XLSX.utils.sheet_add_aoa(ws1, this.headings);
-        XLSX.utils.sheet_add_json(ws1, excelData, { origin: 'A2', skipHeader: true });
-        XLSX.utils.book_append_sheet(wb1, ws1, this.sheetName);
-        XLSX.writeFile(wb1, `${this.fileName}.xlsx`);
-      })
+        break;
 
-       /*  excelData = this.data.map(x=>{
-          let b =  {
-            rut : x.rutF,
-            ficha : x.ficha,
-            difMensualSabado : Number(x.total_mensual_sab),
-            difMensualdomingo : Number(x.total_mensual_dom),
-            detalle : ''
-          }
-
-          return b;
+      case 'comparativo':
+        //crear el excel comparativo
+        excelData = this.data.map(x=>{
+            return {
+              rut : x.rutF,
+              nombreCompleto: x.nombre,
+              obra : x.obra,
+              diasSistema : x.dias_sistema,
+              diasBuk : x.dias_buk,
+              diferencia_dias : x.diferencia_dias,
+              anticipo_sistema : x.anticipo_sistema,
+              anticipo_buk : x.anticipo_buk,
+              diferencia_anticipo : x.diferencia_anticipo,
+              finiquito_sistema : x.finiquito_sistema,
+              finiquito_buk : x.finiquito_buk,
+              diferencia_finiquito : x.diferencia_finiquito,
+              sueldo_sistema  :x.sueldo_sistema,
+              sueldo_buk : x.sueldo_buk,
+              diferencia_sueldo : x.diferencia_sueldo
+            }
         });
+        XLSX.utils.sheet_add_aoa(ws, this.headings);
+        XLSX.utils.sheet_add_json(ws, excelData, { origin: 'A2', skipHeader: true });
+        XLSX.utils.book_append_sheet(wb, ws, this.sheetName);
 
-        */
 
-      break;
+        XLSX.writeFile(wb, `${this.fileName}.xlsx`);
+        break;
     }
 
 

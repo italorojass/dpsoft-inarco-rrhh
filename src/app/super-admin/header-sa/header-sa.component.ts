@@ -26,15 +26,15 @@ export class HeaderSaComponent {
   }
 
   menu = [
-    {
+    /* {
       title: 'Inicio',
       href: '/admin',
       icon: 'icon-home'
-    },
+    }, */
     {
       title: 'Administración sistema',
       href : '',
-      subitem: [
+      /* subitem: [
         {
           title: 'Proyectos',
           href: '/admin/proyectos',
@@ -49,15 +49,31 @@ export class HeaderSaComponent {
           title:'Parámetros',
           href : '/admin/parametros',
           icon : 'icon-layers'
-        }
-      ,/* {
-        title:'Maestro de especialidad',
-        href : '/obras/inicio/maestro-especialidad',
-        icon : 'icon-layers'
-      } */],
+        },
+      ], */
 
       icon: 'icon-settings'
-    }
+    },
+    {
+      title: 'Proyectos',
+      href: '/admin/proyectos',
+      icon: 'icon-briefcase'
+    },
+    {
+      title: 'Usuarios',
+      href: '/admin/usuarios',
+      icon: 'icon-people'
+    },
+    {
+      title:'Parámetros',
+      href : '/admin/parametros',
+      icon : 'icon-wrench'
+    },
+     {
+        title:'Reportes',
+        href : '/admin/reportes',
+        icon : 'icon-calculator'
+      }
   ]
 
 }

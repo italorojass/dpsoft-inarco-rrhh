@@ -4,7 +4,7 @@ import { DetallePagoService } from '../detalle-pago/services/detalle-pago.servic
 import { BuildMonthService } from 'src/app/shared/services/build-month.service';
 import { DifSabDomService } from './services/dif-sab-dom.service';
 import { ButtonCellRendererComponent } from 'src/app/shared/components/button-cell-renderer/button-cell-renderer.component';
-import { ColDef, GridReadyEvent, RowValueChangedEvent } from 'ag-grid-community';
+import { ColDef, GridReadyEvent, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import pdfMake from 'pdfmake/build/pdfmake';
@@ -26,7 +26,7 @@ export class DiferenciaSabDomComponent implements OnInit {
     this.get();
     this.ParametrosService.get({accion:'C'}).subscribe((r:any)=>{
       console.log(r);
-      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='quincena '+r.result.parametros[0].computed : this.titlepage ='fin de mes '+r.result.parametros[0].computed
+      r.result.parametros[0].tipo_mes !='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='quincena '+r.result.parametros[0].computed : this.titlepage ='fin de mes '+r.result.parametros[0].computed
 
     })
   }
@@ -154,7 +154,7 @@ export class DiferenciaSabDomComponent implements OnInit {
       },
       {
         headerName: 'Semana 1',
-        editable: true,
+        editable : (params) => params.data.ciequincena !== 'S',
         children: [
           {
             headerName: 'H. extra sábado',
@@ -191,7 +191,7 @@ export class DiferenciaSabDomComponent implements OnInit {
               'Valor sábado 1/2 día',
             width: 110,
             sortable: true,
-            editable: true,
+            editable : (params) => params.data.ciequincena !== 'S',
             cellRenderer: this.CurrencyCellRenderer, cellRendererParams: {
               currency: 'CLP'
             },
@@ -202,7 +202,7 @@ export class DiferenciaSabDomComponent implements OnInit {
             width: 100,
             sortable: true,
             cellRenderer: this.CurrencyCellRenderer,
-            editable: true
+            editable : (params) => params.data.ciequincena !== 'S'
           },
           {
             field: 'h_ex_domingo_sem1',
@@ -225,7 +225,7 @@ export class DiferenciaSabDomComponent implements OnInit {
             headerName: 'Valor domingo 1/2 día',
             width: 180, sortable: true,
             cellRenderer: this.CurrencyCellRenderer,
-            editable: true
+            editable : (params) => params.data.ciequincena !== 'S'
           },
           {
             field: 'dom_entero_sem1',
@@ -233,7 +233,7 @@ export class DiferenciaSabDomComponent implements OnInit {
             width: 150,
             sortable: true,
             cellRenderer: this.CurrencyCellRenderer,
-            editable: true
+            editable : (params) => params.data.ciequincena !== 'S'
           },
           {
             field: 'dif_sab_sem1',
@@ -329,7 +329,15 @@ export class DiferenciaSabDomComponent implements OnInit {
     )
 
   }
+  rowClassRules: RowClassRules = {
+    // row style function
+    'sick-days-warning': (params) => {
 
+      return params.data.ciequincena === 'S';
+    },
+    // row style expression
+
+  };
   createPDF(action = 'open'){
     let tableHeader = [
       { text: 'N°', alignment: 'right', margin: [0, 10] },
@@ -414,7 +422,7 @@ export class DiferenciaSabDomComponent implements OnInit {
       fontSize: 10,
     },
     {
-     /*  table: {
+      table: {
         headerRows: 1,
 
         widths: wids,
@@ -426,7 +434,7 @@ export class DiferenciaSabDomComponent implements OnInit {
         alignment: 'center'
 
 
-      }, */
+      },
     },
   ],
   styles: {
@@ -469,7 +477,7 @@ if (action === 'download') {
   defaultColDef: ColDef = {
     resizable: true,
     initialWidth: 200,
-    editable: true,
+    editable : (params) => params.data.ciequincena !== 'S',
     sortable: true,
     filter: true,
     floatingFilter: true,
@@ -478,8 +486,7 @@ if (action === 'download') {
   };
   CurrencyCellRenderer(params: any) {
 
-    var usdFormate = new Intl.NumberFormat();
-    return usdFormate.format(params.value);
+    return params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
   headings = [

@@ -20,7 +20,7 @@
                 [data]="data"
                 [_from]="'bonos'"
                 [headings]="headings"
-                [sheetName]="'Hoja1'"
+                [sheetName]="'Hoja'"
                 [fileName]="'Reporte'"
               >
               </app-btn-reporte-excel>
@@ -57,6 +57,7 @@
                 [overlayLoadingTemplate]="overlayLoadingTemplate"
                 [overlayNoRowsTemplate]="overlayNoRowsTemplate"
                 [localeText]="localeText"
+                [rowClassRules]="rowClassRules"
                 (cellValueChanged)="saveEdit($event)"
               ></ag-grid-angular>
             </div>

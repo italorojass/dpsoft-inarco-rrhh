@@ -44,11 +44,7 @@ const routes: Routes = [
       path : 'requerimientos',
       component : RequerimientosComponent
     },
-    {
-      path : 'reportes',
-      component : ReporteComponent
-    }
-    ,
+
     {
       path : 'horas-extras',
       component : HorasExtraComponent

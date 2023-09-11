@@ -34,13 +34,6 @@
                 style="display: none"
               />
 
-              <!--  <div class="input-group-append">
-                    <button class="btn btn-outline-danger btn-rounded mb-2 " (click)="showbtn=false;datosExcel=[]" *ngIf="showbtn"><i
-                      class="fa fa-trash"></i></button>
-
-
-                  </div> -->
-
               <button
                 type="button"
                 class="btn btn-outline-dark btn-rounded"
@@ -48,28 +41,23 @@
               >
                 <i class="icon-doc"></i>Reporte PDF
               </button>
+
+              <app-btn-reporte-excel
+              [data]="data"
+              [headings]="headings"
+              [sheetName]="'Hoja1'"
+              [_from]="'dp'"
+              [fileName]="'Reporte_DetallePagos_'+obra.codigo+'_'+obra.nombre+'_'+titlepage"
+            >
+            </app-btn-reporte-excel>
             </div>
           </div>
         </div>
 
-        <!-- <div class="row">
-          <div class="col-12 d-flex">
-            <h4 class="card-title">Detalle pagos</h4>
-            <button type="button" class="btn btn-outline-primary btn-rounded" data-toggle="modal"
-            (click)="getEspecialidad();resetForm()" data-target="#modalNuevoPago"><i
-              class="icon-note"></i>Nuevo</button>
-          </div>
-        </div> -->
 
         <div class="row mt-3">
           <div class="col-12">
-            <!--   <app-table-aggrid [datos]="data"
-            [columnas]="columnDefs"
-            (outChange)="getChanges($event)"></app-table-aggrid> -->
 
-            <!-- <app-datatable [datos]="data"
-            [columnas]="columns"
-            > </app-datatable> -->
 
             <div class="table-responsive1">
               <strong>Total trabajadores: {{ collectionSize }}</strong>
@@ -99,123 +87,7 @@
                 [editType]="'fullRow'"
               ></ag-grid-angular>
 
-              <!--  <table class="table table-striped table-bordered">
-                <thead class="thead-dark">
-                  <tr>
-                    <th></th>
-                    <th>Correlativo</th>
-                    <th class="wraptxt">Nombre</th>
-                    <th class="wraptxt">N. Ficha</th>
-                    <th>Rut</th>
-                    <th>Especialidad</th>
-                    <th class="wraptxt">Sueldo líquido</th>
-                    <th class="wraptxt1">Dias a pago</th>
-                    <th class="wraptxt">Valor hora extra líquido</th>
-                    <th class="wraptxt">Total periodo</th>
-                    <th class="wraptxt1">Hora extra legal lunes a sábados</th>
-                    <th class="wraptxt">Total valor hora extra líquido</th>
 
-
-                    <th class="wraptxt">Diferencia días sábados</th>
-                    <th class="wraptxt"> Diferencia días domingos</th>
-                    <th class="wraptxt">Total Bonos</th>
-                    <th class="wraptxt">Zona 10%</th>
-                    <th class="wraptxt">Viático </th>
-                    <th class="wraptxt">Aguinaldo</th>
-                    <th class="wraptxt">Asignaciones</th>
-                    <th class="wraptxt">Ajuste positivo</th>
-                    <th class="wraptxt">Total ganado</th>
-                    <th class="wraptxt">Anticipo</th>
-                    <th class="wraptxt">Descuentos varios</th>
-                    <th class="wraptxt">Remuneración a pagar</th>
-                    <th class="wraptxt">Finiquito quincena</th>
-
-                    <th class="wraptxt">Finiquito fin de mes</th>
-                    <th class="wraptxt">Liquido a pagar</th>
-
-                  </tr>
-
-                </thead>
-
-                <tbody *ngIf="data && data.length>0">
-                  <tr *ngFor="let item of data;let i=index">
-                    <td>
-
-
-                      <button type="button" class="btn btn-icons btn-rounded btn-outline-primary btn-sm"
-                        data-toggle="modal" data-target="#modalEditarPago" (click)="editPago(item);"><i
-                          class="icon-pencil "></i></button>
-
-
-                    </td>
-                    <td>{{i+1}}</td>
-
-                    <td>{{item.nombre}}</td>
-                    <td>
-                      <div class="badge badge-pill" [ngClass]="getBadgeFicha(item.ficha)">{{item.ficha}}</div>
-                    </td>
-                    <td>{{formatRut(item.rut,item.dig)}}</td>
-                    <td>{{item.descripcion}}</td>
-                    <td align="right">${{item.sueldo_liq | number}}</td>
-                    <td align="right">{{item.dias}}</td>
-                    <td align="right">${{item.valor_hora | number}}</td>
-
-                    <td align="right">${{item.total_periodo | number}}</td>
-                    <td align="right">{{item.hor_lun_sab | number }}</td>
-                    <td align="right">${{item.val_lun_sab | number}}</td>
-                    <td align="right">${{item.difer_sabado | number}}</td>
-                    <td align="right">${{item.difer_domingo}}</td>
-                    <td align="right">${{item.total_bonos | number}}</td>
-                    <td align="right">${{item.zona10 | number}}</td>
-                    <td align="right">${{item.viatico | number}}</td>
-                    <td align="right">${{item.aguinaldo | number}}</td>
-
-                    <td align="right">${{item.asignaciones | number}}</td>
-                    <td align="right">${{item.ajuste_pos | number}}</td>
-                    <td align="right">${{item.total_ganado | number}}</td>
-                    <td align="right">${{item.anticipo | number}}</td>
-                    <td align="right">${{item.dctos_varios | number}}</td>
-                    <td align="right">${{item.a_pagar | number}}</td>
-                    <td align="right">${{item.finiquito_quincena | number}}</td>
-                    <td align="right">${{item.finiquito | number}}</td>
-                    <td align="right">${{item.liq_apagar | number}}</td>
-
-                  </tr>
-
-                </tbody>
-
-                <tfoot *ngIf="data && data.length>0">
-                  <tr>
-                    <td colspan="5"></td>
-                    <th>Total periodo</th>
-                    <td align="right">${{getTotalSueldoLiq() | number}}</td>
-
-                    <td>-</td>
-                    <td align="right">${{getTotalValor_hora() | number}}</td>
-                    <td align="right">${{getTotaltotal_periodo() | number}}</td>
-                    <td align="right">{{getTotalhor_lun_sab() | number}}</td>
-                    <td align="right">${{getTotalval_lun_sab() | number}}</td>
-                    <td align="right">${{getTotaldifer_sabado() | number}}</td>
-                    <td align="right">${{getTotaldifer_domingo() | number}}</td>
-                    <td align="right">${{getTotaltotal_bonos() | number}}</td>
-
-                    <td align="right">${{getTotalzona10() | number}}</td>
-                    <td align="right">${{getTotalViatico() | number}}</td>
-                    <td align="right">${{getTotalAguinaldo() | number}}</td>
-
-                    <td align="right">${{getTotalAsignaciones() | number}}</td>
-                    <td align="right">${{getTotalajuste_pos() | number}}</td>
-                    <td align="right">${{getTotaltotal_ganado() | number}}</td>
-                    <td align="right">${{getTotalanticipo() | number}}</td>
-                    <td align="right">${{getTotaldctos_varios() | number}}</td>
-                    <td align="right">${{getTotala_pagar() | number}}</td>
-                    <td></td>
-                    <td align="right">${{getTotalfiniquito() | number}}</td>
-                    <td align="right">${{getTotalliq_apagar() | number}}</td>
-
-                  </tr>
-                </tfoot>
-              </table> -->
             </div>
           </div>
         </div>
@@ -267,6 +139,7 @@
                       type="number"
                       placeholder="1111111"
                       max="99999999"
+                      minlength="8"
                       formControlName="rut"
                     />
                   </div>
@@ -294,11 +167,8 @@
                       formControlName="ficha"
                     >
                       <option value="">Seleccionar</option>
-                      <option value="F1">F1</option>
-                      <option value="F2">F2</option>
-                      <option value="F3">F3</option>
-                      <option value="F4">F4</option>
-                      <option value="F5">F5</option>
+                      <option [value]="'F'+i+1" *ngFor="let item of numbers;let i=index">F{{i+1}}</option>
+
                     </select>
                   </div>
                 </div>
@@ -527,184 +397,3 @@
   </div>
 </div>
 
-<!--Modal editar pago-->
-<!-- <div class="modal fade" id="modalEditarPago" tabindex="-1" role="dialog" aria-labelledby="modalNuevoPagoLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalNuevoPagoLabel">Editar trabajador</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeModalEdit>
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form class="form-sample" [formGroup]="editPagoForm" (ngSubmit)="saveEditDetallePago()">
-        <div class="modal-body">
-
-          <p class="card-description ">
-            Información personal
-          </p>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">R.U.T</label>
-                <div class="col-sm-4">
-                  <input class="form-control" name="rut" id="rut" type="number" placeholder="1111111" max="99999999"
-                    formControlName="rut" readonly>
-
-
-                </div>
-                -
-                <div class="col-sm-2">
-                  <input class="form-control" name="dig" id="nombre" type="text" placeholder="K" readonly
-                    formControlName="dig">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Número ficha</label>
-                <div class="col-sm-9">
-                  <input class="form-control" name="rol" id="rol" type="text" name="ficha" formControlName="ficha"
-                    readonly>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Nombre</label>
-                <div class="col-sm-9">
-                  <input class="form-control" name="rol" id="rol" type="text" placeholder="Nombre de ejemplo"
-                    formControlName="nombre" readonly name="nombre">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Especialidad</label>
-                <div class="col-sm-9">
-                  <select class="form-control" name="especialidad" formControlName="especialidad">
-                    <option value="">Seleccionar</option>
-                    <option *ngFor="let item of especialidades" [ngValue]="item.id">{{item.descripcion}}</option>
-
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <p class="card-description ">
-            Datos de pago
-          </p>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Sueldo líquido</label>
-                <div class="col-sm-3">
-                  <input type="number" class="form-control" formControlName="sueldo_liq" name="sueldoLiquido" />
-                </div>
-                <label class="col-sm-3 col-form-label float-right">Dias a pago</label>
-                <div class="col-sm-3">
-                  <input type="number" class="form-control" formControlName="dias" name="diasPago" />
-                </div>
-
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Valor hora extra líquido</label>
-                <div class="col-sm-3">
-                  <input type="number" class="form-control" formControlName="valor_hora" name="valorHoraExtraLiquido" />
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-          <div class="row">
-
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Asignaciones</label>
-                <div class="col-sm-3">
-                  <input type="number" class="form-control" formControlName="asignaciones" name="asignaciones" />
-                </div>
-                <label class="col-sm-3 col-form-label">Ajuste positivo</label>
-                <div class="col-sm-3">
-                  <input type="number" class="form-control" formControlName="ajuste_pos" name="ajustePositivo" />
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Anticipo</label>
-                <div class="col-sm-3">
-                  <input type="number" class="form-control" formControlName="anticipo" name="anticipo" />
-                </div>
-
-              </div>
-            </div>
-
-          </div>
-
-
-          <div class="row">
-
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Viático</label>
-                <div class="col-sm-3">
-                  <input type="number" class="form-control" formControlName="viatico" name="viatico" />
-                </div>
-                <label class="col-sm-3 col-form-label">Aguinaldo</label>
-                <div class="col-sm-3">
-                  <input type="number" class="form-control" formControlName="aguinaldo" name="aguinaldo" />
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Descuentos varios</label>
-                <div class="col-sm-3">
-                  <input type="number" class="form-control" formControlName="dctos_varios" name="descuentosVarios" />
-                </div>
-
-
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Zona 10%</label>
-                <div class="col-sm-3">
-                  <input type="number" class="form-control" formControlName="zona10" name="zona10" />
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Finiquito fin de mes</label>
-                <div class="col-sm-3">
-                  <input type="number" class="form-control" formControlName="finiquito" name="finiquito" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success" [disabled]="!editPagoForm.valid">Grabar</button>
-          <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
-        </div>
-      </form>
-
-
-    </div>
-  </div>
-</div>
- -->
