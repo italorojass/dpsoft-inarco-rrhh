@@ -361,7 +361,7 @@ export class DiferenciaSabDomComponent implements OnInit {
         { text: p.rutF, alignment: 'center' },
         { text: p.ficha, alignment: 'center' },
 
-        { text: p.total_bonos.toLocaleString('es-ES'), alignment: 'center' },
+        { text: p.total_bonos.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'center' },
       ]
     });
 

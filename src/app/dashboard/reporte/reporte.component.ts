@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import Swal from 'sweetalert2';
@@ -178,7 +178,7 @@ export class ReporteComponent implements OnInit {
        // this.data = data;
        console.log('datos excel rem',dataExcel);
 
-       dataExcel.forEach((element:any, i:number) => {
+       dataExcel.sort(x=>x['AREA'].split(',')[2]).forEach((element:any, i:number) => {
         //console.log('datos excel each',element);
           let sueldoLiq = element['SUELDO LÍQUIDO'];
           let rut = element['RUT'];
@@ -189,17 +189,20 @@ export class ReporteComponent implements OnInit {
           let obraFormated = String(obra).trim().split(' ')[0];
           let anticipo = element['ANTICIPO DE SUELDO'];
           let dias_trab = element['DÍAS TRABAJADOS'];
-          this.data.push({
-            dias : dias_trab,
-            sueldo: sueldoLiq,
-            anticipo : anticipo,
-            rut: rut,
-            nombre: nombre,
-            obra : obraFormated,
-            ficha : ficha,
-            especialidad,
+          if(obra){
+            this.data.push({
+              dias : dias_trab,
+              sueldo: sueldoLiq,
+              anticipo : anticipo,
+              rut: rut,
+              nombre: nombre,
+              obra : '0'+obraFormated,
+              ficha : ficha,
+              especialidad,
 
-          })
+            })
+          }
+
 
         });
 
@@ -323,7 +326,7 @@ export class ReporteComponent implements OnInit {
             nombre: nombre+' ' + apepat+' '+apemat,
             rut: rut,
             ficha: ficha,
-            obra: area.trim().split(/\s+/)[0],
+            obra: '0'+area.trim().split(/\s+/)[0],
             montoSinRemunerar: montoSinRemunerar,
             //finiq : finiq,
           })
@@ -392,7 +395,7 @@ export class ReporteComponent implements OnInit {
         }
         this.reporteSV.get(body).subscribe(r=>{
           console.log("Reporte", r);
-          this.dataGridFiniq = this.dataFiniq;
+          this.dataGridFiniq = this.dataFiniq.sort(x=>x.obra);
 
           //Swal.fire(this.fileNameFiniq,'Datos ingresados correctamente','success')
         });
@@ -412,6 +415,7 @@ export class ReporteComponent implements OnInit {
     }
     this.reporteSV.get(body).subscribe((r:any)=>{
       console.log("Response comparativo", r);
+
       this.resultadosComparados = r.result.diferencias.map(x=>{
         return {
           ...x,

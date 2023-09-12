@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { from } from 'rxjs';
 import { groupBy, mergeMap, toArray } from 'rxjs/operators';
 import { DifSabDomService } from 'src/app/dashboard/diferencia-sab-dom/services/dif-sab-dom.service';
+import { ReporteService } from 'src/app/dashboard/reporte/service/reporte.service';
 import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-btn-reporte-excel',
@@ -17,7 +18,7 @@ export class BtnReporteExcelComponent {
   @Input() fileName: any;
   @Input() _from: any;
 
-  constructor(private BonosService: BonosService, private sabdom: DifSabDomService) {
+  constructor(private BonosService: BonosService, private sabdom: DifSabDomService,private reporteSV : ReporteService) {
 
   }
 
@@ -111,11 +112,20 @@ export class BtnReporteExcelComponent {
             mergeMap((group: any) => group.pipe(toArray()))
           );
           let count = 0;
+
           example.subscribe((val: any) => {
             count++;
             console.log(val);
+            var ws2 = XLSX.utils.json_to_sheet([]);
+            XLSX.utils.sheet_add_aoa(ws2, this.headings);
+            XLSX.utils.sheet_add_json(ws2, val, { origin: 'A2', skipHeader: true });
+
+            XLSX.utils.book_append_sheet(wb, ws2, val[0].orden.trim().toUpperCase());
 
           });
+          XLSX.writeFile(wb, `${this.fileName}.xlsx`);
+
+
         })
 
 
@@ -171,8 +181,58 @@ export class BtnReporteExcelComponent {
         XLSX.utils.sheet_add_json(ws, excelData, { origin: 'A2', skipHeader: true });
         XLSX.utils.book_append_sheet(wb, ws, this.sheetName);
 
+        let bo= {
+          accion : 'T',
+          detalle:[]
+        }
+        let headings=[
+          [
+          /* 'RUT',
+          'Nombre completo', */
+          'Obra',
+          'Días sistema',
+          'Días BUK',
+          'Diferencia dias',
+          'Anticipo sistema',
+          'Anticipo BUK',
+          'Diferencia anticipo',
+          'Finiquito sistema',
+          'Finiquito BUK',
+          'Diferencia finiquito',
+          'Sueldo sistema',
+          'Sueldo BUK',
+          'Diferencia sueldo',
+        ]];
 
-        XLSX.writeFile(wb, `${this.fileName}.xlsx`);
+        this.reporteSV.get(bo).subscribe((r:any)=>{
+          console.log('a comparar',r);
+          let result=r.result.diferencias.map(x=>{
+            return {
+             /*  rut : x.rutF,
+              nombreCompleto: x.nombre, */
+              obra : x.obra,
+              diasSistema : x.dias_sistema,
+              diasBuk : x.dias_buk,
+              diferencia_dias : x.diferencia_dias,
+              anticipo_sistema : x.anticipo_sistema,
+              anticipo_buk : x.anticipo_buk,
+              diferencia_anticipo : x.diferencia_anticipo,
+              finiquito_sistema : x.finiquito_sistema,
+              finiquito_buk : x.finiquito_buk,
+              diferencia_finiquito : x.diferencia_finiquito,
+              sueldo_sistema  :x.sueldo_sistema,
+              sueldo_buk : x.sueldo_buk,
+              diferencia_sueldo : x.diferencia_sueldo
+            }
+        });
+          var ws2 = XLSX.utils.json_to_sheet([]);
+          XLSX.utils.sheet_add_aoa(ws2, headings);
+          XLSX.utils.sheet_add_json(ws2, result, { origin: 'A2', skipHeader: true });
+
+          XLSX.utils.book_append_sheet(wb, ws2, "DIFERENCIAS POR OBRA");
+          XLSX.writeFile(wb, `${this.fileName}.xlsx`);
+        })
+
         break;
     }
 

@@ -192,6 +192,7 @@
             </div>
           </div>
         </div>
+
         <hr *ngIf="dataGrid.length > 0 && dataGridFiniq.length >0"/>
         <div class="row" *ngIf="dataGrid.length > 0 && dataGridFiniq.length >0">
           <div class="d-flex justify-content-center">
@@ -200,32 +201,36 @@
             </div>
           </div>
         </div>
-        <hr  *ngIf="resultadosComparados.length > 0 && columnDefsComparados.length > 0">
-        <div class="row" *ngIf="resultadosComparados.length > 0 && columnDefsComparados.length > 0">
-          <app-btn-reporte-excel
-          [data]="resultadosComparados"
-          [headings]="headings"
-          [sheetName]="'Resultados'"
-          [_from]="'comparativo'"
-          [fileName]="'Reporte_comparativo_'+fileName+'_'+fileNameFiniq+'_'+titlepage"
-        >
-        </app-btn-reporte-excel>
-          <div class="col-12">
-            <h2>Diferencias: {{resultadosComparados.length }}</h2>
 
-            <br>
+        <div *ngIf="resultadosComparados.length > 0 && columnDefsComparados.length > 0">
+          <hr  >
+          <div class="row" >
+            <app-btn-reporte-excel
+            [data]="resultadosComparados"
+            [headings]="headings"
+            [sheetName]="'DATOS COMPARADOS'"
+            [_from]="'comparativo'"
+            [fileName]="'Reporte_comparativo_'+fileName+'_'+fileNameFiniq+'_'+titlepage"
+          >
+          </app-btn-reporte-excel>
+            <div class="col-12">
+              <h2>Diferencias: {{resultadosComparados.length }}</h2>
+
+              <br>
 
 
-            <div class="table-responsive1">
-              <app-table-aggrid
-                  [datos]="resultadosComparados"
-                  [columnas]="columnDefsComparados"
-                ></app-table-aggrid>
+              <div class="table-responsive1">
+                <app-table-aggrid
+                    [datos]="resultadosComparados"
+                    [columnas]="columnDefsComparados"
+                  ></app-table-aggrid>
+              </div>
+
+
             </div>
-
-
           </div>
         </div>
+
 
 
       </div>
