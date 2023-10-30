@@ -204,17 +204,48 @@
 
         <div *ngIf="resultadosComparados.length > 0 && columnDefsComparados.length > 0">
           <hr  >
+          <div class="row">
+            <div class="col-4">
+              <table class="table table-borderless" *ngIf="showbtn">
+                <tbody>
+                  <tr>
+                    <td>
+                      <h6>Resultado de los datos comparados </h6>
+                      <p class="text-muted mb-0">
+                        Cantidad de datos procesados
+                      </p>
+
+                    </td>
+                    <td align="left">
+                      <h3 class="text-primary">
+                        {{resultadosComparados.length }}
+                      </h3>
+                    </td>
+
+                  </tr>
+
+
+                </tbody>
+              </table>
+            </div>
+            <div class="col-8">
+              <div class="mt-1">
+                <app-btn-reporte-excel
+                [data]="resultadosComparados"
+                [headings]="headings"
+                [sheetName]="'DATOS COMPARADOS'"
+                [_from]="'comparativo'"
+                [fileName]="'Reporte_comparativo_'+fileName+'_'+fileNameFiniq+'_'+titlepage"
+              >
+              </app-btn-reporte-excel>
+              </div>
+
+            </div>
+          </div>
           <div class="row" >
-            <app-btn-reporte-excel
-            [data]="resultadosComparados"
-            [headings]="headings"
-            [sheetName]="'DATOS COMPARADOS'"
-            [_from]="'comparativo'"
-            [fileName]="'Reporte_comparativo_'+fileName+'_'+fileNameFiniq+'_'+titlepage"
-          >
-          </app-btn-reporte-excel>
+
             <div class="col-12">
-              <h2>Diferencias: {{resultadosComparados.length }}</h2>
+
 
               <br>
 

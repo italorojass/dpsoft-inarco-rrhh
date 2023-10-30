@@ -42,6 +42,8 @@ export class LoginComponent implements OnInit {
         if(r['result'].obras.length > 0){
           sessionStorage.setItem('obras',JSON.stringify(r['result'].obras));
           sessionStorage.setItem('user',JSON.stringify(f.value.usua));
+          sessionStorage.setItem('rolUser',r['result'].tipo);
+
           if(r['result'].tipo =="0") {//0=usuario, 1 es admin
             this.router.navigate(['/obras'])
           }else{
@@ -85,7 +87,7 @@ export class LoginComponent implements OnInit {
         if (result.value) {//superadmin
 
 
-            this.router.navigate(['/admin']);
+            this.router.navigate(['/admin/proyectos']);
 
         } else if (
             /* Read more about handling dismissals below */

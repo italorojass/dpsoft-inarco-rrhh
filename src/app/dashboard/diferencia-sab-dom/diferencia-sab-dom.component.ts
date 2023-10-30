@@ -22,11 +22,14 @@ export class DiferenciaSabDomComponent implements OnInit {
     private aggsv: AgGridSpanishService) { }
     @ViewChild('heGrid') grid!: AgGridAngular;
     titlepage ='';
+    datosParametros : any;
+
   ngOnInit(): void {
     this.get();
     this.ParametrosService.get({accion:'C'}).subscribe((r:any)=>{
       console.log(r);
-      r.result.parametros[0].tipo_mes !='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='quincena '+r.result.parametros[0].computed : this.titlepage ='fin de mes '+r.result.parametros[0].computed
+      this.datosParametros =r.result.parametros[0];
+      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
 
     })
   }
@@ -351,7 +354,15 @@ export class DiferenciaSabDomComponent implements OnInit {
       { text: 'ANTICIPO DE SUELDO', alignment: 'right', margin: [0, 10] },
       { text: 'SUELDO LÍQUIDO', alignment: 'right', margin: [0, 10] }
     ]
-    let objreport = Object.assign([], this.data);
+    let objreport = Object.assign([], this.data.filter(v=>{
+      // v.ciequincena != 'S' && v.finiq == 'F'
+      if(this.datosParametros.tipo_mes =='Q'){
+       return v.finiq == 'Q';
+      }else{
+       return v.finiq  != 'F' && v.ciequincena == 'Q' || v.ciequincena;
+      }
+
+     }));
     let newob = objreport.filter(x => x.total_bonos > 0)
     let bodyTable = newob.map((p, i) => {
 

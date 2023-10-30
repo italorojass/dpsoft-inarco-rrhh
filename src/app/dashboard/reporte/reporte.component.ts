@@ -24,7 +24,7 @@ export class ReporteComponent implements OnInit {
   ngOnInit(): void {
     this.paramSV.get({accion:'C'}).subscribe((r:any)=>{
       console.log(r);
-      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='quincena '+r.result.parametros[0].computed : this.titlepage ='fin de mes '+r.result.parametros[0].computed
+      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
 
     })
   }
@@ -187,12 +187,12 @@ export class ReporteComponent implements OnInit {
           let nombre = `${element['AP PATERNO']} ${element['AP MATERNO']} ${element['NOMBRES']}`;
           let obra = element['AREA'].split(',')[2];
           let obraFormated = String(obra).trim().split(' ')[0];
-          let anticipo = element['ANTICIPO DE SUELDO'];
+          let anticipo = element['ANTICIPO DE SUELDO'] =='' ? 0: element['ANTICIPO DE SUELDO'];
           let dias_trab = element['DÍAS TRABAJADOS'];
           if(obra){
             this.data.push({
-              dias : dias_trab,
-              sueldo: sueldoLiq,
+              dias : dias_trab == '' ? 0 : dias_trab,
+              sueldo: sueldoLiq  == '' ? 0 : sueldoLiq,
               anticipo : anticipo,
               rut: rut,
               nombre: nombre,
@@ -327,7 +327,7 @@ export class ReporteComponent implements OnInit {
             rut: rut,
             ficha: ficha,
             obra: '0'+area.trim().split(/\s+/)[0],
-            montoSinRemunerar: montoSinRemunerar,
+            montoSinRemunerar: montoSinRemunerar=='' ? 0:montoSinRemunerar,
             //finiq : finiq,
           })
 

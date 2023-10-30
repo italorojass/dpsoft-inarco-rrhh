@@ -13,6 +13,7 @@
           </div>
           <div class="col-sm-4 col-4">
             <h3 id="quote">Detalle pagos {{titlepage}}</h3>
+
           </div>
           <div class="col-sm-4 col-4">
             <div class="btn-group pull-right">
@@ -48,6 +49,7 @@
               [sheetName]="'Hoja1'"
               [_from]="'dp'"
               [fileName]="'Reporte_DetallePagos_'+obra.codigo+'_'+obra.nombre+'_'+titlepage"
+              [datosParametros]="datosParametros"
             >
             </app-btn-reporte-excel>
             </div>

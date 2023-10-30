@@ -2,9 +2,11 @@ import { BonosService } from './../../../dashboard/detalle-bono/services/bonos.s
 import { Component, Input } from '@angular/core';
 import { from } from 'rxjs';
 import { groupBy, mergeMap, toArray } from 'rxjs/operators';
+import { DetallePagoService } from 'src/app/dashboard/detalle-pago/services/detalle-pago.service';
 import { DifSabDomService } from 'src/app/dashboard/diferencia-sab-dom/services/dif-sab-dom.service';
 import { ReporteService } from 'src/app/dashboard/reporte/service/reporte.service';
 import * as XLSX from 'xlsx';
+import { ParametrosService } from '../parametros/services/parametros.service';
 @Component({
   selector: 'app-btn-reporte-excel',
   templateUrl: './btn-reporte-excel.component.html',
@@ -17,8 +19,9 @@ export class BtnReporteExcelComponent {
   @Input() sheetName: any;
   @Input() fileName: any;
   @Input() _from: any;
-
-  constructor(private BonosService: BonosService, private sabdom: DifSabDomService,private reporteSV : ReporteService) {
+  @Input() datosParametros: any;
+  constructor(private BonosService: BonosService, private sabdom: DifSabDomService,private reporteSV : ReporteService,    private dtSv: DetallePagoService, private parametrosService : ParametrosService
+    ) {
 
   }
 
@@ -32,7 +35,15 @@ export class BtnReporteExcelComponent {
     switch (from1) {
       case 'dp':
 
-        excelData = this.data.filter(v => v.ciequincena != 'S').map(x => {
+       /*  excelData = this.data.filter(v=>{
+          // v.ciequincena != 'S' && v.finiq == 'F'
+          if(this.datosParametros.tipo_mes =='Q'){
+           return v.finiq == 'Q';
+          }else{
+           return v.finiq  != 'F' && v.ciequincena == 'Q' || v.ciequincena;
+          }
+
+         }).map(x => {
           let b = {
             finiq: x.finiq,
             nombre: x.nombre,
@@ -63,32 +74,53 @@ export class BtnReporteExcelComponent {
           }
 
           return b;
+        }) */
+
+        this.dtSv.crearPDF({obra : obra}).subscribe(r=>{
+          excelData = r['result'].datos;
+          XLSX.utils.sheet_add_aoa(ws, this.headings);
+          XLSX.utils.sheet_add_json(ws, excelData, { origin: 'A2', skipHeader: true });
+          XLSX.utils.book_append_sheet(wb, ws, this.sheetName);
+
+
+          XLSX.writeFile(wb, `${this.fileName}.xlsx`);
         })
-        XLSX.utils.sheet_add_aoa(ws, this.headings);
-        XLSX.utils.sheet_add_json(ws, excelData, { origin: 'A2', skipHeader: true });
-        XLSX.utils.book_append_sheet(wb, ws, this.sheetName);
 
-
-        XLSX.writeFile(wb, `${this.fileName}.xlsx`);
         break;
       case 'hh':
-        excelData = this.data.filter(v => v.ciequincena != 'S').map(x => {
-          let b = {
-            rut: `${x.rut}-${x.dig}`,
-            ficha: x.ficha,
-            horasext50: Number(x.tothormes)
-          }
+        this.parametrosService.get({accion:'C'}).subscribe((r:any)=>{
 
-          return b;
+          this.datosParametros =r.result.parametros[0];
+          excelData = this.data.filter(v=>{
+            // v.ciequincena != 'S' && v.finiq == 'F'
+            console.log(this.datosParametros);
+            if(this.datosParametros.tipo_mes =='Q'){
+             return v.finiq == 'Q';
+            }else{
+             return v.finiq  != 'F' && v.ciequincena == 'Q' || v.ciequincena;
+            }
+
+           }).map(x => {
+            let b = {
+              rut: `${x.rut}-${x.dig}`,
+              ficha: x.ficha,
+              horasext50: Number(x.tothormes)
+            }
+
+            return b;
+          })
+
+
+          XLSX.utils.sheet_add_aoa(ws, this.headings);
+          XLSX.utils.sheet_add_json(ws, excelData, { origin: 'A2', skipHeader: true });
+          XLSX.utils.book_append_sheet(wb, ws, this.sheetName);
+
+
+          XLSX.writeFile(wb, `${this.fileName}.xlsx`);
+
         })
 
 
-        XLSX.utils.sheet_add_aoa(ws, this.headings);
-        XLSX.utils.sheet_add_json(ws, excelData, { origin: 'A2', skipHeader: true });
-        XLSX.utils.book_append_sheet(wb, ws, this.sheetName);
-
-
-        XLSX.writeFile(wb, `${this.fileName}.xlsx`);
         break;
 
       case 'bonos':

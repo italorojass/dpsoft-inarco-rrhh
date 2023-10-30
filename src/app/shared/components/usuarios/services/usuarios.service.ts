@@ -17,4 +17,9 @@ export class UsuariosService {
     return this._http.post(`${environment.url}ws_usuario_rrhh.php`,body);
   }
 
+  cambiarClave(body){
+    return this._http.post(`${environment.url}usuarios_clave_rrhh.php`,body);
+
+  }
+
 }

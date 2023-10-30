@@ -15,7 +15,9 @@ export class ObraSelectService {
     return JSON.parse(sessionStorage.getItem('obraSelect'));
   }
 
+  ObraSelect
   set(obras){
+    this.ObraSelect = obras;
    /*  sessionStorage.removeItem('obras');
     sessionStorage.setItem('obras',JSON.stringify(obras)); */
     return obras;

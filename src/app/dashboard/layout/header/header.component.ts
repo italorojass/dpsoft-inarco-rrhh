@@ -1,9 +1,13 @@
+import { ToastrService } from 'ngx-toastr';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ObraSelectService } from './../../../shared/services/obra-select.service';
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as $ from 'jquery';
 import { BuildMonthService } from 'src/app/shared/services/build-month.service';
+import { UsuariosService } from 'src/app/shared/components/usuarios/services/usuarios.service';
+import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -11,54 +15,89 @@ import { BuildMonthService } from 'src/app/shared/services/build-month.service';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private router : Router, private ObraSelectService : ObraSelectService,
-    private utils : BuildMonthService ,
-    private fb : FormBuilder) { }
+  constructor(private router : Router,
+    private ObraSelectService : ObraSelectService,
+    private activedRoute : ActivatedRoute ,
+    private fb : FormBuilder,
+    private userSv: UsuariosService,
+    private ToastrService : ToastrService,
+    private ParametrosService : ParametrosService) { }
 
   user: string = '';
+  rolUser :string;
   obra : any= '';
-  obras = [];
+  periodos = [];
+
+  setActive(item){
+    this.router.url === item.href;
+    return this.router.url === item.href ? 'active' : '';
+  }
   ngOnInit(): void {
     this.user = JSON.parse(sessionStorage.getItem('user')!);
+    this.rolUser = sessionStorage.getItem('rolUser')!;
     this.obra = this.ObraSelectService.getSelected();
-    this.obras =  this.ObraSelectService.get();
+    //this.periodos =  this.ObraSelectService.get();
+    this.obtenerMesesAtras();
 
-    let inx = this.obras.findIndex(x=>x.codigo == this.obra.codigo);
+    /* let inx = this.periodos.findIndex(x=>x.codigo == this.obra.codigo);
     if(inx != -1)
-      this.obras.splice(inx,1);
+      this.periodos.splice(inx,1); */
+
+    this.changePassForm.setValidators(this.passwordMatchValidator);
 
 
+  }
+  datosParametros:any
+
+
+  obtenerMesesAtras(){
+
+    this.ParametrosService.get({accion:'P'}).subscribe((r:any)=>{
+      this.ObraSelectService.set(r.result.parametros.filter(x=>x.estado =='A'))
+      this.datosParametros =this.ObraSelectService.ObraSelect;
+      this.periodos =r.result.parametros;
+      console.log('datos parametros meses atras', this.datosParametros);
+      //this.datosParametros.tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
+
+    })
   }
 
   changePassForm = this.fb.group({
     actual : ['', Validators.required],
-    nueva : ['', Validators.minLength(6)],
-    repetir : ['',[Validators.required],this.passwordMatchingValidatior]
+    nueva : ['', [Validators.required,Validators.minLength(6)]],
+    repetir : ['',[Validators.required]]
   });
 
+  @ViewChild('cerrarModal') cerrarModal: ElementRef<HTMLElement>;
   changePass(){
+    console.log('llamar al servicio!');
+    let idUser = sessionStorage.getItem('idUser');
+    let body = {
+      id : idUser,
+      clave : this.changePassForm.value.repetir
+    }
 
+    this.userSv.cambiarClave(body).subscribe(r=>{
+      this.ToastrService.success('contraseña cambiada con éxito','Cambiar contraseña');
+      this.changePassForm.reset();
+      this.cerrarModal.nativeElement.click();
+    })
   }
 
-  passwordMatchingValidatior(form){
-    console.log(form);
-    const password = form.controls['nueva'].value;
-    const confirmation = form.controls['repetir'].value;
 
-    if (!password || !confirmation) { // if the password or confirmation has not been inserted ignore
-      return null;
-    }
+ passwordMatchValidator(formGroup: FormGroup) {
+  const password = formGroup.get('nueva').value;
+  const confirmPassword = formGroup.get('repetir').value;
 
-    if (confirmation.length > 0 && confirmation !== password) {
-      confirmation.setErrors({ notMatch: true }); // set the error in the confirmation input/control
-    }
+  return password === confirmPassword ? null : { passwordMismatch: true };
+}
 
-    return null; // always return null here since as you'd want the error displayed on the confirmation input
- };
-
+periodoSelect : any;
   changeData(item){
-    console.log(item);
+    console.log(item,this.router.url);
     this.ObraSelectService.set(item);
+
+    this.router.navigate([this.router.url]);
   }
 
   logout(){

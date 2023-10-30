@@ -43,7 +43,7 @@
     <div class="container">
       <ul class="nav page-navigation ">
         <ng-container *ngFor="let item of menu">
-          <li class="nav-item" *ngIf="item.href;else submenu">
+          <li class="nav-item" [ngClass]="setActive(item)" *ngIf="item.href;else submenu">
             <a [routerLink]="[item.href]" class="nav-link"><i class="link-icon {{item.icon}}"></i><span class="menu-title">{{item.title}}</span></a>
           </li>
 
@@ -67,6 +67,7 @@
 </nav>
 
 
+
 <!--Modal Cambiar clave-->
 <div class="modal fade" id="modalCambiarClave" tabindex="-1" role="dialog" aria-labelledby="modalCambiarClaveLabel" aria-hidden="true">
   <div class="modal-dialog modal-md" role="document">
@@ -77,15 +78,16 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      <form [formGroup]="changePassForm" (ngSubmit)="changePass()">
       <div class="modal-body">
 
-        <form>
+
           <div class="form-group row">
             <div class="col-lg-3">
               <label class="col-form-label">Contraseña actual</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="nombre" id="nombre" type="password" placeholder="xxxx">
+              <input class="form-control"  name="actual" id="actual" type="password" placeholder="xxxx" formControlName="actual">
             </div>
           </div>
           <div class="form-group row">
@@ -93,7 +95,8 @@
               <label class="col-form-label">Nueva contraseña</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="usuario" id="usuario" type="password" placeholder="xxxxx">
+              <input class="form-control"  name="nueva" id="nueva" type="password" placeholder="xxxxx" formControlName="nueva">
+              <small *ngIf="changePassForm.get('nueva').hasError('minlength')" class="text-danger">La contraseña debe ser mínimo 6 caractéres.</small>
             </div>
 
 
@@ -103,25 +106,17 @@
               <label class="col-form-label">Repita contraseña</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="rol" id="rol" type="password" placeholder="xxxx">
+              <input class="form-control"  name="rol" id="rol" type="password" placeholder="xxxx" formControlName="repetir">
+              <small *ngIf="changePassForm.hasError('passwordMismatch')" class="text-danger">Las contraseñas no coinciden.</small>
             </div>
           </div>
-
-          <div class="form-group row">
-            <div class="col-12">
-              <small >*La contraseña debe contener letras y numeros.</small><br>
-              <small >*Minimo 6 caractéres.</small>
-            </div>
-
-          </div>
-
-
-        </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success">Cambiar contraseña</button>
+        <button type="submit" class="btn btn-success" [disabled]="!changePassForm.valid">Cambiar contraseña</button>
         <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
       </div>
+    </form>
     </div>
   </div>
 </div>
+

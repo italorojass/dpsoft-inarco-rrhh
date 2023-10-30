@@ -18,4 +18,9 @@ export class DetallePagoService {
   cargaMasiva(body: any){
     return this._http.post(`${environment.url}ws_cargamasiva_rrhh.php`,body);
   }
+
+  crearPDF(body){
+    return this._http.post(`${environment.url}ws_eeppinforme_rrhh.php`,body);
+
+  }
 }

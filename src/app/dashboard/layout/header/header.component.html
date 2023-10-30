@@ -10,24 +10,23 @@
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between flex-grow-1">
 
         <ul class="navbar-nav navbar-nav-right mr-0 ml-auto">
-        <!--   <li class="nav-item dropdown d-none d-lg-flex nav-language">
-            <div class="nav-link">
+          <li class="nav-item dropdown d-none d-lg-flex nav-language">
+            <div class="nav-link" *ngIf="datosParametros">
               Estas viendo:
-              <span class="dropdown-toggle btn btn-sm" id="languageDropdown" data-toggle="dropdown" aria-expanded="false">{{obra.codigo}} | {{obra.nombre}}
+              <span class="dropdown-toggle btn btn-sm" id="languageDropdown" data-toggle="dropdown" aria-expanded="false">{{datosParametros[0].quemes}} | {{datosParametros[0].tipo_proceso == 'C' ? 'CERRADO': 'ABIERTO'}}
 
               </span>
 
               <div class="dropdown-menu navbar-dropdown" >
 
-                <a class="dropdown-item " *ngFor="let item of obras" (click)="changeData(item)">
-                  {{item.codigo}} | {{item.nombre}}
-
+                <a class="dropdown-item " *ngFor="let item of periodos" (click)="changeData(item)" style="cursor: pointer;">
+                  {{item.quemes}} | {{item.estado == 'C' ? 'CERRADO': 'ABIERTO'}}
                 </a>
 
 
               </div>
             </div>
-          </li> -->
+          </li>
 
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
@@ -35,8 +34,12 @@
               <span class="nav-profile-name">Bienvenido: {{user}}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+              <a class="dropdown-item" [routerLink]="['/admin']" *ngIf="rolUser=='1'">
+                <i class="icon-share text-primary mr-2"></i>
+                Ver Administración
+              </a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" data-toggle="modal" data-target="#modalCambiarClave">
+              <a class="dropdown-item" data-toggle="modal" data-target="#modalCambiarClave" (click)="changePassForm.reset()">
                 <i class="icon-key text-primary mr-2"></i>
                 Cambiar contraseña
               </a>
@@ -58,7 +61,7 @@
     <div class="container">
       <ul class="nav page-navigation ">
         <ng-container *ngFor="let item of menu">
-          <li class="nav-item" *ngIf="item.href;else submenu">
+          <li class="nav-item" [ngClass]="setActive(item)" *ngIf="item.href;else submenu">
             <a [routerLink]="[item.href]" class="nav-link"><i class="link-icon {{item.icon}}"></i><span class="menu-title">{{item.title}}</span></a>
           </li>
 
@@ -110,6 +113,7 @@
             </div>
             <div class="col-lg-8">
               <input class="form-control"  name="nueva" id="nueva" type="password" placeholder="xxxxx" formControlName="nueva">
+              <small *ngIf="changePassForm.get('nueva').hasError('minlength')" class="text-danger">La contraseña debe ser mínimo 6 caractéres.</small>
             </div>
 
 
@@ -120,23 +124,13 @@
             </div>
             <div class="col-lg-8">
               <input class="form-control"  name="rol" id="rol" type="password" placeholder="xxxx" formControlName="repetir">
+              <small *ngIf="changePassForm.hasError('passwordMismatch')" class="text-danger">Las contraseñas no coinciden.</small>
             </div>
           </div>
-
-          <div class="form-group row">
-            <div class="col-12">
-              <small >*La contraseña debe contener letras y numeros.</small><br>
-              <small >*Minimo 6 caractéres.</small>
-            </div>
-
-          </div>
-
-
-
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-success" [disabled]="!changePassForm.valid">Cambiar contraseña</button>
-        <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-light" data-dismiss="modal" #cerrarModal>Cancelar</button>
       </div>
     </form>
     </div>

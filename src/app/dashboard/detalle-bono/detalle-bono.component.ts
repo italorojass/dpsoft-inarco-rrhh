@@ -34,7 +34,7 @@ export class DetalleBonoComponent implements OnInit {
   ngOnInit() {
     this.ParametrosService.get({accion:'C'}).subscribe((r:any)=>{
       console.log(r);
-      r.result.parametros[0].tipo_mes !='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='quincena '+r.result.parametros[0].computed : this.titlepage ='fin de mes '+r.result.parametros[0].computed
+      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
 
     })
     this.get();
@@ -324,10 +324,12 @@ this.bonos=[];
     console.log(tableHeader,bodyTable,bodyFooter);
     let wids = [];
     for (let i = 0; i < tableHeader.length; i++) {
-      wids.push('*');
+      wids.push(70);
     }
-    wids[1]=250;
-    wids[2]=100;
+    wids[0] ='auto';
+    wids[1]=150;
+    wids[2]=90;
+    wids[wids.length-1] = 'auto';
     let docDefinition = {
       footer: function(currentPage, pageCount, pageSize) {
         // you can apply any logic and return any valid pdfmake element
