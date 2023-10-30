@@ -5,13 +5,16 @@ import { ProyectosComponent } from '../shared/components/proyectos/proyectos.com
 import { ParametrosComponent } from '../shared/components/parametros/parametros.component';
 import { UsuariosComponent } from '../shared/components/usuarios/usuarios.component';
 import { HomeComponent } from './home/home.component';
+import { ReporteComponent } from '../dashboard/reporte/reporte.component';
 const routes: Routes = [{
   path : '',
   component : LayoutComponent,
+  data: {title: 'Inicio'},
   children : [
     {
       path :'',
-      component : HomeComponent
+      component : HomeComponent,
+
     },
     {
     path:'proyectos',
@@ -24,6 +27,10 @@ const routes: Routes = [{
   {
     path:'parametros',
     component : ParametrosComponent
+  },
+  {
+    path : 'reportes',
+    component : ReporteComponent
   }]
 
 }];

@@ -4,9 +4,13 @@ import { DetallePagoService } from '../detalle-pago/services/detalle-pago.servic
 import { BuildMonthService } from 'src/app/shared/services/build-month.service';
 import { DifSabDomService } from './services/dif-sab-dom.service';
 import { ButtonCellRendererComponent } from 'src/app/shared/components/button-cell-renderer/button-cell-renderer.component';
-import { ColDef, GridReadyEvent, RowValueChangedEvent } from 'ag-grid-community';
+import { ColDef, GridReadyEvent, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
+
 @Component({
   selector: 'app-diferencia-sab-dom',
   templateUrl: './diferencia-sab-dom.component.html',
@@ -14,20 +18,26 @@ import { AgGridAngular } from 'ag-grid-angular';
 })
 export class DiferenciaSabDomComponent implements OnInit {
 
-  constructor(private bm: BuildMonthService, private sb: DifSabDomService, private toast: ToastrService,
+  constructor(private bm: BuildMonthService, private sb: DifSabDomService, private toast: ToastrService, private ParametrosService : ParametrosService,
     private aggsv: AgGridSpanishService) { }
     @ViewChild('heGrid') grid!: AgGridAngular;
+    titlepage ='';
+    datosParametros : any;
 
   ngOnInit(): void {
     this.get();
-    this.buildTbl();
-    this.buildHeader();
+    this.ParametrosService.get({accion:'C'}).subscribe((r:any)=>{
+      console.log(r);
+      this.datosParametros =r.result.parametros[0];
+      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
+
+    })
   }
 
   data: any = [];
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
   get() {
-
+    this.data=[];
     let body = {
       tipo: 'finde',
       accion: 'C',
@@ -39,13 +49,14 @@ export class DiferenciaSabDomComponent implements OnInit {
         c++
         return {
           ...value,
-          correlativo: c,
-          isEdit: false
+          correlativo: c
         }
       });
       console.log(this.data);
-
+      this.buildTbl();
+      this.buildHeader();
     })
+
   }
 
   sem: any = [];
@@ -59,21 +70,24 @@ export class DiferenciaSabDomComponent implements OnInit {
   saveEdit(item) {
     item.isEdit = false;
     let b = {
-      tipo: 'finde',
       accion: 'M',
-      obra: this.obra.codigo,
+      //obra: this.obra.codigo,
       id_detalle_pagos: item.id_pagos1,
-      val_sab_med: item.sab_medio_sem1,
-      val_sab_ent: item.sab_entero_sem1,
-      val_dom_med: item.dom_medio_sem1,
-      val_dom_ent: item.dom_entero_sem1
+      val_sab_med: Number(item.sab_medio_sem1),
+      val_sab_ent: Number(item.sab_entero_sem1),
+      val_dom_med: Number(item.dom_medio_sem1),
+      val_dom_ent: Number(item.dom_entero_sem1)
     }
-    console.log('body', b);
+
+    console.log('body edit', b);
     this.sb.get(b).subscribe((r: any) => {
       console.log(r);
 
-      this.toast.success('Actualizado con éxito', `Pago trabajador ${item.nombre}`);
+      this.toast.success('Actualizado con éxito', `Pago trabajador ${item.nombre}`,{
+        timeOut: 2000,
 
+      });
+      this.get()
 
     })
   }
@@ -98,6 +112,7 @@ export class DiferenciaSabDomComponent implements OnInit {
 
   }
   buildTbl() {
+    this.columnDefs=[];
     this.columnDefs.push(
       /* {
       headerName: 'Acciones',
@@ -142,11 +157,12 @@ export class DiferenciaSabDomComponent implements OnInit {
       },
       {
         headerName: 'Semana 1',
-        editable: true,
+        editable : (params) => params.data.ciequincena !== 'S',
         children: [
           {
             headerName: 'H. extra sábado',
             field: 'h_ex_sabado_sem1',
+
             width: 100,
             sortable: true,
             lockPinned: false,
@@ -157,7 +173,10 @@ export class DiferenciaSabDomComponent implements OnInit {
             headerName: 'Valor hora',
             width: 100,
             sortable: true,
-            editable: false
+            editable: false,
+            cellRenderer: this.CurrencyCellRenderer, cellRendererParams: {
+              currency: 'CLP'
+            },
           },
           {
             field: 'total_sab_sem1',
@@ -175,7 +194,10 @@ export class DiferenciaSabDomComponent implements OnInit {
               'Valor sábado 1/2 día',
             width: 110,
             sortable: true,
-            editable: true
+            editable : (params) => params.data.ciequincena !== 'S',
+            cellRenderer: this.CurrencyCellRenderer, cellRendererParams: {
+              currency: 'CLP'
+            },
           },
           {
             field: 'sab_entero_sem1',
@@ -183,7 +205,7 @@ export class DiferenciaSabDomComponent implements OnInit {
             width: 100,
             sortable: true,
             cellRenderer: this.CurrencyCellRenderer,
-            editable: true
+            editable : (params) => params.data.ciequincena !== 'S'
           },
           {
             field: 'h_ex_domingo_sem1',
@@ -206,7 +228,7 @@ export class DiferenciaSabDomComponent implements OnInit {
             headerName: 'Valor domingo 1/2 día',
             width: 180, sortable: true,
             cellRenderer: this.CurrencyCellRenderer,
-            editable: true
+            editable : (params) => params.data.ciequincena !== 'S'
           },
           {
             field: 'dom_entero_sem1',
@@ -214,7 +236,7 @@ export class DiferenciaSabDomComponent implements OnInit {
             width: 150,
             sortable: true,
             cellRenderer: this.CurrencyCellRenderer,
-            editable: true
+            editable : (params) => params.data.ciequincena !== 'S'
           },
           {
             field: 'dif_sab_sem1',
@@ -293,7 +315,8 @@ export class DiferenciaSabDomComponent implements OnInit {
       headerName: 'Diferencia mensual sábado',
       width: 120, sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-
+      pinned: 'right',
+      lockPinned: true,
       editable: false
     },
       {
@@ -302,11 +325,159 @@ export class DiferenciaSabDomComponent implements OnInit {
         width: 120,
         sortable: true,
         cellRenderer: this.CurrencyCellRenderer,
-
+        pinned: 'right',
+        lockPinned: true,
         editable: false
       }
     )
 
+  }
+  rowClassRules: RowClassRules = {
+    // row style function
+    'sick-days-warning': (params) => {
+
+      return params.data.ciequincena === 'S';
+    },
+    // row style expression
+
+  };
+  createPDF(action = 'open'){
+    let tableHeader = [
+      { text: 'N°', alignment: 'right', margin: [0, 10] },
+      { text: 'RUT', alignment: 'left', margin: [0, 10] },
+      { text: 'AP PATERNO', alignment: 'left', margin: [0, 10] },
+      { text: 'AP MATERNO', alignment: 'left', margin: [0, 10] },
+      { text: 'NOMBRES', alignment: 'left', margin: [0, 10] },
+      { text: 'CARGO', alignment: 'left', margin: [0, 10] },
+      { text: 'DÍAS TRABAJADOS', alignment: 'right', margin: [0, 10] },
+      { text: 'ASIG. ESPECIAL', alignment: 'right', margin: [0, 10] },
+      { text: 'ANTICIPO DE SUELDO', alignment: 'right', margin: [0, 10] },
+      { text: 'SUELDO LÍQUIDO', alignment: 'right', margin: [0, 10] }
+    ]
+    let objreport = Object.assign([], this.data.filter(v=>{
+      // v.ciequincena != 'S' && v.finiq == 'F'
+      if(this.datosParametros.tipo_mes =='Q'){
+       return v.finiq == 'Q';
+      }else{
+       return v.finiq  != 'F' && v.ciequincena == 'Q' || v.ciequincena;
+      }
+
+     }));
+    let newob = objreport.filter(x => x.total_bonos > 0)
+    let bodyTable = newob.map((p, i) => {
+
+      return [
+        { text: i+1, alignment: 'right' },
+        { text: p.nombre, alignment: 'center' },
+        { text: p.rutF, alignment: 'center' },
+        { text: p.ficha, alignment: 'center' },
+
+        { text: p.total_bonos.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'center' },
+      ]
+    });
+
+    let wids = [];
+    for(let i=0;i<tableHeader.length;i++){
+      wids.push('auto')
+    }
+
+    let today = new Date();
+    let docDefinition = {
+
+  pageOrientation: 'landscape',
+  pageSize: 'A3',
+  pageMargins: [40, 60, 40, 60],
+  info: {
+    title: 'Reporte diferencia sábado y domingo',
+
+  },
+  //watermark: { text: 'test watermark', color: 'blue', opacity: 0.3, bold: true, italics: false },
+  content: [
+    // Previous configuration
+    {
+      text: 'REPORTE DIFERENCIA SÁBADO Y DOMINGO',
+      fontSize: 16,
+      alignment: 'center',
+      color: '#047886',
+      margin: [0, 10],
+
+    },
+    {
+      text : 'Libro: Remuneraciones',
+      style: 'subheader',
+      bold: true,
+      fontSize: 10,
+    },
+    {
+      text : 'Empresa: CONSTRUCTORA INARCO S.A. (96.513.310-0)',
+      style: 'subheader',
+      bold: true,
+      fontSize: 10,
+    },
+    {
+      text : 'Libro: Remuneraciones',
+      style: 'subheader',
+      bold: true,
+      fontSize: 10,
+    },
+    {
+      text : 'Periodo: Remuneraciones',
+      style: 'subheader',
+      bold: true,
+      fontSize: 10,
+    },
+    {
+      text : 'Fecha generación: '+today.toLocaleDateString(),
+      style: 'subheader',
+      bold: true,
+      fontSize: 10,
+    },
+    {
+      table: {
+        headerRows: 1,
+
+        widths: wids,
+
+        body: [
+          tableHeader, ...bodyTable,
+
+        ],
+        alignment: 'center'
+
+
+      },
+    },
+  ],
+  styles: {
+    sectionHeader: {
+      bold: true,
+      decoration: 'underline',
+      fontSize: 14,
+      margin: [0, 15, 0, 15],
+      alignment: 'center'
+
+    },
+    tableHeader: {
+      bold: true,
+      fontSize: 13,
+      color: 'black',
+      alignment: 'center'
+    },
+    anotherStyle: {
+      italics: true,
+      alignment: 'center'
+    }
+  }
+
+}
+
+if (action === 'download') {
+  pdfMake.createPdf(docDefinition).download('reporte_detalle_pagos.pdf');
+} else if (action === 'print') {
+  pdfMake.createPdf(docDefinition).print();
+} else {
+  pdfMake.createPdf(docDefinition, { filename: 'detalle_pagos.pdf' }).open();
+}
   }
 
   rowSelection = this.aggsv.rowSelection;
@@ -317,7 +488,7 @@ export class DiferenciaSabDomComponent implements OnInit {
   defaultColDef: ColDef = {
     resizable: true,
     initialWidth: 200,
-    editable: true,
+    editable : (params) => params.data.ciequincena !== 'S',
     sortable: true,
     filter: true,
     floatingFilter: true,
@@ -326,8 +497,17 @@ export class DiferenciaSabDomComponent implements OnInit {
   };
   CurrencyCellRenderer(params: any) {
 
-    var usdFormate = new Intl.NumberFormat();
-    return usdFormate.format(params.value);
+    return params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
+  headings = [
+    [
+      'RUT',
+      'Código de ficha',
+      'Diferencia mensual Sábado',
+      'Diferencia mensual Domingo',
+      'Detalle',
+
+    ],
+  ];
 }

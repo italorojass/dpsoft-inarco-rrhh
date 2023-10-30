@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
 import { ToastrService } from 'ngx-toastr';
 import { CookieService } from 'ngx-cookie-service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -41,10 +42,14 @@ export class LoginComponent implements OnInit {
         if(r['result'].obras.length > 0){
           sessionStorage.setItem('obras',JSON.stringify(r['result'].obras));
           sessionStorage.setItem('user',JSON.stringify(f.value.usua));
+          sessionStorage.setItem('rolUser',r['result'].tipo);
+
           if(r['result'].tipo =="0") {//0=usuario, 1 es admin
             this.router.navigate(['/obras'])
           }else{
-            this.router.navigate(['/admin'])
+            //aca mostrar modal
+            this.showModalMultiROLE()
+            //this.router.navigate(['/admin'])
           }
 
 
@@ -60,4 +65,39 @@ export class LoginComponent implements OnInit {
     })
 
   }
+
+  showModalMultiROLE() {
+
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-default',
+            cancelButton: 'btn btn-primary'
+        },
+        buttonsStyling: false
+    })
+    swalWithBootstrapButtons.fire({
+        title: '¿Como desea continuar?',
+        text: "Esta cuenta puede acceder a todo el contenido del portal. ¿Como desea continuar su navegación?",
+        icon: 'info',
+        showCancelButton: true,
+
+        confirmButtonText: 'Administración',
+        cancelButtonText: 'Ver obras'
+    }).then((result) => {
+        if (result.value) {//superadmin
+
+
+            this.router.navigate(['/admin/proyectos']);
+
+        } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+        ) {//usuario
+
+          this.router.navigate(['/obras']);
+        }
+    })
+}
+
+
 }

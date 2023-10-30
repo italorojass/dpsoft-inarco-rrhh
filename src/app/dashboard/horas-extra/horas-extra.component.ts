@@ -2,7 +2,13 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { BuildMonthService } from 'src/app/shared/services/build-month.service';
 import { HoraextraService } from './services/horaextra.service';
 import { FormBuilder } from '@angular/forms';
-import { ColDef, GridApi, GridReadyEvent, RowValueChangedEvent } from 'ag-grid-community';
+import {
+  ColDef,
+  GridApi,
+  GridReadyEvent,
+  RowClassRules,
+  RowValueChangedEvent,
+} from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
@@ -11,17 +17,17 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-horas-extra',
   templateUrl: './horas-extra.component.html',
-  styleUrls: ['./horas-extra.component.css']
+  styleUrls: ['./horas-extra.component.css'],
 })
 export class HorasExtraComponent implements OnInit {
-
   constructor(
     private dtSv: HoraextraService,
     private bt: BuildMonthService,
     private fb: FormBuilder,
     private paramSV: ParametrosService,
     private toastr: ToastrService,
-    private aggsv: AgGridSpanishService) { }
+    private aggsv: AgGridSpanishService
+  ) {}
   @ViewChild('heGrid') grid!: AgGridAngular;
 
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
@@ -29,8 +35,7 @@ export class HorasExtraComponent implements OnInit {
   formDate = this.fb.group({
     inicio: [''],
     final: [''],
-  })
-
+  });
 
   columnDefs = [];
   defaultColDef: ColDef = {
@@ -44,149 +49,247 @@ export class HorasExtraComponent implements OnInit {
     autoHeaderHeight: true,
   };
 
- rowSelection = this.aggsv.rowSelection;
+  rowSelection = this.aggsv.rowSelection;
   overlayLoadingTemplate = this.aggsv.overlayLoadingTemplate;
   overlayNoRowsTemplate = this.aggsv.overlayNoRowsTemplate;
   localeText = this.aggsv.getLocale();
 
-  ngOnInit() {
+  rowClassRules: RowClassRules = {
+    // row style function
+    'sick-days-warning': (params) => {
 
-    this.getPeriodo().subscribe(r => {
-      this.columnDefs.push({
-        headerName: 'ID',
-        field: 'correlativo',
-        width: 80,
-        pinned: 'left',
-        filter: false,
-        floatingFilter: false,
-        editable: false
-      },
+      return params.data.ciequincena === 'S';
+    },
+    // row style expression
+
+  };
+
+  ngOnInit() {
+    this.paramSV.get({accion:'C'}).subscribe((r:any)=>{
+      console.log(r);
+      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
+
+    })
+
+    this.getPeriodo().subscribe((r) => {
+      console.log('response', r);
+      this.columnDefs.push(
+        {
+          headerName: 'ID',
+          field: 'correlativo',
+          width: 80,
+          pinned: 'left',
+          filter: false,
+          floatingFilter: false,
+          editable : (params) => params.data.ciequincena !== 'S',
+        },
         {
           field: 'nombre',
           headerName: 'Nombre',
           width: 250,
+          minWidth: 170,
           suppressSizeToFit: true,
           pinned: 'left',
           lockPinned: true,
           cellClass: 'lock-pinned',
 
-          editable: false
-        },
+          editable : (params) => params.data.ciequincena !== 'S',
+        }
       );
       let res = r['result'].parametros[0];
 
       this.formDate.patchValue({
         inicio: res.inicio_periodo,
-        final: res.final_periodo
-      })
-      let cabecera = this.buildHeader(res.inicio_periodo, res.final_periodo)
+        final: res.final_periodo,
+      });
+      let cabecera = this.buildHeader(res.inicio_periodo, res.final_periodo);
       console.log('datos dias', cabecera);
 
       let counTotalSemana = 0;
       for (let i = 0; i < cabecera.length; i++) {
-
         if (cabecera[i].nombre.includes('Domingo')) {
-          counTotalSemana++;  //agrego acontador a total semaa
-          console.log('CANTIDAD DE SEMANAS', counTotalSemana)
-          this.columnDefs.push(
-            {
-              headerName: `Semana ${counTotalSemana}`,
-              children: [{
+          counTotalSemana++; //agrego acontador a total semaa
+          console.log('CANTIDAD DE SEMANAS', counTotalSemana);
+          this.columnDefs.push({
+            headerName: `Semana ${counTotalSemana}`,
+            children: [
+              {
                 field: `dia${i + 1}`,
-                headerName: cabecera[i].nombre.includes('totsem') ? ! `${cabecera[i].nombre}` : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
-                width: 150,
+                headerName: cabecera[i].nombre.includes('totsem')
+                  ? !`${cabecera[i].nombre}`
+                  : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
+                headerClass: 'text-vertical',
+                width: 80,
                 suppressSizeToFit: true,
-                editable: true
-              }]
+                filter: false,
+                floatingFilter: false,
+                editable : (params) => params.data.ciequincena !== 'S',
 
-            })
+                cellEditor: 'agNumberCellEditor',
+                cellEditorParams: {
+                  min: 1,
+                  max: 100,
+                  precision: 0,
+                },
+                cellStyle: {
+                  // you can use either came case or dashes, the grid converts to whats needed
+                  backgroundColor: '#ff5e5e', // light green
+                },
+              },
+            ],
+          });
 
-          this.columnDefs.push(
-            {
-              // headerName:`Semana ${counTotalSemana}`,
-              children: [{
+          this.columnDefs.push({
+            // headerName:`Semana ${counTotalSemana}`,
+            children: [
+              {
                 headerName: `Total semana ${counTotalSemana}`,
+
                 field: `totsem${counTotalSemana}`,
-                width: 150,
+                width: 100,
                 suppressSizeToFit: true,
-                editable: false
-              }
-              ],
-            })
+                filter: false,
+                floatingFilter: false,
+                editable: false,
+
+                cellStyle: {
+                  // you can use either came case or dashes, the grid converts to whats needed
+                  backgroundColor: '#439aff', // light green
+                },
+              },
+            ],
+          });
         } else {
-          this.columnDefs.push(
-            {
+          if (cabecera[i].nombre.includes('Sábado')) {
+            this.columnDefs.push({
               field: `dia${i + 1}`,
-                headerName: cabecera[i].nombre.includes('totsem') ? ! `${cabecera[i].nombre}` : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
-                width: 150,
-                suppressSizeToFit: true,
-                editable: true
-
-            })//arma cabecera ok
+              headerName: cabecera[i].nombre.includes('totsem')
+                ? !`${cabecera[i].nombre}`
+                : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
+              headerClass: 'text-vertical',
+              width: 80,
+              suppressSizeToFit: true,
+              filter: false,
+              floatingFilter: false,
+              editable : (params) => params.data.ciequincena !== 'S',
+              cellEditor: 'agNumberCellEditor',
+              cellEditorParams: {
+                min: 1,
+                max: 100,
+                precision: 0,
+              },
+              cellStyle: {
+                // you can use either came case or dashes, the grid converts to whats needed
+                backgroundColor: '#7ed321', // light green
+              },
+            });
+          } else {
+            this.columnDefs.push({
+              field: `dia${i + 1}`,
+              headerName: cabecera[i].nombre.includes('totsem')
+                ? !`${cabecera[i].nombre}`
+                : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
+              headerClass: 'text-vertical',
+              width: 100,
+              suppressSizeToFit: true,
+              filter: false,
+              floatingFilter: false,
+              editable : (params) => params.data.ciequincena !== 'S',
+              cellEditor: 'agNumberCellEditor',
+                cellEditorParams: {
+                  min: 1,
+                  max: 100,
+                  precision: 0,
+                },
+            });
+          }
         }
-
       }
       this.columnDefs.push(
         {
           field: `tothormes`,
           headerName: 'Total h. extras del mes',
-          width: 150,
+          headerClass: 'text-vertical',
+          width: 80,
           suppressSizeToFit: true,
-          editable: false
+          filter: false,
+          floatingFilter: false,
+          editable: false,
+          lockPinned: true,
+          pinned: 'right',
         },
         {
           field: `valhor`,
           headerName: 'Valor líquido hora extra',
-          width: 150,
+          headerClass: 'text-vertical',
+          width: 100,
           suppressSizeToFit: true,
-          editable: false
+          filter: false,
+          floatingFilter: false,
+          editable: false,
+          lockPinned: true,
+          pinned: 'right',
+          cellRenderer: this.CurrencyCellRenderer,
+
+          cellRendererParams: {
+            currency: 'CLP',
+          },
         },
         {
           field: `totvalhor`,
           headerName: 'Valor líquido total horas del mes',
-          width: 150,
+          headerClass: 'text-vertical',
+          width: 100,
           suppressSizeToFit: true,
-          editable: false
-        }) //los ultimos/.
+          filter: false,
+
+          floatingFilter: false,
+          editable: false,
+          lockPinned: true,
+          pinned: 'right',
+          cellRenderer: this.CurrencyCellRenderer,
+          cellRendererParams: {
+            currency: 'CLP',
+          },
+        }
+      ); //los ultimos/.
       console.log('columDef Final', this.columnDefs);
 
-      this.grid.api.setColumnDefs(this.columnDefs)
-
-
+      this.grid.api.setColumnDefs(this.columnDefs);
     });
 
     this.getHoraExtra();
-
-
-
   }
 
+  titlepage ='';
 
+  CurrencyCellRenderer(params: any) {
+    return params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+
+  public groupHeaderHeight = 45;
+  public headerHeight = 100;
   api: any;
   columnApi;
   onGridReady(params: GridReadyEvent<any>) {
     this.api = params.api;
     this.columnApi = params.columnApi;
-    console.log('grid on ready', params)
+    console.log('grid on ready', params);
   }
-
-
 
   onRowValueChanged(event: RowValueChangedEvent) {
     var data = event.data;
     console.log(data);
-    this.saveEdit(data)
-
+    this.saveEdit(data);
   }
   gridApi!: GridApi<any>;
-
 
   getPeriodo() {
     let b = {
       accion: 'C',
-      obra: this.obra.codigo
-    }
-    return this.paramSV.get(b)
+      obra: this.obra.codigo,
+    };
+    return this.paramSV.get(b);
     //return this.buildHeader(this.formDate.value.inicio,this.formDate.value.final);
   }
   weekday = [];
@@ -197,13 +300,12 @@ export class HorasExtraComponent implements OnInit {
 
     console.log('weekday', this.weekday);
     let c = 0;
-    let r = []
+    let r = [];
     this.weekday.forEach((element, i) => {
-      c++
-      this.tblHeader.push(element)
-      r.push(element)
+      c++;
+      this.tblHeader.push(element);
+      r.push(element);
       if (element.nombre == 'Domingo') {
-
         this.tblHeader.push({ dia: c, nombre: `Total semana` });
         this.totalSm.push(element);
         //
@@ -213,7 +315,6 @@ export class HorasExtraComponent implements OnInit {
     return r;
 
     //console.log('CABECER TABLA HTML', this.tblHeader);
-
   }
 
   tblHeader = [];
@@ -222,27 +323,31 @@ export class HorasExtraComponent implements OnInit {
     let body = {
       tipo: 'extras',
       obra: this.obra.codigo,
-      accion: 'C'
-    }
+      accion: 'C',
+    };
     this.dtSv.get(body).subscribe((r: any) => {
-
-      console.log('data final', r)
+      console.log('data final', r);
       let c = 0;
       this.data = r.result.extras.map((value) => {
         c++;
         return {
           ...value,
           correlativo: c,
-          isEdit: false
-        }
+        };
       });
-    })
-
-
+    });
   }
 
-
-
+  headings = [
+    [
+      'Empleado',
+      'Código de ficha',
+      'Horas extras 50%',
+      'Horas extras 100%',
+      'Horas extras 25%',
+      'Horas extras 35%',
+    ],
+  ];
 
   saveEdit(item) {
     console.log('modificado', item);
@@ -250,18 +355,16 @@ export class HorasExtraComponent implements OnInit {
       tipo: 'extras',
       obra: this.obra.codigo,
       accion: 'M',
-      ...item
-    }
+      ...item,
+    };
     console.log('body edit', body);
     this.dtSv.get(body).subscribe((r: any) => {
-
       //item.isEdit = false
-      this.toastr.success('Actualizado con éxito', `Hora extra del trabajador ${item.nombre}`);
-      this.getHoraExtra()
-
-    })
+      this.toastr.success(
+        'Actualizado con éxito',
+        `Hora extra del trabajador ${item.nombre}`
+      );
+      this.getHoraExtra();
+    });
   }
-
-
-
 }

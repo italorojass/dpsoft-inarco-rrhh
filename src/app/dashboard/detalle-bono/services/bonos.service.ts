@@ -15,4 +15,8 @@ export class BonosService {
     // console.log(`${environment.url}ws_horaextra_rrhh.php`,body);
      return this._http.post(`${environment.url}ws_bonos_rrhh.php`,body);
    }
+
+   insert(body){
+    return this._http.post(`${environment.url}ws_nombrebonos_rrhh.php`,body);
+   }
 }

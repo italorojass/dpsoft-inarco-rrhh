@@ -2,41 +2,70 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Dif. horas sábado y domingo</h4>
-        <hr>
+        <!--  <h4 class="card-title">Dif. horas sábado y domingo</h4> -->
+        <div class="row">
+          <div class="col-4">
+            <h4 class="text-left mb-4 text-dark">
+              <a [routerLink]="['/obras']"
+                ><i class="icon-action-undo mr-2"></i>{{ obra.codigo }} |
+                {{ obra.nombre }}</a
+              >
+            </h4>
+          </div>
+          <div class="col-sm-6 col-4">
+            <h3 id="quote">Dif. horas sábado y domingo {{titlepage}}</h3>
+          </div>
+          <div class="col-sm-2 col-12">
+            <app-btn-reporte-excel
+            [data]="data"
+            [headings]="headings"
+            [sheetName]="'Hoja1'"
+            [_from]="'sabdom'"
+            [fileName]="'Reporte_Diferencia_sabdom_'+obra.codigo+'_'+obra.nombre+'_'+titlepage"
+          >
+          </app-btn-reporte-excel>
+
+           <!--  <button
+              type="button"
+              class="btn btn-outline-dark btn-rounded ml-2 pull-right"
+              (click)="createPDF()"
+            >
+              <i class="icon-doc"></i>Reporte PDF
+            </button> -->
+          </div>
+        </div>
 
         <div class="row pt-2">
           <div class="col-12 table-responsive1">
-
+            <strong>Total trabajadores: {{ data.length }} </strong>
             <ag-grid-angular
-            #heGrid
-    style="width: 100%; height: 100%;"
-    class="ag-theme-alpine"
-    [columnDefs]="columnDefs"
-    [defaultColDef]="defaultColDef"
-    [rowData]="data"
-    [suppressMenuHide]="true"
-    [suppressColumnVirtualisation]="false"
-    [suppressRowVirtualisation]="false"
-    [pagination]="true"
-    [groupSelectsChildren]="true"
-    [rowSelection]="rowSelection"
-    [enableCellChangeFlash]="true"
-    [alwaysShowHorizontalScroll]="true"
-    [alwaysShowVerticalScroll]="true"
-    [suppressMaxRenderedRowRestriction]="true"
-    [overlayLoadingTemplate]="overlayLoadingTemplate"
-    [overlayNoRowsTemplate]="overlayNoRowsTemplate"
-    [localeText]="localeText"
-    (gridReady)="onGridReady($event)"
-    (rowValueChanged)="onRowValueChanged($event)"
-    [editType]="'fullRow'"
-  ></ag-grid-angular>
+              #heGrid
+              style="width: 100%; height: 100%"
+              class="ag-theme-alpine"
+              [columnDefs]="columnDefs"
+              [defaultColDef]="defaultColDef"
+              [rowData]="data"
+              [suppressMenuHide]="true"
+              [suppressColumnVirtualisation]="false"
+              [suppressRowVirtualisation]="false"
+              [pagination]="true"
+              [groupSelectsChildren]="true"
+              [rowSelection]="rowSelection"
+              [enableCellChangeFlash]="true"
+              [alwaysShowHorizontalScroll]="true"
+              [alwaysShowVerticalScroll]="true"
+              [suppressMaxRenderedRowRestriction]="true"
+              [overlayLoadingTemplate]="overlayLoadingTemplate"
+              [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+              [localeText]="localeText"
+              (gridReady)="onGridReady($event)"
+              [paginationPageSize]="15"
+              [rowClassRules]="rowClassRules"
+              (rowValueChanged)="onRowValueChanged($event)"
+              [editType]="'fullRow'"
+            ></ag-grid-angular>
 
-
-
-
-           <!--  <table id="order-listing" class="table table-striped table-bordered" frame=void rules=rows>
+            <!--  <table id="order-listing" class="table table-striped table-bordered" frame=void rules=rows>
               <thead class="thead-dark">
                 <tr>
                   <th></th>
@@ -259,7 +288,6 @@
 
               </tbody>
             </table> -->
-
           </div>
         </div>
       </div>

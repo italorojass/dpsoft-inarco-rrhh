@@ -1,13 +1,29 @@
+import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
 import { BuildMonthService } from 'src/app/shared/services/build-month.service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DetallePagoService } from './services/detalle-pago.service';
 import { ToastrService } from 'ngx-toastr';
 import ChileanRutify from 'chilean-rutify';
-import { ColDef, ICellEditorParams, RowValueChangedEvent } from 'ag-grid-community';
+import { ColDef, ICellEditorParams, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ProyectosService } from 'src/app/shared/components/proyectos/services/proyectos.service';
+
+import { CurrencyPipe } from '@angular/common';
+import jsPDF from 'jspdf';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import htmlToPdfmake from 'html-to-pdfmake';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import Swal from 'sweetalert2';
+import { BtnEliminarDetallePagoComponent } from 'src/app/shared/components/btn-eliminar-detalle-pago/btn-eliminar-detalle-pago.component';
+import { EliminarPagoService } from 'src/app/shared/components/btn-eliminar-detalle-pago/service/eliminar-pago.service';
+import { validateRut } from '@fdograph/rut-utilities';
+import { NavigationEnd, Router } from '@angular/router';
+
 @Component({
   selector: 'app-detalle-pago',
   templateUrl: './detalle-pago.component.html',
@@ -22,12 +38,116 @@ export class DetallePagoComponent implements OnInit {
   totalRemuneracionEdit: any;
   totalDesctEdit: any;
 
+  numbers: any;
+  constructor(private fb: FormBuilder,
+    private dtSv: DetallePagoService,
+    private toastr: ToastrService,
+    private ps: ProyectosService,
+    private aggsv: AgGridSpanishService,
+    private BuildMonthService: BuildMonthService,
+    private currencyPipe: CurrencyPipe,
+    private deletePago: EliminarPagoService,
+    private ParametrosService: ParametrosService,
+    private router: Router) {
 
-   ngOnInit() {
+    // subscribe to the router events. Store the subscription so we can
+    // unsubscribe later.
+    this.navigationSubscription = this.router.events.subscribe((e: any) => {
+      // If it is a NavigationEnd event re-initalise the component
+      if (e instanceof NavigationEnd) {
+        this.initData();
+      }
+    });
+  }
 
-     this.getEspecialidad();
+  initData() {
+    if (this.deletePago.dataEdit) {
+      this.deletePago.dataEdit.subscribe((valueEdit: any) => {
+
+        let format = {
+          accion: 'E',
+          id_detalle: valueEdit.id,
+          tipo: 'pagos',
+          obra: this.obra.codigo,
+        }
+        console.log('click edit ', format);
+        const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+          },
+          buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+          title: 'Estás eliminando un trabajador!',
+          text: `Estas seguro de eliminar al trabajador ${valueEdit.nombre} de manera permanente de la obra ${this.obra.nombre}`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Si, Eliminar',
+          cancelButtonText: 'No, cancelar',
+          reverseButtons: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.deletePago.deleteTrabajador(format).subscribe(r => {
+              console.log('click edit response ', r);
+              this.toastr.success('Eliminado', `Trabajador ${valueEdit.nombre} eliminado del sistema`);
+              this.getPagos()
+              result.dismiss === Swal.DismissReason.cancel
+            })
+
+
+          } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            /* swalWithBootstrapButtons.fire(
+              'Cancelled',
+              'Your imaginary file is safe :)',
+              'error'
+            ) */
+          }
+        })
+
+        //this.getObras(valueEdit)
+      })
+    }
+    this.getParametros();
+    this.getEspecialidad();
 
     this.getPagos();
+  }
+
+  getParametros(){
+    this.ParametrosService.get({ accion: 'C' }).subscribe((r: any) => {
+
+      this.datosParametros = r.result.parametros[0];
+      console.log('datos parametros', this.datosParametros);
+      //this.datosParametros.tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
+      this.titlepage = r.result.parametros[0].quemes;
+    })
+  }
+
+  ngOnDestroy() {
+    if (this.navigationSubscription) {
+      this.navigationSubscription.unsubscribe();
+    }
+  }
+
+  titlepage = '';
+  dictFicha: any = {
+    F1: 'badge-outline-primary',
+    F2: 'badge-outline-info2',
+    F3: 'badge-outline-warning2',
+    F4: 'badge-outline-info',
+    F5: 'badge-outline-danger2'
+  }
+  datosParametros: any;
+  navigationSubscription: any;
+
+
+  ngOnInit() {
+    this.initData();
 
     this.editPagoForm.controls['rut'].valueChanges.subscribe(value => {
       let dig = ChileanRutify.getRutVerifier(value);
@@ -36,6 +156,8 @@ export class DetallePagoComponent implements OnInit {
     })
 
   }
+
+
 
   especialidades = [];
   getEspecialidad() {
@@ -50,23 +172,23 @@ export class DetallePagoComponent implements OnInit {
   }
 
   cellCellEditorParams = (params: ICellEditorParams<any>) => {
-   //
-   const selectedCountry = params.data.id;
-   console.log('SELECTED', selectedCountry);
-   let keys=this.especialidades.map(x=>{
-    return x.descripcion
-  });
+    //
+    const selectedCountry = params.data.id;
+    console.log('SELECTED', selectedCountry);
+    let keys = this.especialidades.map(x => {
+      return x.descripcion
+    });
 
-  return {
-    values: keys,
-    formatValue: (value) => `${value} (${selectedCountry})`,
-  };
+    return {
+      values: keys,
+      formatValue: (value) => `${value} (${selectedCountry})`,
+    };
   };
 
-  getChanges(e){
-    console.log('este cambiar',e);
-    let indexEspecialidad = this.especialidades.find(x=>x.descripcion.trim() == e.descripcion.trim());
-    console.log('especialidad id',indexEspecialidad);
+  getChanges(e) {
+    console.log('este cambiar', e);
+    let indexEspecialidad = this.especialidades.find(x => x.descripcion == e.descripcion);
+    console.log('especialidad id', indexEspecialidad);
 
     let body1 = {
       tipo: "pagos",
@@ -80,11 +202,13 @@ export class DetallePagoComponent implements OnInit {
       ajuste_pos: Number(e.ajuste_pos),
       anticipo: Number(e.anticipo),
       dctos_varios: Number(e.dctos_varios),
-      finiquito: Number(e.finiquito),
+
+      finiq: e.finiq,
       zona10: Number(e.zona10),
       viatico: Number(e.viatico),
       asignaciones: Number(e.asignaciones),
       aguinaldo: Number(e.aguinaldo),
+      finiquito: Number(e.finiquito),
       finiquito_findemes: Number(e.finiquito_findemes)
     }
     console.log('body edit', body1);
@@ -100,14 +224,13 @@ export class DetallePagoComponent implements OnInit {
     return this.BuildMonthService.formatRut(rut, dig);
   }
 
-  data=[];
+  data = [];
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
   searchTerm: string;
   page = 1;
   pageSize = 4;
   collectionSize: number;
-
-   getPagos() {
+  getPagos() {
     let body = {
       tipo: 'pagos',
       obra: this.obra.codigo,
@@ -115,57 +238,421 @@ export class DetallePagoComponent implements OnInit {
     }
     this.dtSv.get(body).subscribe((r: any) => {
       // this.data = r.result.pagos;
+      console.log(r)
       let c = 0;
-      this.data = r.result.pagos.map(x => {
-        c++;
+      if (r.result.pagos) {
+        this.collectionSize = r.result.pagos.length;
+        this.data = r.result.pagos.map(x => {
+          c++;
 
-        return {
-          ...x,
-          correlativo: c,
-          rutF: ChileanRutify.formatRut(`${x.rut}-${x.dig}`)
-        }
-      });
-      //this.loading = false;
-      this.grid.api.setRowData(this.data);
+          return {
+            ...x,
+            correlativo: c,
+            rutF: ChileanRutify.formatRut(`${x.rut}-${x.dig}`)
+          }
+        });
+        //this.loading = false;
+        this.grid.api.setRowData(this.data);
 
-      let result = [{}];
-      let calcTotalCols = [
-        'sueldo_liq',
-        'valor_hora',
-        'total_periodo',
+        let result = [{}];
+        let calcTotalCols = [
+          'sueldo_liq',
+          'valor_hora',
+          'total_periodo',
 
-        'val_lun_sab',
-        'difer_sabado',
-        'difer_domingo',
-        'total_bonos',
-        'zona10',
-        'viatico',
-        'aguinaldo',
-        'asignaciones',
-        'ajuste_pos',
-        'total_ganado',
-        'anticipo',
-        'dctos_varios',
-        'a_pagar',
-        'finiquito',
-        'finiquito_findemes',
-        'liq_apagar'
-      ];
-      // initialize all total columns to zero
-      calcTotalCols.forEach((params)=>{
+          'val_lun_sab',
+          'difer_sabado',
+          'difer_domingo',
+          'total_bonos',
+          'zona10',
+          'viatico',
+          'aguinaldo',
+          'asignaciones',
+          'ajuste_pos',
+          'total_ganado',
+          'anticipo',
+          'dctos_varios',
+          'a_pagar',
+          'finiquito',
+          'finiquito_findemes',
+          'liq_apagar'
+        ];
+        // initialize all total columns to zero
+        calcTotalCols.forEach((params) => {
           result[0][params] = 0
-      });
-     // calculate all total columns
-      calcTotalCols.forEach((params)=>{
-        this.data.forEach((line)=> {
-              result[0][params] += line[params];
+        });
+        // calculate all total columns
+        calcTotalCols.forEach((params) => {
+          this.data.forEach((line) => {
+            result[0][params] += line[params];
           });
+        });
+
+
+
+        this.grid.api.setPinnedBottomRowData(result);
+        this.grid.api.getDisplayedRowCount();
+        this.grid.defaultColDef.editable = (o) => !o.node.isRowPinned();
+      } else {
+
+      }
+
+      //this.pinnedBottomRowData = this.createPinnedData(this.data)
+    })
+  }
+
+  rowClassRules: RowClassRules = {
+    // row style function
+    'sick-days-warning': (params) => {
+
+      return params.data.ciequincena === 'S';
+    },
+    // row style expression
+
+  };
+
+
+  @ViewChild('pdfTable') pdfTable: ElementRef;
+  createPDF(action = 'open') {
+
+    this.dtSv.crearPDF({ obra: this.obra.codigo }).subscribe(r => {
+      let tableHeader = [
+        { text: 'N°', alignment: 'center', margin: [0, 10] },
+        { text: 'Finiq.', alignment: 'center', margin: [0, 10] },
+        { text: 'Nombre completo', bold: true, alignment: 'center', margin: [0, 10] },
+        //{text:'N° de ficha',alignment: 'center',margin: [0, 10]},
+        { text: 'Rut', alignment: 'center', margin: [0, 10] },
+        { text: 'Sueldo líquido', alignment: 'center', margin: [0, 10] },
+        //{text:'Especialidad',alignment: 'center',margin: [0, 10]},
+        { text: 'Dias a pago', alignment: 'center', margin: [0, 10] },
+        { text: 'Valor hora extra líquido', alignment: 'center', margin: [0, 10] },
+        { text: 'Total periodo', alignment: 'center', margin: [0, 10] },
+        { text: 'Horas extras legal lunes a sábado', alignment: 'center', margin: [0, 10] },
+
+        { text: 'Total valor hora líquido', alignment: 'center', margin: [0, 10] },
+        { text: 'Diferencia días sábado', alignment: 'center', margin: [0, 10] },
+        { text: 'Diferencia días domingo', alignment: 'center', margin: [0, 10] },
+        { text: 'TOTAL BONOS', alignment: 'center', margin: [0, 10] },
+        { text: 'Asignaciones', alignment: 'center', margin: [0, 10] },
+        { text: 'Total ganado', alignment: 'center', margin: [0, 10] },
+        { text: 'Anticipo', alignment: 'center', margin: [0, 10] },
+        { text: 'Descuentos varios', alignment: 'center', margin: [0, 10] },
+        { text: 'Remuneración a pagar', alignment: 'center', margin: [0, 10] },
+        { text: 'Finiquito Quincena', alignment: 'center', margin: [0, 10] },
+        { text: 'Finiquito fin de mes', alignment: 'center', margin: [0, 10] },
+        { text: 'Líquido a pagar', alignment: 'center', margin: [0, 10] }
+      ]
+      console.log(r);
+      //r['result'].datos
+      let bodyTable = r['result'].datos.map((p, i) => {
+
+        return [
+          i + 1,
+          { text: p.finiq, alignment: 'left' },
+          { text: p.nombre, alignment: 'left' },
+          //{text : p.ficha,alignment: 'center'},
+          { text: `${p.rut}/${p.ficha}`, alignment: 'left' },
+          { text: p.sueldo_liq.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          //{text : p.descripcion,alignment: 'center'},
+          { text: Number(p.dias), alignment: 'right' },
+          { text: p.valor_hora.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.total_periodo.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: Number(p.hor_lun_sab).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: Number(p.val_lun_sab).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.difer_sabado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.difer_domingo.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.total_bonos.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.asignaciones.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.total_ganado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.anticipo.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.dctos_varios.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.a_pagar.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.finiquito.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.finiquito_findemes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.liq_apagar.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+
+        ]
       });
 
+      let today = new Date().toLocaleString();
+      console.log(bodyTable)
 
-      this.grid.api.setPinnedBottomRowData(result);
-      this.defaultColDef.editable = (o) => !o.node.isRowPinned();
-      //this.pinnedBottomRowData = this.createPinnedData(this.data)
+      let docDefinition = {
+        footer: function (currentPage, pageCount, pageSize) {
+          // you can apply any logic and return any valid pdfmake element
+          return [{ text: 'Página ' + currentPage.toString() + ' de ' + pageCount, alignment: 'center', margin: [0, 5] }];
+
+        },
+        header: function (currentPage, pageCount, pageSize) {
+          // you can apply any logic and return any valid pdfmake element
+          return [{ text: 'Página ' + currentPage.toString() + ' de ' + pageCount, alignment: 'center', margin: [0, 20] }];
+
+        },
+        pageBreak: 'after',
+        pageOrientation: 'landscape',
+        pageSize: 'A2',
+        pageMargins: [40, 60, 40, 60],
+        info: {
+          title: 'Reporte detalle pagos',
+
+        },
+        //watermark: { text: 'test watermark', color: 'blue', opacity: 0.3, bold: true, italics: false },
+        content: [
+          // Previous configuration
+          {
+            text: 'REPORTE DETALLE PAGOS ' + this.titlepage,
+            fontSize: 16,
+            alignment: 'center',
+            bold: true,
+            style: 'header',
+            margin: [0, 10]
+          },
+          {
+            columns: [
+              {
+                width: 300,
+                text: `Obra: ${this.obra.codigo} | ${this.obra.nombre}`, margin: [0, 10]
+              },
+
+              {
+                width: '*',
+                text: 'Fecha: ' + today.split('T'),
+                alignment: 'right',
+                margin: [0, 10]
+              },
+            ]
+          },
+
+          {
+            table: {
+              headerRows: 1,
+
+              widths: [
+                25,//numero
+                15,//finiq
+                200,//nombre
+                //'*',//ficha
+                100,//rut
+                'auto',//sueldo liquido
+                //200,//especialidad
+                'auto',//Dias a pago
+                'auto',//valor hora extra
+                'auto',//Total periodo
+                'auto',//Horas extras legal lunes a sábado
+                'auto',//Total valor hora líquido
+                'auto',//Diferencia de días sábado
+                'auto', //diferencia dia domingo
+                'auto',//TOTAL BONOS
+                'auto',//Asignaciones
+                'auto',//Total ganado
+                'auto',//Anticipo
+                'auto',//Descuentos varios
+                'auto',//Remuneración
+                'auto',//Finiquito Quincena
+                'auto',//Finiquito fin de mes
+                'auto'//liquido a pagar
+
+              ],
+
+              body: [
+                tableHeader, ...bodyTable,
+                [
+                  {},
+                  {},
+                  {},
+                  { text: 'TOTALES', colspan: 3, bold: true, alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.sueldo_liq, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + Number(p.dias), 0), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.valor_hora, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.total_periodo, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + Number(p.hor_lun_sab), 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.val_lun_sab, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.difer_sabado, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.difer_domingo, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.total_bonos, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.asignaciones, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.total_ganado, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.anticipo, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.dctos_varios, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.a_pagar, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.finiquito, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.finiquito_findemes, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.filter(f => f.liq_apagar > 0).reduce((sum, p) => sum + p.liq_apagar, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' }
+
+                ]
+              ],
+              alignment: 'center'
+
+
+            },
+          },
+          {
+            columns: [
+
+              {
+                width: 650,
+                text: 'V°B° Admnistrador de obra',
+                alignment: 'center',
+                margin: [0, 100],
+                decoration: 'overline'
+              },
+              {
+                width: 780,
+                text: 'V°B° Visitador de obra',
+                alignment: 'right',
+                margin: [20, 100],
+                decoration: 'overline',
+
+              },
+            ]
+          },
+
+        ],
+        styles: {
+          sectionHeader: {
+            bold: true,
+            decoration: 'underline',
+            fontSize: 14,
+            margin: [0, 15, 0, 15],
+            alignment: 'center'
+
+          },
+          tableHeader: {
+            bold: true,
+            fontSize: 13,
+            color: 'black',
+            alignment: 'center'
+          },
+          anotherStyle: {
+            italics: true,
+            alignment: 'center'
+          }
+        }
+
+      }
+
+      if (action === 'download') {
+        pdfMake.createPdf(docDefinition).download('Reporte_DetallePagos_' + this.obra.codigo + '_' + this.obra.nombre + '_' + this.titlepage + '.pdf');
+      } else if (action === 'print') {
+        pdfMake.createPdf(docDefinition).print();
+      } else {
+        pdfMake.createPdf(docDefinition, { filename: 'Reporte_DetallePagos_' + this.obra.codigo + '_' + this.obra.nombre + '_' + this.titlepage + '.pdf' }).open();
+      }
+    })
+
+
+
+    /*  let r['result'].datos =  this.data.filter(v=>{
+      // v.ciequincena != 'S' && v.finiq == 'F'
+      if(this.datosParametros.tipo_mes =='Q'){
+       return v.finiq == 'Q';
+      }else{
+       return v.finiq  != 'F' && v.ciequincena == 'Q' || v.ciequincena;
+      }
+
+     }); */
+
+
+
+
+
+
+  }
+
+  headings = [
+    [
+      'Finiq',
+      'Nombre',
+      'RUT',
+      'Ficha',
+      'Especialidad',
+      'Sueldo líquido',
+      'Días a pago',
+      'Valor hora extra líquido',
+      'Total periodo',
+      'Hora extra legal Lunes a Sábado',
+      'Total valor hora extra líquido',
+      'Diferencia días Sábados',
+      'Diferencia días Domingo',
+      'Total bonos',
+      'Zona 10%',
+      'Viático',
+      'Aguinaldo',
+      'Asignaciones',
+      'Ajuste positivo',
+      'Total ganado',
+      'Anticipos',
+      'Descuentos varios',
+      'Remuneración a pagar',
+      'Finiq quincena',
+      'Finiq fin de mes',
+      'Líquido a pagar',
+
+
+    ],
+  ];
+
+  datosExcel = [];
+  showbtn: boolean;
+  handleFileInput(event: any): void {
+    const file = event.target.files[0];
+    this.datosExcel = [];
+    //this.fileName = file.name;
+    console.log(file);
+    if (file.name.includes('xls')) {
+      this.showbtn = true;
+
+      let target = event.target
+      const reader: FileReader = new FileReader();
+      reader.readAsBinaryString(target.files[0]);
+      reader.onload = (e: any) => {
+
+        const binarystr: string = e.target.result;
+        const wb: XLSX.WorkBook = XLSX.read(binarystr, { type: 'binary' });
+
+        const wsname: string = wb.SheetNames[0];
+        const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+        console.log(ws)
+
+        const data = XLSX.utils.sheet_to_json(ws, { header: 0, raw: false, blankrows: false });
+
+        console.log(data);
+        if (data.length > 0) {
+          data.forEach((element, i) => {
+            let sueldoLiq = element['Sueldo Liquido*'];
+            let rut = element['Empleado*'].split('-');
+            let ficha = element['Código de Ficha'];
+            let nombre = `${element['Nombre ']} `;
+            let especialidad = element['Especialidad*'];
+            //console.log('comprar este valor',rut,ficha,sueldoLiq)
+            this.datosExcel.push({
+              nombre: nombre,
+              rut: rut[0],
+              dig: rut[1],
+              ficha: ficha,
+              sueldo_liq: Number(sueldoLiq),
+              especialidad: especialidad,
+              obra: this.obra.codigo
+            })
+          });
+        }
+
+        console.log('dataformat del excel', this.datosExcel)
+
+        this.cargaMasivaSend();
+      };
+    } else {
+      Swal.fire('Formato no permitido', 'Solo se admite formato .xls/.xlsx', 'warning');
+      //this.f.reset();
+    }
+  }
+
+  cargaMasivaSend() {
+    this.dtSv.cargaMasiva(this.datosExcel).subscribe(r => {
+      this.toastr.success('Carga masiva', 'Trabajadores agregados correctamente');
+      this.closeModal.nativeElement.click() //<-- here
+      this.getPagos();
+      this.datosExcel = [];
     })
   }
 
@@ -186,7 +673,8 @@ export class DetallePagoComponent implements OnInit {
   overlayLoadingTemplate = this.aggsv.overlayLoadingTemplate;
   overlayNoRowsTemplate = this.aggsv.overlayNoRowsTemplate;
   localeText = this.aggsv.getLocale();
-  columnDefs:ColDef[] = [
+
+  columnDefs: ColDef[] = [
     /* {
       headerName: 'Acciones',
       cellRenderer: ButtonCellRendererComponent,
@@ -202,7 +690,7 @@ export class DetallePagoComponent implements OnInit {
       autoHeight: true,
       editable : false
     }, */
-    {
+    /* {
       headerName: 'ID',
       field: 'correlativo',
       width: 80,
@@ -210,6 +698,41 @@ export class DetallePagoComponent implements OnInit {
       filter: false,
       floatingFilter: false,
       editable : false
+    }, */
+    /* {
+      field: 'ciequincena',
+      headerName: 'Cierre fin de mes',
+      width: 100,
+      sortable: true,
+      editable : false,
+      cellClass: 'badge badge-danger'
+     }, */
+    {
+      headerName: 'Acciones',
+      cellRenderer: BtnEliminarDetallePagoComponent,
+      cellRendererParams: {
+        clicked: (field: any) => {
+          console.log('item click', field);
+        }
+      },
+      filter: false,
+      floatingFilter: false,
+      lockPinned: true,
+      pinned: 'left',
+      width: 100,
+      autoHeight: true,
+      editable: false,
+      suppressSizeToFit: true,
+    },
+    {
+      field: 'finiq',
+      headerName: 'Finiq.',
+      width: 100,
+      sortable: true,
+      lockPinned: true,
+      pinned: 'left',
+      //cellRenderer: this.CurrencyCellRenderer,
+      editable: (params) => params.data.ciequincena !== 'S',
     },
     {
       field: 'nombre',
@@ -220,18 +743,7 @@ export class DetallePagoComponent implements OnInit {
       lockPinned: true,
       cellClass: 'lock-pinned',
 
-      editable : false
-    },
-    {
-      field: 'ficha',
-      headerName: 'Ficha',
-      width: 100,
-      sortable: true,
-      pinned: 'left',
-      editable : false,
-      cellClass: params => {
-        return this.dictFicha[params.value];
-    }
+      editable: false
     },
     {
       field: 'rutF',
@@ -241,14 +753,26 @@ export class DetallePagoComponent implements OnInit {
       pinned: 'left',
       lockPinned: true,
       cellClass: 'lock-pinned',
-      editable : false
+      editable: false
     },
+    {
+      field: 'ficha',
+      headerName: 'Ficha',
+      width: 100,
+      sortable: true,
+      editable: false,
+      cellClass: params => {
+        return this.dictFicha[params.value];
+      }
+    },
+
     {
       field: 'descripcion',
       headerName: 'Especialidad',
       width: 280,
       sortable: true,
-      editable : true,
+      editable: (params) => params.data.ciequincena !== 'S',
+
       cellEditor: 'agSelectCellEditor',
       cellEditorParams: this.cellCellEditorParams,
       suppressMenu: true
@@ -266,7 +790,7 @@ export class DetallePagoComponent implements OnInit {
       cellRendererParams: {
         currency: 'CLP'
       },
-      editable : true
+      editable: (params) => params.data.ciequincena !== 'S',
     },
     {
       field: 'dias',
@@ -274,7 +798,7 @@ export class DetallePagoComponent implements OnInit {
         'Días a pago',
       width: 110,
       sortable: true,
-      editable : true
+      editable: (params) => params.data.ciequincena !== 'S',
     },
     {
       field: 'valor_hora',
@@ -282,144 +806,143 @@ export class DetallePagoComponent implements OnInit {
       width: 100,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
+      editable: (params) => params.data.ciequincena !== 'S',
     },
     {
       field: 'total_periodo',
       headerName: 'Total periodo',
-      width: 100, sortable: true,
+      width: 100,
+      sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : false
+      editable: false
     },
     {
       field: 'hor_lun_sab',
       headerName: 'Hora extra legal lunes a sábado',
       width: 100, sortable: true,
-      editable : false
+      editable: false
     },
     {
       field: 'val_lun_sab',
       headerName: 'Total valor hora extra líquido',
       width: 180, sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : false
+      editable: false
     },
     {
       field: 'difer_sabado',
       headerName: 'Diferencia días sábados',
       width: 150, sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : false
-     },
+      editable: false
+    },
     {
       field: 'difer_domingo',
       headerName: 'Diferencia días domingo',
-       width: 150,
-       sortable: true,
-       cellRenderer: this.CurrencyCellRenderer ,
-       editable : false
-      },
+      width: 150,
+      sortable: true,
+      cellRenderer: this.CurrencyCellRenderer,
+      editable: false
+    },
     {
       field: 'total_bonos',
       headerName: 'Total bonos',
       width: 100,
       sortable: true,
-      cellRenderer: this.CurrencyCellRenderer ,
-      editable : false
+      cellRenderer: this.CurrencyCellRenderer,
+      editable: false
     },
     {
       field: 'zona10',
       headerName: 'Zona 10%',
       width: 100,
       sortable: true,
-      cellRenderer: this.CurrencyCellRenderer ,
-      editable : true
+      cellRenderer: this.CurrencyCellRenderer,
+      editable: (params) => params.data.ciequincena !== 'S',
     },
     {
       field: 'viatico',
       headerName: 'Viático',
-       width: 100,
-       sortable: true,
-       cellRenderer:
-       this.CurrencyCellRenderer,
-       editable : true
-       },
+      width: 100,
+      sortable: true,
+      cellRenderer:
+        this.CurrencyCellRenderer,
+      editable: (params) => params.data.ciequincena !== 'S',
+    },
     {
       field: 'aguinaldo',
       headerName: 'Aguinaldo',
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
-     },
+      editable: (params) => params.data.ciequincena !== 'S',
+    },
     {
       field: 'asignaciones',
       headerName: 'Asignaciones',
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
-     },
+      editable: (params) => params.data.ciequincena !== 'S',
+    },
     {
       field: 'ajuste_pos',
       headerName: 'Ajuste positivo',
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
-     },
+      editable: (params) => params.data.ciequincena !== 'S',
+    },
     {
       field: 'total_ganado',
       headerName: 'Total ganado',
-       width: 150, sortable: true,
-       cellRenderer: this.CurrencyCellRenderer ,
-       editable : false
-      },
+      width: 150, sortable: true,
+      cellRenderer: this.CurrencyCellRenderer,
+      editable: false
+    },
     {
       field: 'anticipo',
       headerName: 'Anticipos',
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
+      editable: (params) => params.data.ciequincena !== 'S',
     },
     {
       field: 'dctos_varios',
       headerName: 'Descuentos varios',
       width: 200, sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
-     },
-    {
-      field: 'difer_sabado',
-      headerName: 'Diferencia días sábados',
-      width: 200, sortable: true,
-      cellRenderer: this.CurrencyCellRenderer,
-      editable : false  },
+      editable: (params) => params.data.ciequincena !== 'S',
+    },
+
     {
       field: 'a_pagar',
       headerName: 'Remuneración a pagar',
       width: 200,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : false
-     },
+      editable: false
+    },
+
     {
       field: 'finiquito',
-      headerName: 'Finiquito quincena',
+      headerName: 'Finiq. quincena',
       width: 200,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
-     },
+      editable: (params) => params.data.ciequincena !== 'S',
+    },
     {
       field: 'finiquito_findemes',
-      headerName: 'Finiquito',
-      width: 100,
+      headerName: 'Finiq. fin de mes',
+      width: 120,
       sortable: true,
+
       cellRenderer: this.CurrencyCellRenderer,
-      editable : true
-     },
+      editable: (params) => params.data.ciequincena !== 'S',
+    },
+
     {
       field: 'liq_apagar',
       headerName: 'Líquido a pagar',
@@ -427,45 +950,43 @@ export class DetallePagoComponent implements OnInit {
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
       pinned: 'right',
-      editable : false ,
-      cellStyle: {
+      editable: false,
+      cellStyle: params => {
         // you can use either came case or dashes, the grid converts to whats needed
-        backgroundColor: '#7ed321', // light green
-      },},
+        // light green
+        if (params.value < 0) {
+          return { backgroundColor: '#ff5e5e' }
+        } else {
+          return { backgroundColor: '#7ed321' };
+        }
+      },
+    },
 
   ];
   gridOptions = {
     columnDefs: this.columnDefs,
     rowData: []
   };
-  pinnedBottomRowData: any[] ;
+  pinnedBottomRowData: any[];
 
   onRowValueChanged(event: RowValueChangedEvent) {
     var data = event.data;
-    console.log('guardar',data);
+    console.log('guardar', data);
     this.getChanges(data);
 
   }
 
-  CurrencyCellRenderer1(params: any) {
-
-
-    return parseFloat(params.value);
-  }
+  /*  */
 
   CurrencyCellRenderer(params: any) {
 
-    var usdFormate = new Intl.NumberFormat();
-    return usdFormate.format(params.value);
+    var usdFormate = new Intl.NumberFormat('es-ES');
+    //return usdFormate.format(params.value);
+
+    return params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
-  dictFicha: any = {
-    F1: 'badge-outline-primary',
-    F2: 'badge-outline-info2',
-    F3: 'badge-outline-warning2',
-    F4: 'badge-outline-info',
-    F5: 'badge-outline-danger2'
-  }
+
 
   getBadgeFicha(ficha: any) {
     return this.dictFicha[ficha];
@@ -479,15 +1000,9 @@ export class DetallePagoComponent implements OnInit {
   }
 
 
-  constructor(private fb: FormBuilder,
-    private dtSv: DetallePagoService,
-    private toastr: ToastrService,
-    private ps: ProyectosService,
-    private aggsv : AgGridSpanishService,
-    private BuildMonthService: BuildMonthService) { }
 
   editPagoForm = this.fb.group({
-    rut: ['', [Validators.required, Validators.maxLength(8)]],
+    rut: ['', [Validators.required, Validators.minLength(8)]],
     dig: [''],
     especialidad: [Validators.required],
     ficha: ['', Validators.required],
@@ -501,6 +1016,7 @@ export class DetallePagoComponent implements OnInit {
     anticipo: [0],
     dctos_varios: [0],
     finiquito: [0],
+    finiq: [''],
     zona10: [0],
     viatico: [0],
     aguinaldo: [0],
@@ -543,6 +1059,7 @@ export class DetallePagoComponent implements OnInit {
       anticipo: this.editPagoForm.value.anticipo,
       dctos_varios: this.editPagoForm.value.dctos_varios,
       finiquito: this.editPagoForm.value.finiquito,
+      finiq: this.editPagoForm.value.finiq,
       zona10: this.editPagoForm.value.zona10,
       viatico: this.editPagoForm.value.viatico,
       asignaciones: this.editPagoForm.value.asignaciones,
@@ -567,8 +1084,9 @@ export class DetallePagoComponent implements OnInit {
       accion: 'A',
       rut: this.editPagoForm.value.rut,
       dig: this.editPagoForm.value.dig,
-      nombre: this.editPagoForm.value.nombre,
+      nombre: this.editPagoForm.value.nombre.toUpperCase(),
       ficha: this.editPagoForm.value.ficha,
+      especialidad: this.editPagoForm.value.especialidad,
       sueldo_liq: this.editPagoForm.value.sueldo_liq,
       dias: this.editPagoForm.value.dias,
       valor_hora: this.editPagoForm.value.valor_hora,
@@ -584,10 +1102,15 @@ export class DetallePagoComponent implements OnInit {
     console.log('body new', body);
     this.dtSv.get(body).subscribe(r => {
       console.log('response new', r);
-      this.toastr.success('Trabajador creado', '')
-      this.resetForm();
-      this.closeModal.nativeElement.click() //<-- here
-      this.getPagos();
+      if (r['result'].pagos) {
+        this.toastr.success('Trabajador creado', '');
+        this.resetForm();
+        this.closeModal.nativeElement.click() //<-- here
+        this.getPagos();
+      } else {
+        this.toastr.warning(r['result'].error_msg, '')
+      }
+
 
     })
   }

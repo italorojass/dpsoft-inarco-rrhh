@@ -28,7 +28,7 @@
             </tr> -->
                 </thead>
                 <tbody>
-                  <tr style="cursor: pointer;" *ngFor="let item of obras" (click)="go(item)" [routerLink]="['inicio']">
+                  <tr style="cursor: pointer;" *ngFor="let item of obras" (click)="go(item)" [routerLink]="['inicio/detalle-pagos']">
 
                     <td align="left">
                       <h4 class="text-primary font-weight-normal">{{item.codigo}} | {{item.nombre}}</h4>

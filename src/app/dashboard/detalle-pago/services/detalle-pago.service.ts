@@ -14,4 +14,13 @@ export class DetallePagoService {
     //console.log(`${environment.url}ws_estadopago_rrhh.php`,body);
     return this._http.post(`${environment.url}ws_estadopago_rrhh.php`,body);
   }
+
+  cargaMasiva(body: any){
+    return this._http.post(`${environment.url}ws_cargamasiva_rrhh.php`,body);
+  }
+
+  crearPDF(body){
+    return this._http.post(`${environment.url}ws_eeppinforme_rrhh.php`,body);
+
+  }
 }

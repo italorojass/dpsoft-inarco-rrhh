@@ -7,3 +7,15 @@
     font-weight: 300;
     width: 80px;
 }
+
+.ag-theme-alpine {
+  --ag-grid-size: 3px;
+  --ag-list-item-height: 20px;
+}
+
+
+.ag-floating-filter-input{
+  height: 50px !important;
+}
+
+
