@@ -13,7 +13,8 @@ const routes: Routes = [{
   children : [
     {
       path :'',
-      component : HomeComponent,
+     redirectTo : 'proyectos',
+     pathMatch : 'full'
 
     },
     {

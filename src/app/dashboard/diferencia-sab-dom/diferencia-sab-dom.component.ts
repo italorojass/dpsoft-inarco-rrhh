@@ -18,20 +18,17 @@ import { ParametrosService } from 'src/app/shared/components/parametros/services
 })
 export class DiferenciaSabDomComponent implements OnInit {
 
-  constructor(private bm: BuildMonthService, private sb: DifSabDomService, private toast: ToastrService, private ParametrosService : ParametrosService,
+  constructor(private bm: BuildMonthService, private sb: DifSabDomService, private toast: ToastrService, public ParametrosService: ParametrosService,
     private aggsv: AgGridSpanishService) { }
     @ViewChild('heGrid') grid!: AgGridAngular;
     titlepage ='';
     datosParametros : any;
 
   ngOnInit(): void {
-    this.get();
-    this.ParametrosService.get({accion:'C'}).subscribe((r:any)=>{
-      console.log(r);
-      this.datosParametros =r.result.parametros[0];
-      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
 
-    })
+    this.datosParametros = JSON.parse(sessionStorage.getItem('datosParam'));
+    this.titlepage = sessionStorage.getItem('titlePage');
+    this.get();
   }
 
   data: any = [];
@@ -41,7 +38,8 @@ export class DiferenciaSabDomComponent implements OnInit {
     let body = {
       tipo: 'finde',
       accion: 'C',
-      obra: this.obra.codigo
+      obra: this.obra.codigo,
+      quemes : this.datosParametros.quemes
     }
     let c = 0;
     this.sb.get(body).subscribe((r: any) => {

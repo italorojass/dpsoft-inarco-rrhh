@@ -1,10 +1,11 @@
- <!-- partial:partials/_horizontal-navbar.html -->
- <nav class="navbar horizontal-layout col-lg-12 col-12 p-0">
+<!-- partial:partials/_horizontal-navbar.html -->
+<nav class="navbar horizontal-layout col-lg-12 col-12 p-0">
   <div class="nav-top flex-grow-1">
     <div class="container d-flex flex-row h-100 align-items-center">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center">
-        <a class="navbar-brand brand-logo" href="/obras/inicio"><img [src]="rutaLogo" width="200" height="220" class="img-fluid"  alt="logo"/></a>
-        <a class="navbar-brand brand-logo-mini" href="/obras/inicio"><img [src]="rutaLogo" alt="logo"/></a>
+        <a class="navbar-brand brand-logo" href="/obras/inicio"><img [src]="rutaLogo" width="200" height="220"
+            class="img-fluid" alt="logo" /></a>
+        <a class="navbar-brand brand-logo-mini" href="/obras/inicio"><img [src]="rutaLogo" alt="logo" /></a>
         <h4 class="text-white pl-3">Sistema de RRHH - Obras</h4>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between flex-grow-1">
@@ -13,7 +14,15 @@
           <li class="nav-item dropdown d-none d-lg-flex nav-language">
             <div class="nav-link" *ngIf="datosParametros">
               Estas viendo:
-              <span class="dropdown-toggle btn btn-sm" id="languageDropdown" data-toggle="dropdown" aria-expanded="false">{{datosParametros[0].quemes}} | {{datosParametros[0].tipo_proceso == 'C' ? 'CERRADO': 'ABIERTO'}}
+
+          <!--     <select class="form-control" >
+
+                <option *ngFor="let item of periodos" [value]="item.tipo_proceso != 'C'">
+                  {{item.quemes}} | {{item.estado == 'C' ? 'CERRADO': 'ABIERTO'}}
+                </option>
+              </select>
+ -->
+              <span class="dropdown-toggle btn btn-sm" id="languageDropdown" data-toggle="dropdown" aria-expanded="false">{{datosParametros.quemes}} | {{datosParametros.estado == 'A' ? 'ABIERTO': 'CERRADO'}}
 
               </span>
 
@@ -30,7 +39,7 @@
 
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-             <!--  <img src="https://via.placeholder.com/39x39" alt="profile"/> -->
+
               <span class="nav-profile-name">Bienvenido: {{user}}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
@@ -51,7 +60,11 @@
             </div>
           </li>
         </ul>
-        <button class="navbar-toggler align-self-center" type="button" data-toggle="minimize" (click)="toggleBar = !toggleBar">
+
+
+
+        <button class="navbar-toggler align-self-center" type="button" data-toggle="minimize"
+          (click)="toggleBar = !toggleBar">
           <span class="icon-menu"></span>
         </button>
       </div>
@@ -62,7 +75,8 @@
       <ul class="nav page-navigation ">
         <ng-container *ngFor="let item of menu">
           <li class="nav-item" [ngClass]="setActive(item)" *ngIf="item.href;else submenu">
-            <a [routerLink]="[item.href]" class="nav-link"><i class="link-icon {{item.icon}}"></i><span class="menu-title">{{item.title}}</span></a>
+            <a [routerLink]="[item.href]" class="nav-link"><i class="link-icon {{item.icon}}"></i><span
+                class="menu-title">{{item.title}}</span></a>
           </li>
 
           <ng-template #submenu>
@@ -86,7 +100,8 @@
 
 
 <!--Modal Cambiar clave-->
-<div class="modal fade" id="modalCambiarClave" tabindex="-1" role="dialog" aria-labelledby="modalCambiarClaveLabel" aria-hidden="true">
+<div class="modal fade" id="modalCambiarClave" tabindex="-1" role="dialog" aria-labelledby="modalCambiarClaveLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-md" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -96,7 +111,7 @@
         </button>
       </div>
       <form [formGroup]="changePassForm" (ngSubmit)="changePass()">
-      <div class="modal-body">
+        <div class="modal-body">
 
 
           <div class="form-group row">
@@ -104,7 +119,8 @@
               <label class="col-form-label">Contraseña actual</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="actual" id="actual" type="password" placeholder="xxxx" formControlName="actual">
+              <input class="form-control" name="actual" id="actual" type="password" placeholder="xxxx"
+                formControlName="actual">
             </div>
           </div>
           <div class="form-group row">
@@ -112,8 +128,10 @@
               <label class="col-form-label">Nueva contraseña</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="nueva" id="nueva" type="password" placeholder="xxxxx" formControlName="nueva">
-              <small *ngIf="changePassForm.get('nueva').hasError('minlength')" class="text-danger">La contraseña debe ser mínimo 6 caractéres.</small>
+              <input class="form-control" name="nueva" id="nueva" type="password" placeholder="xxxxx"
+                formControlName="nueva">
+              <small *ngIf="changePassForm.get('nueva').hasError('minlength')" class="text-danger">La contraseña debe
+                ser mínimo 6 caractéres.</small>
             </div>
 
 
@@ -123,16 +141,18 @@
               <label class="col-form-label">Repita contraseña</label>
             </div>
             <div class="col-lg-8">
-              <input class="form-control"  name="rol" id="rol" type="password" placeholder="xxxx" formControlName="repetir">
-              <small *ngIf="changePassForm.hasError('passwordMismatch')" class="text-danger">Las contraseñas no coinciden.</small>
+              <input class="form-control" name="rol" id="rol" type="password" placeholder="xxxx"
+                formControlName="repetir">
+              <small *ngIf="changePassForm.hasError('passwordMismatch')" class="text-danger">Las contraseñas no
+                coinciden.</small>
             </div>
           </div>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-success" [disabled]="!changePassForm.valid">Cambiar contraseña</button>
-        <button type="button" class="btn btn-light" data-dismiss="modal" #cerrarModal>Cancelar</button>
-      </div>
-    </form>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success" [disabled]="!changePassForm.valid">Cambiar contraseña</button>
+          <button type="button" class="btn btn-light" data-dismiss="modal" #cerrarModal>Cancelar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

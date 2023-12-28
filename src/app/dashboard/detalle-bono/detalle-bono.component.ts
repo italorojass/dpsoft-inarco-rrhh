@@ -24,19 +24,18 @@ export class DetalleBonoComponent implements OnInit {
     private toast: ToastrService,
     private paramSV: ParametrosService,
     private aggsv: AgGridSpanishService,
-    private ParametrosService : ParametrosService
+    public ParametrosService : ParametrosService
   ) {}
 
   overlayLoadingTemplate = this.aggsv.overlayLoadingTemplate;
   overlayNoRowsTemplate = this.aggsv.overlayNoRowsTemplate;
   localeText = this.aggsv.getLocale();
+  datosParametros:any;
   titlepage ='';
   ngOnInit() {
-    this.ParametrosService.get({accion:'C'}).subscribe((r:any)=>{
-      console.log(r);
-      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
+    this.datosParametros = JSON.parse(sessionStorage.getItem('datosParam'));
+    this.titlepage = sessionStorage.getItem('titlePage');
 
-    })
     this.get();
     this.getBonos();
   }
@@ -132,6 +131,7 @@ export class DetalleBonoComponent implements OnInit {
       tipo: 'bonos',
       obra: this.obra.codigo,
       accion: 'C',
+      quemes : this.datosParametros.quemes
     };
     this.bonoSV.get(body).subscribe((r: any) => {
       //this.data = r.result.bonos;
@@ -154,6 +154,7 @@ this.bonos=[];
     let b = {
       accion: 'C',
       obra: this.obra.codigo,
+      quemes : this.datosParametros.quemes
     };
     this.paramSV.getBonos(b).subscribe((r) => {
       console.log(r);

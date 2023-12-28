@@ -23,4 +23,10 @@ export class ParametrosService {
     return this._http.post(`${environment.url}ws_cierre_rrhh.php`,body);
 
   }
+
+
+  getEstado(estado){
+    return estado =='A' ? 'ABIERTO' : 'CERRADO'
+  }
+
 }

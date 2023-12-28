@@ -34,6 +34,7 @@ import { InputHeaderService } from './components/table-aggrid/input-header/input
 import { BtnEliminarDetallePagoComponent } from './components/btn-eliminar-detalle-pago/btn-eliminar-detalle-pago.component';
 import { EliminarPagoService } from './components/btn-eliminar-detalle-pago/service/eliminar-pago.service';
 import { ReporteService } from '../dashboard/reporte/service/reporte.service';
+import { PeriodosService } from './services/periodos.service';
 @NgModule({
   declarations: [
     LoaderComponent,
@@ -78,7 +79,8 @@ import { ReporteService } from '../dashboard/reporte/service/reporte.service';
     ObraSelectService,
     InputHeaderService,
     EliminarPagoService,
-    ReporteService
+    ReporteService,
+    PeriodosService
   ],
   exports : [
     LoaderComponent,

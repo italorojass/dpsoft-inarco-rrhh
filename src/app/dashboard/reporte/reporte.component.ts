@@ -24,7 +24,9 @@ export class ReporteComponent implements OnInit {
   ngOnInit(): void {
     this.paramSV.get({accion:'C'}).subscribe((r:any)=>{
       console.log(r);
-      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
+      //console.log('datos parametros', this.datosParametros);
+      //this.datosParametros.tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
+      this.titlepage = r.result.parametros[0].quemes;
 
     })
   }

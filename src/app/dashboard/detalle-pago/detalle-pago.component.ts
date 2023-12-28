@@ -23,6 +23,7 @@ import { BtnEliminarDetallePagoComponent } from 'src/app/shared/components/btn-e
 import { EliminarPagoService } from 'src/app/shared/components/btn-eliminar-detalle-pago/service/eliminar-pago.service';
 import { validateRut } from '@fdograph/rut-utilities';
 import { NavigationEnd, Router } from '@angular/router';
+import { PeriodosService } from 'src/app/shared/services/periodos.service';
 
 @Component({
   selector: 'app-detalle-pago',
@@ -47,8 +48,9 @@ export class DetallePagoComponent implements OnInit {
     private BuildMonthService: BuildMonthService,
     private currencyPipe: CurrencyPipe,
     private deletePago: EliminarPagoService,
-    private ParametrosService: ParametrosService,
-    private router: Router) {
+    public ParametrosService: ParametrosService,
+    private router: Router,
+    private periodos : PeriodosService) {
 
     // subscribe to the router events. Store the subscription so we can
     // unsubscribe later.
@@ -119,13 +121,11 @@ export class DetallePagoComponent implements OnInit {
   }
 
   getParametros(){
-    this.ParametrosService.get({ accion: 'C' }).subscribe((r: any) => {
 
-      this.datosParametros = r.result.parametros[0];
-      console.log('datos parametros', this.datosParametros);
-      //this.datosParametros.tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
-      this.titlepage = r.result.parametros[0].quemes;
-    })
+
+    this.datosParametros = JSON.parse(sessionStorage.getItem('datosParam'));
+    this.titlepage = sessionStorage.getItem('titlePage');
+
   }
 
   ngOnDestroy() {
@@ -148,7 +148,7 @@ export class DetallePagoComponent implements OnInit {
 
   ngOnInit() {
     this.initData();
-
+    this.numbers = Array.from(Array(20).keys())
     this.editPagoForm.controls['rut'].valueChanges.subscribe(value => {
       let dig = ChileanRutify.getRutVerifier(value);
       this.editPagoForm.controls['dig'].patchValue(dig);
@@ -234,8 +234,10 @@ export class DetallePagoComponent implements OnInit {
     let body = {
       tipo: 'pagos',
       obra: this.obra.codigo,
-      accion: 'C'
+      accion: 'C',
+      quemes : this.datosParametros.quemes
     }
+    this.data=[];
     this.dtSv.get(body).subscribe((r: any) => {
       // this.data = r.result.pagos;
       console.log(r)
@@ -300,6 +302,7 @@ export class DetallePagoComponent implements OnInit {
       //this.pinnedBottomRowData = this.createPinnedData(this.data)
     })
   }
+
 
   rowClassRules: RowClassRules = {
     // row style function
@@ -660,7 +663,7 @@ export class DetallePagoComponent implements OnInit {
   defaultColDef: ColDef = {
     resizable: true,
     initialWidth: 200,
-    editable: true,
+
     sortable: true,
     filter: true,
     floatingFilter: true,
@@ -675,38 +678,7 @@ export class DetallePagoComponent implements OnInit {
   localeText = this.aggsv.getLocale();
 
   columnDefs: ColDef[] = [
-    /* {
-      headerName: 'Acciones',
-      cellRenderer: ButtonCellRendererComponent,
-      cellRendererParams: {
-        clicked: (field: any) => {
-          console.log('item click', field);
-        }
-      },
-      pinned: 'left',
-      filter: false,
-      floatingFilter: false,
-      width: 100,
-      autoHeight: true,
-      editable : false
-    }, */
-    /* {
-      headerName: 'ID',
-      field: 'correlativo',
-      width: 80,
-      pinned: 'left',
-      filter: false,
-      floatingFilter: false,
-      editable : false
-    }, */
-    /* {
-      field: 'ciequincena',
-      headerName: 'Cierre fin de mes',
-      width: 100,
-      sortable: true,
-      editable : false,
-      cellClass: 'badge badge-danger'
-     }, */
+
     {
       headerName: 'Acciones',
       cellRenderer: BtnEliminarDetallePagoComponent,
@@ -732,7 +704,7 @@ export class DetallePagoComponent implements OnInit {
       lockPinned: true,
       pinned: 'left',
       //cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => (params.data.ciequincena !== 'S' || this.datosParametros.estado =='A'),
     },
     {
       field: 'nombre',

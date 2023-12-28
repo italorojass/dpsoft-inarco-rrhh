@@ -12,7 +12,7 @@
             </h4>
           </div>
           <div class="col-sm-4 col-4">
-            <h3 id="quote">Detalle de bonos {{titlepage}}</h3>
+            <h3 id="quote">Detalle de bonos {{titlepage}} <span [ngClass]="datosParametros.estado == 'A' ? 'text-success' : 'text-danger'"><u>{{ParametrosService.getEstado(datosParametros.estado)}}</u></span></h3>
           </div>
           <div class="col-sm-4 col-12">
             <div class="pull-right">

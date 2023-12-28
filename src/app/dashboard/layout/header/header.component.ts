@@ -7,6 +7,7 @@ import * as $ from 'jquery';
 import { BuildMonthService } from 'src/app/shared/services/build-month.service';
 import { UsuariosService } from 'src/app/shared/components/usuarios/services/usuarios.service';
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
+import { PeriodosService } from 'src/app/shared/services/periodos.service';
 
 @Component({
   selector: 'app-header',
@@ -21,7 +22,8 @@ export class HeaderComponent implements OnInit {
     private fb : FormBuilder,
     private userSv: UsuariosService,
     private ToastrService : ToastrService,
-    private ParametrosService : ParametrosService) { }
+    private ParametrosService : ParametrosService,
+    private periodosSv : PeriodosService) { }
 
   user: string = '';
   rolUser :string;
@@ -37,6 +39,7 @@ export class HeaderComponent implements OnInit {
     this.rolUser = sessionStorage.getItem('rolUser')!;
     this.obra = this.ObraSelectService.getSelected();
     //this.periodos =  this.ObraSelectService.get();
+
     this.obtenerMesesAtras();
 
     /* let inx = this.periodos.findIndex(x=>x.codigo == this.obra.codigo);
@@ -53,10 +56,10 @@ export class HeaderComponent implements OnInit {
   obtenerMesesAtras(){
 
     this.ParametrosService.get({accion:'P'}).subscribe((r:any)=>{
-      this.ObraSelectService.set(r.result.parametros.filter(x=>x.estado =='A'))
-      this.datosParametros =this.ObraSelectService.ObraSelect;
-      this.periodos =r.result.parametros;
-      console.log('datos parametros meses atras', this.datosParametros);
+      //this.ObraSelectService.set(r.result.parametros.filter(x=>x.estado =='A'))
+      this.datosParametros = JSON.parse(sessionStorage.getItem('datosParam'));
+      this.periodos =r.result.parametros.filter(x=>x.estado != ' ');
+      console.log('Total Periodos', r, this.periodos, this.datosParametros);
       //this.datosParametros.tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
 
     })
@@ -95,9 +98,10 @@ export class HeaderComponent implements OnInit {
 periodoSelect : any;
   changeData(item){
     console.log(item,this.router.url);
-    this.ObraSelectService.set(item);
-
-    this.router.navigate([this.router.url]);
+    sessionStorage.setItem('datosParam',JSON.stringify(item));
+    sessionStorage.setItem('titlePage',item.quemes);
+    window.location.reload();
+    //this.router.navigate([this.router.url]);
   }
 
   logout(){

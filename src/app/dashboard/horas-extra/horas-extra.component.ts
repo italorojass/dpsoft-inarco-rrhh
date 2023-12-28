@@ -24,7 +24,7 @@ export class HorasExtraComponent implements OnInit {
     private dtSv: HoraextraService,
     private bt: BuildMonthService,
     private fb: FormBuilder,
-    private paramSV: ParametrosService,
+    public ParametrosService: ParametrosService,
     private toastr: ToastrService,
     private aggsv: AgGridSpanishService
   ) {}
@@ -63,13 +63,11 @@ export class HorasExtraComponent implements OnInit {
     // row style expression
 
   };
+  datosParametros: any;
 
   ngOnInit() {
-    this.paramSV.get({accion:'C'}).subscribe((r:any)=>{
-      console.log(r);
-      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
-
-    })
+    this.datosParametros = JSON.parse(sessionStorage.getItem('datosParam'));
+    this.titlepage = sessionStorage.getItem('titlePage');
 
     this.getPeriodo().subscribe((r) => {
       console.log('response', r);
@@ -288,8 +286,10 @@ export class HorasExtraComponent implements OnInit {
     let b = {
       accion: 'C',
       obra: this.obra.codigo,
+      quemes : this.datosParametros.quemes
     };
-    return this.paramSV.get(b);
+    console.log(b);
+    return this.ParametrosService.get(b);
     //return this.buildHeader(this.formDate.value.inicio,this.formDate.value.final);
   }
   weekday = [];
@@ -324,6 +324,7 @@ export class HorasExtraComponent implements OnInit {
       tipo: 'extras',
       obra: this.obra.codigo,
       accion: 'C',
+      quemes : this.datosParametros.quemes
     };
     this.dtSv.get(body).subscribe((r: any) => {
       console.log('data final', r);
