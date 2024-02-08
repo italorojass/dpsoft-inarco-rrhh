@@ -242,6 +242,7 @@ cellClas(params){
     nombre: ['', Validators.required],
     mail: ['', Validators.required],
     estado: ['', Validators.required],
+    firma : [''],
     pass: ['', Validators.required],
     confirmPassword: ['', Validators.required],
 

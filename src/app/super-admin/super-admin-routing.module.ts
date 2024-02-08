@@ -10,11 +10,10 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 const routes: Routes = [{
   path : '',
   component : LayoutComponent,
-  data: {title: 'Inicio'},
   children : [
     {
       path :'',
-     redirectTo : 'proyectos',
+     redirectTo : 'dashboard',
      pathMatch : 'full'
 
     },
