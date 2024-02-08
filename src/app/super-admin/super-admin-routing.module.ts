@@ -6,6 +6,7 @@ import { ParametrosComponent } from '../shared/components/parametros/parametros.
 import { UsuariosComponent } from '../shared/components/usuarios/usuarios.component';
 import { HomeComponent } from './home/home.component';
 import { ReporteComponent } from '../dashboard/reporte/reporte.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 const routes: Routes = [{
   path : '',
   component : LayoutComponent,
@@ -16,6 +17,10 @@ const routes: Routes = [{
      redirectTo : 'proyectos',
      pathMatch : 'full'
 
+    },
+    {
+      path:'dashboard',
+      component : DashboardComponent
     },
     {
     path:'proyectos',

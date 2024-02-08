@@ -63,7 +63,8 @@ import { PeriodosService } from './services/periodos.service';
     GuiGridModule,
     AgGridModule,
     NgbModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+
   ],
   providers:[
 

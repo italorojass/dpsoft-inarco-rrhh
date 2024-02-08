@@ -16,6 +16,14 @@
           </div>
           <div class="col-sm-4 col-12">
             <div class="pull-right">
+              <button
+              type="button"
+              class="btn btn-outline-primary btn-rounded pull-right"
+
+              (click)="getBonos();"
+            >
+              <i class="icon-reload"></i>Integración
+            </button>
               <app-btn-reporte-excel
                 [data]="data"
                 [_from]="'bonos'"

@@ -76,6 +76,11 @@ export class HeaderSaComponent {
       icon: 'icon-settings'
     },
     {
+      title: 'Dashboard',
+      href: '/admin/dashboard',
+      icon: 'icon-graph'
+    },
+    {
       title: 'Proyectos',
       href: '/admin/proyectos',
       icon: 'icon-briefcase'

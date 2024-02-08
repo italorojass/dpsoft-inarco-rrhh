@@ -16,6 +16,15 @@
             <h3 id="quote">Dif. horas sábado y domingo {{titlepage}} <span [ngClass]="datosParametros.estado == 'A' ? 'text-success' : 'text-danger'"><u>{{ParametrosService.getEstado(datosParametros.estado)}}</u></span></h3>
           </div>
           <div class="col-sm-2 col-12">
+            <button
+            type="button"
+            class="btn btn-outline-primary btn-rounded pull-right"
+
+            (click)="get();"
+          >
+            <i class="icon-reload"></i>Integración
+          </button>
+
             <app-btn-reporte-excel
             [data]="data"
             [headings]="headings"

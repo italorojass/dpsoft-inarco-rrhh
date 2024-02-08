@@ -15,10 +15,12 @@ export class ObrasComponent implements OnInit {
 
   obras:any = [];
   usuario : any;
+  rolUser :string;
+
   ngOnInit(): void {
     this.usuario = JSON.parse(sessionStorage.getItem('user')!);
     this.obras =  JSON.parse(sessionStorage.getItem('obras')!);
-
+    this.rolUser = sessionStorage.getItem('rolUser')!;
     this.ParametrosService.get({accion : 'C'}).subscribe((r: any) => {
       console.log('datos parametros', r);
 

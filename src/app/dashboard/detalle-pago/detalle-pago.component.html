@@ -18,6 +18,15 @@
           <div class="col-sm-4 col-4">
             <div class="btn-group pull-right">
               <button
+              type="button"
+              class="btn btn-outline-primary btn-rounded pull-right"
+
+              (click)="integracion();"
+            >
+              <i class="icon-reload"></i>Integración
+            </button>
+
+              <button
                 type="button"
                 class="btn btn-outline-primary btn-rounded pull-right"
                 data-toggle="modal"
@@ -58,10 +67,10 @@
 
 
         <div class="row mt-3">
-          <div class="col-12">
+          <div class="col-12" >
 
 
-            <div class="table-responsive1">
+            <div class="table-responsive1" >
               <strong>Total trabajadores: {{ collectionSize }}</strong>
               <ag-grid-angular
                 #dtGrid
@@ -91,7 +100,17 @@
 
 
             </div>
+
           </div>
+          <ng-template #sinData>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="text-alert-danger">
+                  Sin datos
+                </div>
+              </div>
+            </div>
+          </ng-template>
         </div>
       </div>
     </div>

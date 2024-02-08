@@ -320,6 +320,7 @@ export class HorasExtraComponent implements OnInit {
   tblHeader = [];
   data: any = [];
   getHoraExtra() {
+    this.data=[];
     let body = {
       tipo: 'extras',
       obra: this.obra.codigo,

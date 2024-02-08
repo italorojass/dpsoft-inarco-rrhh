@@ -243,58 +243,63 @@ export class DetallePagoComponent implements OnInit {
       console.log(r)
       let c = 0;
       if (r.result.pagos) {
-        this.collectionSize = r.result.pagos.length;
-        this.data = r.result.pagos.map(x => {
-          c++;
+        if(r.result.pagos.length >0){
+          this.collectionSize = r.result.pagos.length;
+          this.data = r.result.pagos.map(x => {
+            c++;
 
-          return {
-            ...x,
-            correlativo: c,
-            rutF: ChileanRutify.formatRut(`${x.rut}-${x.dig}`)
-          }
-        });
-        //this.loading = false;
-        this.grid.api.setRowData(this.data);
-
-        let result = [{}];
-        let calcTotalCols = [
-          'sueldo_liq',
-          'valor_hora',
-          'total_periodo',
-
-          'val_lun_sab',
-          'difer_sabado',
-          'difer_domingo',
-          'total_bonos',
-          'zona10',
-          'viatico',
-          'aguinaldo',
-          'asignaciones',
-          'ajuste_pos',
-          'total_ganado',
-          'anticipo',
-          'dctos_varios',
-          'a_pagar',
-          'finiquito',
-          'finiquito_findemes',
-          'liq_apagar'
-        ];
-        // initialize all total columns to zero
-        calcTotalCols.forEach((params) => {
-          result[0][params] = 0
-        });
-        // calculate all total columns
-        calcTotalCols.forEach((params) => {
-          this.data.forEach((line) => {
-            result[0][params] += line[params];
+            return {
+              ...x,
+              correlativo: c,
+              rutF: ChileanRutify.formatRut(`${x.rut}-${x.dig}`)
+            }
           });
-        });
+          //this.loading = false;
+          this.grid.api.setRowData(this.data);
+
+          let result = [{}];
+          let calcTotalCols = [
+            'sueldo_liq',
+            'valor_hora',
+            'total_periodo',
+
+            'val_lun_sab',
+            'difer_sabado',
+            'difer_domingo',
+            'total_bonos',
+            'zona10',
+            'viatico',
+            'aguinaldo',
+            'asignaciones',
+            'ajuste_pos',
+            'total_ganado',
+            'anticipo',
+            'dctos_varios',
+            'a_pagar',
+            'finiquito',
+            'finiquito_findemes',
+            'liq_apagar'
+          ];
+          // initialize all total columns to zero
+          calcTotalCols.forEach((params) => {
+            result[0][params] = 0
+          });
+          // calculate all total columns
+          calcTotalCols.forEach((params) => {
+            this.data.forEach((line) => {
+              result[0][params] += line[params];
+            });
+          });
 
 
 
-        this.grid.api.setPinnedBottomRowData(result);
-        this.grid.api.getDisplayedRowCount();
-        this.grid.defaultColDef.editable = (o) => !o.node.isRowPinned();
+          this.grid.api.setPinnedBottomRowData(result);
+          this.grid.api.getDisplayedRowCount();
+          this.grid.defaultColDef.editable = (o) => !o.node.isRowPinned();
+        }else{
+          this.grid.api.showNoRowsOverlay();
+        }
+
       } else {
 
       }
@@ -562,6 +567,10 @@ export class DetallePagoComponent implements OnInit {
 
   }
 
+  integracion(){
+    this.initData();
+  }
+
   headings = [
     [
       'Finiq',
@@ -660,6 +669,7 @@ export class DetallePagoComponent implements OnInit {
   }
 
   @ViewChild('dtGrid') grid!: AgGridAngular;
+
   defaultColDef: ColDef = {
     resizable: true,
     initialWidth: 200,
