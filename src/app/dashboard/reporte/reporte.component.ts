@@ -175,7 +175,7 @@ export class ReporteComponent implements OnInit {
         const ws: XLSX.WorkSheet = wb.Sheets[wsname];
         this.fileName = file.name;
         this.showbtn = true;
-        ws['!ref'] = "A6:CE758"
+        ws['!ref'] = "A6:CE760"
         let dataExcel= XLSX.utils.sheet_to_json(ws);
        // this.data = data;
        console.log('datos excel rem',dataExcel);
@@ -582,6 +582,7 @@ export class ReporteComponent implements OnInit {
     'Sueldo sistema',
     'Sueldo BUK',
     'Diferencia sueldo',
+    'Observaciones'
   ]
 ]
 

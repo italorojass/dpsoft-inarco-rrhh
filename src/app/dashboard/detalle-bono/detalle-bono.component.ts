@@ -178,7 +178,7 @@ this.bonos=[];
             width: 150,
             filter: false,
             floatingFilter: false,
-            editable : (params) => params.data.ciequicena !== 'S',
+            editable : (params) => params.data.ciequicena !== 'S' && this.datosParametros.estado =='A',
             cellRenderer: this.CurrencyCellRenderer,
             cellRendererParams: {
               currency: 'CLP',
@@ -195,7 +195,7 @@ this.bonos=[];
             width: 150,
             filter: false,
             floatingFilter: false,
-            editable : (params) => params.data.ciequicena !== 'S',
+            editable : (params) => params.data.ciequicena !== 'S' && this.datosParametros.estado =='A',
           });
         }
       }

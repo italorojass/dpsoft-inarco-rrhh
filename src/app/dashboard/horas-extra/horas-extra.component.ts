@@ -36,7 +36,7 @@ export class HorasExtraComponent implements OnInit {
     inicio: [''],
     final: [''],
   });
-
+  datosParametros: any;
   columnDefs = [];
   defaultColDef: ColDef = {
     resizable: true,
@@ -63,7 +63,7 @@ export class HorasExtraComponent implements OnInit {
     // row style expression
 
   };
-  datosParametros: any;
+
 
   ngOnInit() {
     this.datosParametros = JSON.parse(sessionStorage.getItem('datosParam'));
@@ -79,7 +79,7 @@ export class HorasExtraComponent implements OnInit {
           pinned: 'left',
           filter: false,
           floatingFilter: false,
-          editable : (params) => params.data.ciequincena !== 'S',
+          editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
         },
         {
           field: 'nombre',
@@ -91,7 +91,7 @@ export class HorasExtraComponent implements OnInit {
           lockPinned: true,
           cellClass: 'lock-pinned',
 
-          editable : (params) => params.data.ciequincena !== 'S',
+          editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
         }
       );
       let res = r['result'].parametros[0];
@@ -121,7 +121,7 @@ export class HorasExtraComponent implements OnInit {
                 suppressSizeToFit: true,
                 filter: false,
                 floatingFilter: false,
-                editable : (params) => params.data.ciequincena !== 'S',
+                editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
 
                 cellEditor: 'agNumberCellEditor',
                 cellEditorParams: {
@@ -169,7 +169,7 @@ export class HorasExtraComponent implements OnInit {
               suppressSizeToFit: true,
               filter: false,
               floatingFilter: false,
-              editable : (params) => params.data.ciequincena !== 'S',
+              editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
               cellEditor: 'agNumberCellEditor',
               cellEditorParams: {
                 min: 1,
@@ -192,7 +192,7 @@ export class HorasExtraComponent implements OnInit {
               suppressSizeToFit: true,
               filter: false,
               floatingFilter: false,
-              editable : (params) => params.data.ciequincena !== 'S',
+              editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
               cellEditor: 'agNumberCellEditor',
                 cellEditorParams: {
                   min: 1,

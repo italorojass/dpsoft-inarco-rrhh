@@ -714,7 +714,7 @@ export class DetallePagoComponent implements OnInit {
       lockPinned: true,
       pinned: 'left',
       //cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => (params.data.ciequincena !== 'S' || this.datosParametros.estado =='A'),
+      editable: (params) => (params.data.ciequincena !== 'S' && this.datosParametros.estado =='A'),
     },
     {
       field: 'nombre',
@@ -753,7 +753,7 @@ export class DetallePagoComponent implements OnInit {
       headerName: 'Especialidad',
       width: 280,
       sortable: true,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A',
 
       cellEditor: 'agSelectCellEditor',
       cellEditorParams: this.cellCellEditorParams,
@@ -772,7 +772,7 @@ export class DetallePagoComponent implements OnInit {
       cellRendererParams: {
         currency: 'CLP'
       },
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A',
     },
     {
       field: 'dias',
@@ -780,7 +780,7 @@ export class DetallePagoComponent implements OnInit {
         'Días a pago',
       width: 110,
       sortable: true,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A'
     },
     {
       field: 'valor_hora',
@@ -788,7 +788,7 @@ export class DetallePagoComponent implements OnInit {
       width: 100,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
     },
     {
       field: 'total_periodo',
@@ -840,7 +840,7 @@ export class DetallePagoComponent implements OnInit {
       width: 100,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
     },
     {
       field: 'viatico',
@@ -849,7 +849,7 @@ export class DetallePagoComponent implements OnInit {
       sortable: true,
       cellRenderer:
         this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
     },
     {
       field: 'aguinaldo',
@@ -857,7 +857,7 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
     },
     {
       field: 'asignaciones',
@@ -865,7 +865,7 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
     },
     {
       field: 'ajuste_pos',
@@ -873,7 +873,7 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A',
     },
     {
       field: 'total_ganado',
@@ -888,14 +888,14 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A',
     },
     {
       field: 'dctos_varios',
       headerName: 'Descuentos varios',
       width: 200, sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A',
     },
 
     {
@@ -913,7 +913,7 @@ export class DetallePagoComponent implements OnInit {
       width: 200,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A' && this.datosParametros.tipo_mes=='Q' ,
     },
     {
       field: 'finiquito_findemes',
@@ -922,7 +922,7 @@ export class DetallePagoComponent implements OnInit {
       sortable: true,
 
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A' && this.datosParametros.tipo_mes!='Q',
     },
 
     {

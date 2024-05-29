@@ -86,8 +86,8 @@ export class LoginComponent implements OnInit {
     }).then((result) => {
         if (result.value) {//superadmin
 
-
-            this.router.navigate(['/admin/proyectos']);
+          this.router.navigate(['/admin/proyectos']);
+            //this.router.navigate(['/admin/dashboard']);
 
         } else if (
             /* Read more about handling dismissals below */

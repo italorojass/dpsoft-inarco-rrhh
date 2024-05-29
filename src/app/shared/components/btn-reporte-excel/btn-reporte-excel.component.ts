@@ -234,6 +234,7 @@ export class BtnReporteExcelComponent {
           'Sueldo sistema',
           'Sueldo BUK',
           'Diferencia sueldo',
+          'Observaciones'
         ]];
 
         this.reporteSV.get(bo).subscribe((r:any)=>{
@@ -254,7 +255,8 @@ export class BtnReporteExcelComponent {
               diferencia_finiquito : x.diferencia_finiquito,
               sueldo_sistema  :x.sueldo_sistema,
               sueldo_buk : x.sueldo_buk,
-              diferencia_sueldo : x.diferencia_sueldo
+              diferencia_sueldo : x.diferencia_sueldo,
+              observaciones : x.observaciones ? x.observaciones : ''
             }
         });
           var ws2 = XLSX.utils.json_to_sheet([]);

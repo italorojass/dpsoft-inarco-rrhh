@@ -274,6 +274,7 @@ cellClas(params){
       mail: item.mail,
       pass: item.pass,
       estado: item.estado,
+      firma : item.firma,
       accion : 'M'
     }
     this.userTitleEditModal = item.usuario;
@@ -290,6 +291,7 @@ cellClas(params){
       mail: this.userForm.value.mail,
       pass: this.userForm.value.pass,
       estado: this.userForm.value.estado,
+      firma : this.userForm.value.firma,
       accion : 'A'
     }
     this.userSv.crearEditUsuario(bodyEdit).subscribe((r: any) => {
@@ -311,6 +313,7 @@ cellClas(params){
       nombre: this.userForm.value.nombre,
       mail: this.userForm.value.mail,
       estado: this.userForm.value.estado,
+      firma : this.userForm.value.firma,
       accion : 'M'
     };
     console.log(bodyEdit);

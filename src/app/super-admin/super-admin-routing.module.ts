@@ -13,14 +13,14 @@ const routes: Routes = [{
   children : [
     {
       path :'',
-     redirectTo : 'dashboard',
+     redirectTo : 'proyectos',
      pathMatch : 'full'
 
-    },
+    },/* ,
     {
       path:'dashboard',
       component : DashboardComponent
-    },
+    }, */
     {
     path:'proyectos',
     component : ProyectosComponent

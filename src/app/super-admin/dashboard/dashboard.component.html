@@ -5,16 +5,9 @@
       <div class="card-body">
 
         <div class="row">
-          <div class="col-4">
-            <h4 class="text-left mb-4 text-dark">
-              <a [routerLink]="['/obras']"
-                ><i class="icon-action-undo mr-2"></i>{{ obra.codigo }} |
-                {{ obra.nombre }}</a
-              >
-            </h4>
-          </div>
-          <div class="col-sm-6 col-4">
-            <h3 id="quote">Dashboard {{titlepage}}  <span [ngClass]="datosParametros.estado == 'A' ? 'text-success' : 'text-danger'"><u>{{ParametrosService.getEstado(datosParametros.estado)}}</u></span></h3>
+
+          <div class="d-flex justify-content-center">
+            <h3 id="quote">Dashboard </h3>
           </div>
 
         </div>

@@ -2,7 +2,7 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Usuarios</h4>
+        <h4 class="d-flex justify-content-center">Usuarios</h4>
         <hr>
 
         <div class="row">
@@ -17,49 +17,7 @@
 
         <div class="row pt-2">
 
-           <!-- <div class="col-12">
 
-
-           <gui-grid #grid id="agile-grid" [theme]="'generic'" [source]="usuarios" [rowColoring]="'none'"
-              [sorting]="sorting" [paging]="false" [columnMenu]="columnMenu" [verticalGrid]="false"
-              [horizontalGrid]="true" [cellEditing]="true" [loading]="loading"
-              [infoPanel]="false">
-
-
-
-              <gui-grid-column header="Nombre usuario" field="nombre_usuario" type="string" width="120"
-                [cellEditing]="false">
-              </gui-grid-column>
-
-              <gui-grid-column header="Usuario" field="usuario" type="string" [cellEditing]="false" width="180">
-              </gui-grid-column>
-
-              <gui-grid-column header="Mail" field="mail" type="string" [cellEditing]="false" width="100">
-              </gui-grid-column>
-              <gui-grid-column header="Estado" field="estado" type="string" [cellEditing]="false" width="100">
-                <ng-template let-value="value">
-                  <label class="badge" [ngClass]="value=='Activo' ? 'badge-success' : 'badge-danger'">{{value}}</label>
-                </ng-template>
-              </gui-grid-column>
-
-              <gui-grid-column header="Acciones">
-
-                <ng-template let-value="value" let-item="item">
-                  <button type="button" class="btn btn-outline-dark btn-rounded mr-2 btn-sm" data-toggle="modal"
-                    (click)="getObras(item)" data-target="#modalAsociarObras"><i class="icon-people"></i>Asociar
-                    obras</button>
-
-                  <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" data-toggle="modal"
-                    data-target="#modalEditUser" (click)="editModal(item)"><i class="icon-pencil"></i>Modificar</button>
-
-                  <button type="button" class="btn btn-outline-danger btn-rounded btn-sm" (click)="deleteUser(item)"><i
-                      class="icon-trash"></i>Eliminar</button>
-
-                </ng-template>
-              </gui-grid-column>
-
-            </gui-grid>
-          </div>-->
           <div class="col-12 table-responsive1">
 
             <ag-grid-angular #Grid style="width: 100%; height: 100%;" class="ag-theme-alpine"
@@ -76,58 +34,7 @@
               [localeText]="localeText"
              ></ag-grid-angular>
 
-            <!--   <table id="order-listing" class="table table-bordered table-striped">
-              <thead class="thead-dark">
-                <tr class="bg-light">
-                  <th>ID</th>
-                  <th>Nombre usuario </th>
-                  <th>Usuario</th>
 
-                  <th>Mail</th>
-                  <th>Estado</th>
-
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody *ngIf="usuarios.length>0;else nodata">
-                <tr *ngFor="let item of usuarios;let i=index">
-                  <td>{{i+1}}</td>
-                  <td>{{item.nombre_usuario}}</td>
-
-                  <td>
-                    {{item.usuario}}
-                  </td>
-                  <td>
-                    {{item.mail}}
-                  </td>
-                  <td>
-                    <label class="badge"
-                      [ngClass]="item.estado=='Activo' ? 'badge-success' : 'badge-danger'">{{item.estado}}</label>
-                  </td>
-                  <td>
-                    <button type="button" class="btn btn-outline-dark btn-rounded mr-2 btn-sm" data-toggle="modal"
-                      (click)="getObras(item)" data-target="#modalAsociarObras"><i class="icon-people"></i>Asociar
-                      obras</button>
-                    <button type="button" class="btn btn-outline-success btn-rounded btn-sm mr-2" data-toggle="modal"
-                      data-target="#modalEditUser" (click)="editModal(item)"><i
-                        class="icon-pencil"></i>Modificar</button>
-                    <button type="button" class="btn btn-outline-danger btn-rounded btn-sm"
-                      (click)="deleteUser(item)"><i class="icon-trash"></i>Eliminar</button>
-                  </td>
-
-                </tr>
-
-
-              </tbody>
-              <ng-template #nodata>
-                <tbody>
-                  <tr>
-                    <td colspan="6" align="center">** Sin datos **</td>
-                  </tr>
-                </tbody>
-              </ng-template>
-
-            </table> -->
           </div>
         </div>
       </div>

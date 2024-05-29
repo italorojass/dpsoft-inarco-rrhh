@@ -155,7 +155,7 @@ export class DiferenciaSabDomComponent implements OnInit {
       },
       {
         headerName: 'Semana 1',
-        editable : (params) => params.data.ciequincena !== 'S',
+        editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
         children: [
           {
             headerName: 'H. extra sábado',
@@ -192,7 +192,7 @@ export class DiferenciaSabDomComponent implements OnInit {
               'Valor sábado 1/2 día',
             width: 110,
             sortable: true,
-            editable : (params) => params.data.ciequincena !== 'S',
+            editable : (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A',
             cellRenderer: this.CurrencyCellRenderer, cellRendererParams: {
               currency: 'CLP'
             },
@@ -203,7 +203,7 @@ export class DiferenciaSabDomComponent implements OnInit {
             width: 100,
             sortable: true,
             cellRenderer: this.CurrencyCellRenderer,
-            editable : (params) => params.data.ciequincena !== 'S'
+            editable : (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A'
           },
           {
             field: 'h_ex_domingo_sem1',
@@ -226,7 +226,7 @@ export class DiferenciaSabDomComponent implements OnInit {
             headerName: 'Valor domingo 1/2 día',
             width: 180, sortable: true,
             cellRenderer: this.CurrencyCellRenderer,
-            editable : (params) => params.data.ciequincena !== 'S'
+            editable : (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A'
           },
           {
             field: 'dom_entero_sem1',
@@ -234,7 +234,7 @@ export class DiferenciaSabDomComponent implements OnInit {
             width: 150,
             sortable: true,
             cellRenderer: this.CurrencyCellRenderer,
-            editable : (params) => params.data.ciequincena !== 'S'
+            editable : (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A'
           },
           {
             field: 'dif_sab_sem1',
