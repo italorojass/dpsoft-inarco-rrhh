@@ -13,258 +13,197 @@
         <hr/>
 
         <div class="row">
-          <div class="d-flex justify-content-center">
-            <div class="col-6">
-
-              <ul class="list-ticked">
-                <li>Solo archivos .xlsx o .xls</li>
-              </ul>
-
-              <form [formGroup]="f">
-                <div class="input-group">
-                  <input
-                  type="file"
-                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                  #file2
-                  (change)="handleFileInput($event)"
-                  style="display: none"
-                />
-
-                  <button
-                  type="button"
-                  class="btn btn-inverse-success btn-block"
-                  (click)="file2.click()"
-                  placeholder="Seleccione un archivo excel"
-                  name="file"
-                >
-                  <i class="icon-cloud-upload"></i>Libro remuneraciones
-
-                </button>
+          <div class="col-12">
+            <div class="wizard">
+              <div class="wizard-steps">
+                <div class="wizard-step" [class.completed]="currentStep > 1" [class.active]="currentStep === 1">
+                  <span>Libro remuneraciones <i class="ml-2 icon-check" *ngIf="currentStep==3 || currentStep==2"></i></span>
 
                 </div>
-              </form>
-              <hr>
-              <table class="table table-borderless" *ngIf="showbtn">
-                <tbody>
-                  <tr>
-                    <td>
-                      <h6>Datos del archivo {{ fileName }}</h6>
-                      <p class="text-muted mb-0">
-                        Cantidad de datos procesados
-                      </p>
-                    </td>
-                    <td>
-                      <h3 class="text-primary">
-                        {{ data.length }}
-                      </h3>
-                    </td>
-                  </tr>
-
-
-                </tbody>
-              </table>
-              <br>
-
-              <div class="table-responsive1" *ngIf="dataGrid.length > 0">
-
-                <app-table-aggrid
-                  [datos]="dataGrid"
-                  [columnas]="columnDefs"
-                ></app-table-aggrid>
-                <br>
-                <!-- <div class="d-flex justify-content-center">
-                  <button
-                    class="btn btn-outline-success btn-rounded mb-2"
-                    (click)="exportexc()"
-                  >
-                    Exportar a excel<i class="fa fa-file-excel-o ml-2"></i>
-                  </button>
-                </div> -->
-              </div>
-            </div>
-            <div class="col-6">
-
-              <ul class="list-ticked">
-                <li>Solo archivos .xlsx o .xls</li>
-              </ul>
-              <form [formGroup]="f">
-                <div class="input-group">
-
-                  <input
-                  type="file"
-                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                  #fileFiniq
-                  (change)="handleFileInputFiniq($event)"
-                  style="display: none"
-                />
-
-                  <button
-                  type="button"
-                  class="btn btn-inverse-dark btn-block"
-                  (click)="fileFiniq.click()"
-                  placeholder="Seleccione un archivo excel"
-                  name="fileFiniq"
-                >
-                  <i class="icon-cloud-upload"></i>Libro Finiquitos
-
-                </button>
-             <!--    <button
-                type="button"
-                class="btn btn-danger"
-              >
-                <i class="icon-trash"></i>
-
-              </button> -->
+                <div class="wizard-step" [class.completed]="currentStep > 2" [class.active]="currentStep === 2">
+                  <span>Libro finiquitos <i class="ml-2 icon-check" *ngIf="currentStep==3"></i></span>
 
                 </div>
-              </form>
+                <div class="wizard-step" [class.completed]="currentStep == 3" [class.active]="currentStep === 3">
+                  <span >Reporte comparativo <i class="ml-2 icon-pin" *ngIf="currentStep==3"></i></span>
 
-              <hr>
-              <table class="table table-borderless" *ngIf="showbtnFiniq">
-                <tbody>
-                  <tr>
-                    <td>
-                      <h6>Datos del archivo {{ fileNameFiniq }}</h6>
-                      <p class="text-muted mb-0">
-                        Cantidad de datos procesados
-                      </p>
-                    </td>
-                    <td>
-                      <h3 class="text-primary">
-                        {{ dataFiniq.length }}
-                      </h3>
-                    </td>
-                  </tr>
+                </div>
 
-                <!--   <tr>
-                    <td>
-                      <h6>Trabajadores del sistema</h6>
-                      <p class="text-muted mb-0">
-                        Trabajadores actuales del sistema
+              </div>
+              <div class="wizard-content">
+                <div *ngIf="currentStep === 1">
+                  <form [formGroup]="f">
+                    <div class="drop-zone"  (click)="file2.click()" style="cursor: pointer;">
+                     <p >Seleccionar Libro remuneraciones (Solo archivos .xlsx o .xls) <i class="icon-cloud-upload"></i></p>
 
-                      </p>
-                    </td>
-                    <td>
-                      <h3 class="text-info">
-                        {{ dataPagos.length }}
-                      </h3>
-                    </td>
-                  </tr>
+                      <input
+                      type="file"
+                      accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                      #file2
+                      (change)="handleFileInput($event)"
+                      style="display: none"
+                      >
+                    </div>
 
-                  <tr>
-                    <td>
-                      <h6>Coincidencias</h6>
-                      <p class="text-success mb-0">
-                        Los datos que coinciden los puedes ver en la grilla de abajo
-                      </p>
-                    </td>
-                    <td>
-                      <h3 class="text-success">
-                        {{ dataGrid.length }}
-                      </h3>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <h6>Diferencia</h6>
-                      <p class="text-danger mb-0">
-                        No existen en el sistema los trajabadores
-                      </p>
-                    </td>
-                    <td>
-                      <h3 class="text-danger">
-                        {{ dataFiniq.length - dataPagos.length }}
-                      </h3>
-                    </td>
-                  </tr> -->
-                </tbody>
-              </table>
-              <br>
-              <div class="table-responsive1" *ngIf="dataGridFiniq.length > 0">
+                  </form>
 
-                <app-table-aggrid
-                  [datos]="dataGridFiniq"
-                  [columnas]="columnDefsFiniq"
-                ></app-table-aggrid>
+                  <table class="table table-borderless" *ngIf="showbtn">
+                    <tbody>
+                      <tr>
+                        <td>
+                          <h6>Datos del archivo {{ fileName }}</h6>
+                          <p class="text-muted mb-0">
+                            Cantidad de datos procesados
+                          </p>
+                        </td>
+                        <td>
+                          <h3 class="text-primary">
+                            {{ data.length }}
+                          </h3>
+                        </td>
+                      </tr>
+
+
+                    </tbody>
+                  </table>
+                  <br>
+                  <div class="table-responsive1" *ngIf="dataGrid.length > 0">
+                    <app-table-aggrid
+                      [datos]="dataGrid"
+                      [columnas]="columnDefs"
+                    ></app-table-aggrid>
+                    <br>
+
+                  </div>
+                  <!-- Step 1 content here -->
+                  <button type="button" class="btn btn-primary btn-block btn-rounded" (click)="nextStep()" *ngIf="showbtn">Siguiente <i class="icon-arrow-right"></i></button>
+                </div>
+
+
+
+                <div *ngIf="currentStep === 2">
+                 <!--  <h3>Step 2</h3> -->
+                  <form [formGroup]="f">
+                    <div class="drop-zone"  (click)="fileFiniq.click()" style="cursor: pointer;">
+                      <p >Seleccionar Libro Finiquitos (Solo archivos .xlsx o .xls) <i class="icon-cloud-upload"></i></p>
+
+                       <input
+                       type="file"
+                       accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                       #fileFiniq
+                       (change)="handleFileInputFiniq($event)"
+                       style="display: none"
+                       >
+                     </div>
+                  </form>
+                  <table class="table table-borderless" *ngIf="showbtnFiniq">
+                    <tbody>
+                      <tr>
+                        <td>
+                          <h6>Datos del archivo {{ fileNameFiniq }}</h6>
+                          <p class="text-muted mb-0">
+                            Cantidad de datos procesados
+                          </p>
+                        </td>
+                        <td>
+                          <h3 class="text-primary">
+                            {{ dataFiniq.length }}
+                          </h3>
+                        </td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                  <br>
+                  <div class="table-responsive1" *ngIf="dataGridFiniq.length > 0">
+
+                    <app-table-aggrid
+                      [datos]="dataGridFiniq"
+                      [columnas]="columnDefsFiniq"
+                    ></app-table-aggrid>
+                    <br>
+
+                  </div>
+                  <!-- Step 2 content here -->
+                  <div class="row">
+                    <div class="col-6">
+                      <button type="button" class="btn btn-warning btn-block btn-rounded" (click)="prevStep()"><i class="icon-arrow-left"></i> Volver </button>
+
+                    </div>
+                  <div class="col-6" *ngIf="dataGrid.length > 0 && dataGridFiniq.length >0">
+                    <button type="button" class="btn btn-outline-success btn-block btn-rounded" (click)="comparar()"> Comparar <i class="icon-shuffle"></i></button>
+                  </div>
+                  </div>
+
+                  <!-- <button type="button" class="btn btn-primary btn-rounded" (click)="nextStep()" *ngIf="showbtn">Siguiente <i class="icon-arrow-right"></i></button> -->
+                </div>
+                <!-- Repeat for each step -->
+                <div *ngIf="currentStep === 3">
+                  <div *ngIf="resultadosComparados.length > 0 && columnDefsComparados.length > 0" class="row">
+                    <div class="col-12">
+                      <div class="mt-1">
+                        <app-btn-reporte-excel
+                        [data]="resultadosComparados"
+                        [headings]="headings"
+                        [sheetName]="'DATOS COMPARADOS'"
+                        [_from]="'comparativo'"
+                        [fileName]="'Reporte_comparativo_'+titlepage"
+                      >
+                      </app-btn-reporte-excel>
+                      </div>
+                      <ul class="nav nav-tabs tab-solid tab-solid-primary" role="tablist">
+                        <li class="nav-item">
+                          <a class="nav-link active" id="tab-5-1" data-toggle="tab" href="#comparados" role="tab" aria-controls="comparados" aria-selected="true">Datos comparados <u style="margin-left: 5px;"> {{resultadosComparados.length }}</u></a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="tab-5-2" data-toggle="tab" href="#BUK" role="tab" aria-controls="BUK" aria-selected="false">Diferencias por obra <u style="margin-left: 5px;"> {{resultadosComparadosBUK.length }} </u></a>
+                        </li>
+
+                      </ul>
+                      <br>
+                      <div class="tab-content tab-content-solid">
+                        <div class="tab-pane fade show active" id="comparados" role="tabpanel" aria-labelledby="comparados">
+                          <div class="row" >
+                            <div class="col-12">
+                              <div class="table-responsive1">
+                                <app-table-aggrid
+                                    [datos]="resultadosComparados"
+                                    [columnas]="columnDefsComparados"
+                                  ></app-table-aggrid>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="BUK" role="tabpanel" aria-labelledby="buk">
+                          <div class="row" >
+                            <div class="col-12">
+                              <div class="table-responsive1">
+                                <app-table-aggrid
+                                    [datos]="resultadosComparadosBUK"
+                                    [columnas]="columnDefsComparadosBUK"
+                                    [paginationNumber]="25"
+                                  ></app-table-aggrid>
+                              </div>
+
+
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                </div>
                 <br>
+                  <!-- Step 3 content here -->
+                  <button type="button" class="btn btn-warning btn-block btn-rounded" (click)="prevStep()"><i class="icon-arrow-left"></i> Volver </button>
 
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <hr *ngIf="dataGrid.length > 0 && dataGridFiniq.length >0"/>
-        <div class="row" *ngIf="dataGrid.length > 0 && dataGridFiniq.length >0">
-          <div class="d-flex justify-content-center">
-            <div class="col-12">
-                <button type="button" class="btn btn-outline-success btn-block" (click)="comparar()"><i class="icon-shuffle"></i> Comparar</button>
-            </div>
-          </div>
-        </div>
-
-        <div *ngIf="resultadosComparados.length > 0 && columnDefsComparados.length > 0">
-          <hr  >
-          <div class="row">
-            <div class="col-4">
-              <table class="table table-borderless" *ngIf="showbtn">
-                <tbody>
-                  <tr>
-                    <td>
-                      <h6>Resultado de los datos comparados </h6>
-                      <p class="text-muted mb-0">
-                        Cantidad de datos procesados
-                      </p>
-
-                    </td>
-                    <td align="left">
-                      <h3 class="text-primary">
-                        {{resultadosComparados.length }}
-                      </h3>
-                    </td>
-
-                  </tr>
-
-
-                </tbody>
-              </table>
-            </div>
-            <div class="col-8">
-              <div class="mt-1">
-                <app-btn-reporte-excel
-                [data]="resultadosComparados"
-                [headings]="headings"
-                [sheetName]="'DATOS COMPARADOS'"
-                [_from]="'comparativo'"
-                [fileName]="'Reporte_comparativo_'+fileName+'_'+fileNameFiniq+'_'+titlepage"
-              >
-              </app-btn-reporte-excel>
-              </div>
-
-            </div>
-          </div>
-          <div class="row" >
-
-            <div class="col-12">
-
-
-              <br>
-
-
-              <div class="table-responsive1">
-                <app-table-aggrid
-                    [datos]="resultadosComparados"
-                    [columnas]="columnDefsComparados"
-                  ></app-table-aggrid>
-              </div>
-
-
-            </div>
-          </div>
-        </div>
-
-
-
-      </div>
     </div>
   </div>
 </div>

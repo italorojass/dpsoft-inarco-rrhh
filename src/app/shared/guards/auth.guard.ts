@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { LoginService } from 'src/app/login/services/login.service';
@@ -8,7 +8,9 @@ import { LoginService } from 'src/app/login/services/login.service';
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-  constructor(private loginSv : LoginService, private toastr : ToastrService){
+  constructor(private loginSv : LoginService, private toastr : ToastrService,
+    private router : Router
+  ){
 
   }
   canActivate(
@@ -18,7 +20,7 @@ export class AuthGuard implements CanActivate {
       if (!this.loginSv.isLogged()) {
         console.log("No estás logueado");
         this.toastr.warning('NO Cuentas con credenciales activas. Desea reactivar la sesión?','Sesión expiró');
-        //this.router.navigate(["/"]);
+        this.router.navigate(["/"]);
         return false;
       }
     return true;

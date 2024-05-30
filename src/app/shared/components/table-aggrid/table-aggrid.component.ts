@@ -13,6 +13,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 export class TableAggridComponent {
   @Input() datos: any;
   @Input() columnas = [];
+  @Input() paginationNumber=16;
   @Output() outChange = new EventEmitter<any>();
 
   @ViewChild('Grid') grid!: AgGridAngular;
@@ -77,6 +78,8 @@ export class TableAggridComponent {
 
   onGridReady(params: GridReadyEvent<any>) {
     this.grid.api.sizeColumnsToFit();
+    this.grid.api = params.api;
+
     /*   this.gridApi = params.api;
       this.grid.api = params.api */
   }
