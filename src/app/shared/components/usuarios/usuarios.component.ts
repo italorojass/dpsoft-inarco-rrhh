@@ -227,6 +227,7 @@ cellClas(params){
       this.closeModalAsociar.nativeElement.click();
       this.toastr.success('Obras asociadas con éxito','')
       this.getUsers()
+      this.allSelected=false;
     })
   }
 
@@ -356,6 +357,19 @@ cellClas(params){
       }
     })
 
+  }
+
+
+  allSelected = false;
+
+  toggleAll(event: any) {
+    this.allSelected = event.target.checked;
+    this.obrasAsociar.forEach(item => item.isCheck = this.allSelected);
+  }
+
+  toggleItem(item: any) {
+    item.isCheck = !item.isCheck;
+    this.allSelected = this.obrasAsociar.every(i => i.isCheck);
   }
 
 }

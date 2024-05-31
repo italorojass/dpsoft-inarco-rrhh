@@ -226,14 +226,12 @@ export class ParametrosComponent implements OnInit {
     this.paramSV.get(b).subscribe(r=>{
       console.log(r);
       this.parametrosArray = r['result'].parametros.filter(x=>x.estado != 'C');
-      console.log('response parametros',this.parametrosArray,this.parametrosArray.find(x=>x.estado =='A'));
       this.paramss = this.parametrosArray.find(x=>x.estado =='A');
-      this.grid.api.sizeColumnsToFit();
+      console.log('parametros ',this.paramss,this.parametrosArray);
+     // this.grid.api.sizeColumnsToFit();
 
     })
   }
-
-
 
 
 

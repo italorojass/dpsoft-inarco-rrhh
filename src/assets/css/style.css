@@ -21153,6 +21153,7 @@ pre {
 
 .badge.badge-pill {
   border-radius: 10rem;
+  width: 10rem;
 }
 
 .badge.badge-fw {
@@ -21176,7 +21177,8 @@ pre {
 
 .badge-success, .preview-list .preview-item .preview-thumbnail .badge.badge-online {
   border: 1px solid #7ed321;
-  color: #fff;
+  color: #000;
+
 }
 
 .badge-info, .preview-list .preview-item .preview-thumbnail .badge.badge-offline {

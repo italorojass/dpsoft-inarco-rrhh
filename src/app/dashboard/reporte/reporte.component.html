@@ -16,15 +16,16 @@
           <div class="col-12">
             <div class="wizard">
               <div class="wizard-steps">
-                <div class="wizard-step" [class.completed]="currentStep > 1" [class.active]="currentStep === 1">
-                  <span>Libro remuneraciones <i class="ml-2 icon-check" *ngIf="currentStep==3 || currentStep==2"></i></span>
+                <div class="wizard-step" [class.completed]="currentStep > 1" [class.active]="currentStep === 1" (click)="prevStep();currentStep=1" style="cursor: pointer;">
+                  <span>Libro remuneraciones <i class="ml-2 icon-check" *ngIf="currentStep>=2"></i></span>
 
                 </div>
-                <div class="wizard-step" [class.completed]="currentStep > 2" [class.active]="currentStep === 2">
+                <div class="wizard-step" [class.completed]="currentStep > 2" [class.active]="currentStep === 2" (click)="prevStep()" style="cursor: pointer;">
+
                   <span>Libro finiquitos <i class="ml-2 icon-check" *ngIf="currentStep==3"></i></span>
 
                 </div>
-                <div class="wizard-step" [class.completed]="currentStep == 3" [class.active]="currentStep === 3">
+                <div class="wizard-step" [class.completed]="currentStep == 3" [class.active]="currentStep === 3" >
                   <span >Reporte comparativo <i class="ml-2 icon-pin" *ngIf="currentStep==3"></i></span>
 
                 </div>
