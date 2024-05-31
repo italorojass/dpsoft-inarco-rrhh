@@ -122,6 +122,7 @@
             </div>
             <div class="col-lg-8">
               <select class="form-control" formControlName="estado" name="estado">
+                <option value="">Seleccionar estado</option>
                 <option value="Activo">Activo</option>
                 <option value="Inactivo">Inactivo</option>
               </select>
@@ -134,8 +135,14 @@
               <label class="col-form-label">Firma</label>
             </div>
             <div class="col-lg-8">
+
+              <button class="btn btn-light btn-rounded btn-block" (click)="file.click()">Elegir firma</button>
+
               <input class="form-control" name="firma" type="file"
+              #file
+              style="display: none"
                 formControlName="firma">
+
             </div>
           </div>
 
@@ -214,7 +221,11 @@
               <label class="col-form-label">Firma</label>
             </div>
             <div class="col-lg-8">
+              <button class="btn btn-light btn-rounded btn-block" (click)="file2.click()">Elegir firma</button>
+
               <input class="form-control" name="firma" type="file"
+              #file2
+              style="display: none"
                 formControlName="firma">
             </div>
           </div>
