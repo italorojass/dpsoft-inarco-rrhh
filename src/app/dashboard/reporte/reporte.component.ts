@@ -459,7 +459,7 @@ this.fileName='';
         headerName: 'Obra',
         field: 'obra',
         filter: true,
-        width: 90,
+        width: 95,
         floatingFilter: true,
         editable: false
       },
@@ -496,7 +496,7 @@ this.fileName='';
         headerName: 'Anticipo sistema',
         field: 'anticipo_sistema',
         filter: true,
-        width: 120,
+        width: 100,
           floatingFilter: true,
         editable: false,
         cellRenderer: this.CurrencyCellRenderer
@@ -505,7 +505,7 @@ this.fileName='';
         headerName: 'Anticipo BUK',
         field: 'anticipo_buk',
         filter: true,
-        width: 120,
+        width: 100,
           floatingFilter: true,
         editable: false,
         cellRenderer: this.CurrencyCellRenderer
@@ -532,7 +532,7 @@ this.fileName='';
         headerName: 'Finiquito BUK',
         field: 'finiquito_buk',
         filter: true,
-        width: 120,
+        width: 100,
           floatingFilter: true,
         editable: false,
         cellRenderer: this.CurrencyCellRenderer
@@ -560,7 +560,7 @@ this.fileName='';
         headerName: 'Sueldo BUK',
         field: 'sueldo_buk',
         filter: true,
-        width: 120,
+        width: 100,
           floatingFilter: true,
         editable: false,
         cellRenderer: this.CurrencyCellRenderer

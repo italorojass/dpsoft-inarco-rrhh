@@ -2,131 +2,123 @@
   <div class="card-body">
     <h4 class="d-flex justify-content-center">Parámetros del sistema</h4>
     <hr>
-    <div class="d-flex justify-content-center display-4">PERIODO ACTUAL:
+    <!--  <div class="d-flex justify-content-center display-4">PERIODO ACTUAL:
 
       <div class="text-primary text-bold">
         <u *ngIf="paramss" class="ml-3">{{paramss.quemes}}</u>
       </div>
 
-    </div>
-    <br>
-    <div class="row" *ngIf="parametrosArray.length>0 && paramss">
-      <div class="col-md-6 grid-margin">
-        <div class="card ">
-          <div class="card-body">
-            <h4 class="card-title mb-0">Quincena </h4>
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="d-inline-block pt-3">
-
-                <div class="mb-0"><small class="text-gray">Primer Lunes del periodo: {{parametrosArray[0].inicio_periodo
-                    }}</small></div>
-
-                <div class="mb-0"><small class="text-gray">Último día del periodo: {{parametrosArray[0].final_periodo
-                    }}</small> </div>
-              </div>
-              <div class="d-inline-block">
-                <div class="row">
-                  <div class="col">
-                    <div class="badge badge-success badge-pill" style=" font-size: 1rem;
-              font-weight: bold;">{{parametrosArray[0].estado == 'A' ? 'ABIERTO' : 'CERRADO'}}</div>
-                  </div>
-                </div>
-
-                <div class="row mt-1">
-                  <div class="col">
-                    <button class="btn btn-inverse-dark btn-rounded btn-block" (click)="cierre('Q','quincena')"
-                      *ngIf="parametrosArray[0].estado == 'A'" [disabled]="paramss.tipo_proceso=='S'">
-                      <i class="icon-lock text-white icon-md"></i>
-                    </button>
-                  </div>
-                </div>
-
-
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6 grid-margin">
-        <div class="card ">
-          <div class="card-body">
-            <h4 class="card-title mb-0">Fin de mes
-
-            </h4>
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="d-inline-block pt-3">
-
-                <div class="mb-0"><small class="text-gray">Primer Lunes del periodo: {{parametrosArray[1].inicio_periodo
-                    }}</small></div>
-
-                <div class="mb-0"><small class="text-gray">Último día del periodo: {{parametrosArray[1].final_periodo
-                    }}</small> </div>
-              </div>
-
-
-              <div class="d-inline-block">
-                <div class="badge  badge-pill"
-                  [ngClass]="parametrosArray[1].estado == 'A' ? 'badge-success': 'badge-dark'" style=" font-size: 1rem;
-                font-weight: bold;"
-                >
-
-                  <div [ngSwitch]="parametrosArray[1].estado" class=".text-uppercase">
-
-                    <div *ngSwitchDefault>SIN ASIGNAR</div>
-                    <div *ngSwitchCase="'A'" >ABIERTO</div>
-                    <div *ngSwitchCase="'C'">CERRADO</div>
-                  </div>
-
-                  <!--  {{parametrosArray[1].estado == 'A' ? 'ABIERTO' : 'CERRADO' ?? 'Sin asignar'}} -->
-                </div>
-                <button class="btn btn-inverse-dark btn-rounded btn-fw" *ngIf="parametrosArray[1].estado == 'A'"
-                  (click)="cierre('S','fin de mes')" [disabled]="paramss.tipo_proceso=='Q'">
-                  <i class="icon-lock text-white icon-lg"></i>
-                </button>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-
-    <!-- <div class="row">
-      <div class="col-12">
-        <div class="table-responsive1">
-          <ag-grid-angular
-          #pGrid
-          style="width: 100%; height: 100%"
-          class="ag-theme-alpine"
-
-          [columnDefs]="columnDefs"
-          [defaultColDef]="defaultColDef"
-          [rowData]="parametrosArray"
-          [suppressMenuHide]="true"
-          [suppressColumnVirtualisation]="false"
-          [suppressRowVirtualisation]="false"
-          [pagination]="true"
-          [groupSelectsChildren]="true"
-          [rowSelection]="rowSelection"
-          [enableCellChangeFlash]="true"
-          [alwaysShowHorizontalScroll]="false"
-          [alwaysShowVerticalScroll]="true"
-          [suppressMaxRenderedRowRestriction]="true"
-
-          [paginationPageSize]="15"
-          [rowClassRules]="rowClassRules"
-          (gridReady)="onGridReady($event)"
-          (rowValueChanged)="onRowValueChanged($event)"
-          [editType]="'fullRow'"
-        ></ag-grid-angular>
-        </div>
-
-
-      </div>
     </div> -->
+    <br>
+    <div class="container">
+      <div class="row" *ngIf="parametrosArray.length>0 && paramss">
+        <div class="col-6 grid-margin">
+          <div class="card ">
+            <div class="card-body ">
+              <h4 class="mb-0 text-success">PERIODO ACTUAL: <span class=" text-bold">
+                  <u *ngIf="paramss" class="ml-3">{{paramss.quemes}}</u>
+                </span> </h4>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-inline-block pt-3">
+
+                  <div class="mb-0"><span class="text-gray">Primer Lunes del periodo:
+                      {{formatfecha(paramss.inicio_periodo)
+                      }}</span></div>
+
+                  <div class="mb-0"><span class="text-gray">Último día del periodo: {{formatfecha(paramss.final_periodo)
+                      }}</span> </div>
+                </div>
+                <div class="d-inline-block">
+
+                  <div class="row mt-1">
+                    <div class="col-12">
+                      <button class="btn btn-inverse-danger btn-rounded btn-block" (click)="cierre('Q','quincena')"
+                        *ngIf="parametrosArray[0].estado == 'A'" [disabled]="paramss.tipo_proceso=='S'">
+                        <i class="icon-lock text-white icon-md"></i>
+                      </button>
+                    </div>
+                  </div>
+
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 grid-margin">
+          <div class="card ">
+            <div class="card-body">
+              <h4 class="card-title mb-0">Siguiente periodo: <span class="text-warning text-bold">
+                  <u *ngIf="paramss" class="ml-3">{{parametrosArray[1].quemes}}</u>
+                </span>
+
+              </h4>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-inline-block pt-3">
+
+                  <div class="mb-0 "><span class="text-gray">Primer Lunes del periodo:
+                      {{formatfecha(parametrosArray[1].inicio_periodo)
+                      }}</span></div>
+
+                  <div class="mb-0"><span class="text-gray text-bold">Último día del periodo:
+                      {{formatfecha(parametrosArray[1].final_periodo)
+                      }}</span> </div>
+                </div>
+
+
+                <div class="d-inline-block">
+                  <div class="badge  badge-pill"
+                    [ngClass]="parametrosArray[1].estado == 'A' ? 'badge-success': 'badge-dark'" style=" font-size: 1rem;
+                  font-weight: bold;">
+
+                    <div [ngSwitch]="parametrosArray[1].estado" class=".text-uppercase">
+
+                      <div *ngSwitchDefault>SIN ASIGNAR</div>
+                      <div *ngSwitchCase="'A'">ABIERTO</div>
+                      <div *ngSwitchCase="'C'">CERRADO</div>
+                    </div>
+                  </div>
+                  <button class="btn btn-inverse-dark btn-rounded btn-fw" *ngIf="parametrosArray[1].estado == 'A'"
+                    (click)="cierre('S','fin de mes')" [disabled]="paramss.tipo_proceso=='F'">
+                    <i class="icon-lock text-white icon-lg"></i>
+                  </button>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="card ">
+            <div class="card-body">
+              <h1 class="display-4">Total periodos del sistema</h1>
+              <div class="table-responsive1">
+                <ag-grid-angular #pGrid style="width: 100%; height: 100%" class="ag-theme-alpine"
+                  [gridOptions]="gridOptions" [defaultColDef]="defaultColDef" [suppressMenuHide]="true"
+                  [suppressColumnVirtualisation]="false" [suppressRowVirtualisation]="false" [pagination]="true"
+                  [groupSelectsChildren]="true" [rowSelection]="rowSelection" [enableCellChangeFlash]="true"
+                  [alwaysShowHorizontalScroll]="false" [alwaysShowVerticalScroll]="true"
+                  [suppressMaxRenderedRowRestriction]="true" [paginationPageSize]="15" [rowClassRules]="rowClassRules"
+                  (gridReady)="onGridReady($event)" (rowValueChanged)="onRowValueChanged($event)"
+                  [editType]="'fullRow'"></ag-grid-angular>
+              </div>
+
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+
 
   </div>
 </div>

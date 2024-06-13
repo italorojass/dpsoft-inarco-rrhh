@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-body">
         <div class="row">
-          <div class="col-4">
+          <div class="col-3">
             <h4 class="text-left mb-4 text-dark">
               <a [routerLink]="['/obras']"
                 ><i class="icon-action-undo mr-2"></i>{{ obra.codigo }} |
@@ -11,10 +11,11 @@
               >
             </h4>
           </div>
-          <div class="col-sm-6 col-4">
-            <h3 id="quote">Horas extras {{titlepage}}  <span [ngClass]="datosParametros.estado == 'A' ? 'text-success' : 'text-danger'"><u>{{ParametrosService.getEstado(datosParametros.estado)}}</u></span></h3>
+          <div class="col-sm-6 col-6">
+            <app-cabecera-pages [titulo]="'Horas extra'"
+            ></app-cabecera-pages>
           </div>
-          <div class="col-sm-2 col-12">
+          <div class="col-3">
            <!--  <button
             type="button"
             class="btn btn-outline-primary btn-rounded pull-right"

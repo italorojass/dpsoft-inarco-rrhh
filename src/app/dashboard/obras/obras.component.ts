@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ObrasService } from './services/obras.service';
 import { PeriodosService } from 'src/app/shared/services/periodos.service';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-obras',
@@ -21,24 +22,16 @@ export class ObrasComponent implements OnInit {
     this.usuario = JSON.parse(sessionStorage.getItem('user')!);
     this.obras =  JSON.parse(sessionStorage.getItem('obras')!);
     this.rolUser = sessionStorage.getItem('rolUser')!;
-    this.ParametrosService.get({accion : 'C'}).subscribe((r: any) => {
-      console.log('datos parametros', r);
+    //sessionStorage.removeItem('periodoAbierto')
 
-      sessionStorage.setItem('datosParam',JSON.stringify(r.result.parametros[0]));
-      sessionStorage.setItem('titlePage',r.result.parametros[0].quemes);
 
-    });
-
-   /*  this.obrasSv.get().subscribe((r:any)=>{
-      console.log(r);
-      this.obras = r.result.obras;
-      sessionStorage.setItem('obras',JSON.stringify(r.result.obras));
-    }) */
   }
 
-  go(i:any){
-    console.log('select',i);
 
+
+  go(i:any){
+    //
+    //this.router.navigate(['/inicio/detalle-pagos']);
     sessionStorage.setItem('obraSelect',JSON.stringify(i))
 
   }

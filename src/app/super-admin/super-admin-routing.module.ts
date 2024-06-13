@@ -16,11 +16,11 @@ const routes: Routes = [{
      redirectTo : 'proyectos',
      pathMatch : 'full'
 
-    },/* ,
+    },
     {
       path:'dashboard',
       component : DashboardComponent
-    }, */
+    },
     {
     path:'proyectos',
     component : ProyectosComponent

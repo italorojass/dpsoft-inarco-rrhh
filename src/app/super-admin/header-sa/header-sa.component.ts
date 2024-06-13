@@ -47,39 +47,18 @@ export class HeaderSaComponent {
   }
 
   menu = [
-    /* {
-      title: 'Inicio',
-      href: '/admin',
-      icon: 'icon-home'
-    }, */
-    {
-      title: 'Administración sistema',
-      href : '',
-      /* subitem: [
-        {
-          title: 'Proyectos',
-          href: '/admin/proyectos',
-          icon: 'icon-docs'
-        },
-        {
-          title: 'Usuarios',
-          href: '/admin/usuarios',
-          icon: 'icon-people'
-        },
-        {
-          title:'Parámetros',
-          href : '/admin/parametros',
-          icon : 'icon-layers'
-        },
-      ], */
 
-      icon: 'icon-settings'
+    {
+      title: 'Ver Obras',
+      href : '/obras',
+
+      icon: 'icon-star'
     },
-   /*  {
+    {
       title: 'Dashboard',
       href: '/admin/dashboard',
       icon: 'icon-graph'
-    }, */
+    },
     {
       title: 'Proyectos',
       href: '/admin/proyectos',

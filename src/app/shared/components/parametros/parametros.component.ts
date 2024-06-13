@@ -7,6 +7,8 @@ import Swal from 'sweetalert2';
 import { ColDef, GridReadyEvent, ICellEditorParams, RowClassRules, RowValueChangedEvent, ValueFormatterParams } from 'ag-grid-community';
 import { AgGridSpanishService } from '../../services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
+import { DatepickerAgGridComponent } from '../datepicker-ag-grid/datepicker-ag-grid.component';
+import { DatepickerAgGridFinalComponent } from '../datepicker-ag-grid-final/datepicker-ag-grid-final.component';
 
 @Component({
   selector: 'app-parametros',
@@ -34,6 +36,8 @@ export class ParametrosComponent implements OnInit {
   opcionSeleccionada: string;
   api: any;
   columnApi;
+
+
   onGridReady(params: GridReadyEvent<any>) {
     this.api = params.api;
     this.columnApi = params.columnApi;
@@ -100,34 +104,53 @@ export class ParametrosComponent implements OnInit {
     {
       field: 'quemes',
       headerName: 'Periodo actual',
-
+      width : 280,
       suppressSizeToFit: true,
       editable : false,
     },
     {
       field: 'inicio_periodo',
       headerName: 'Primer día lunes del periodo',
-
-      suppressSizeToFit: true,
       editable : true,
+      width : 200,
+      //filter: 'agDateColumnFilter',
+      //cellRenderer: DatepickerAgGridComponent,
+      //cellEditor: DatepickerAgGridComponent,
+      cellEditor: "agDateStringCellEditor",
+      cellRendererParams: {
+        clicked: (field: any) => {
+          console.log('item click', field);
+        }
+      },
+      valueFormatter: (params: ValueFormatterParams<any>) => {
+        if (!params.value) {
+          return "";
+        }
+        return this.formatfecha(params.value);
+      }
     },
 
     {
       field: 'final_periodo',
+      //cellRenderer: DatepickerAgGridFinalComponent,
       headerName: 'Último día del periodo',
       suppressMenu: true,
       suppressSizeToFit: true,
       editable : true,
+      width : 200,
+      cellEditor: "agDateStringCellEditor",
+
     },
     {
       field: 'estado',
       headerName: 'Estado',
       cellEditor: 'agSelectCellEditor',
       suppressSizeToFit: true,
-      editable : true,
+      editable : false,
       suppressMenu: true,
       cellEditorParams: this.cellCellEditorParams,
       valueFormatter: this.formatEstado,
+
       cellStyle: params => {
         // you can use either came case or dashes, the grid converts to whats needed
         // light green
@@ -151,6 +174,10 @@ export class ParametrosComponent implements OnInit {
 
     }
   ];
+  gridOptions = {
+    columnDefs: this.columnDefs,
+    rowData: []
+  };
   defaultColDef: ColDef = {
     resizable: true,
 
@@ -163,6 +190,14 @@ export class ParametrosComponent implements OnInit {
   };
   rowSelection = this.aggsv.rowSelection;
 
+
+  formatfecha(fecha){
+    let dia = fecha.split('-')[2];
+    let mes = fecha.split('-')[1];
+    let year = fecha.split('-')[0];
+
+    return `${dia}-${mes}-${year}`;
+  }
 
   cierre(tipo,msj){
 
@@ -203,7 +238,7 @@ export class ParametrosComponent implements OnInit {
       case 'C' :
       value = 'Cerrado'
       break;
-      case ' ':
+      default:
         value = 'Sin estado asignado'
       break;
     }
@@ -228,7 +263,8 @@ export class ParametrosComponent implements OnInit {
       this.parametrosArray = r['result'].parametros.filter(x=>x.estado != 'C');
       this.paramss = this.parametrosArray.find(x=>x.estado =='A');
       console.log('parametros ',this.paramss,this.parametrosArray);
-     // this.grid.api.sizeColumnsToFit();
+      this.grid.api.sizeColumnsToFit();
+      this.grid.api.setRowData(this.parametrosArray);
 
     })
   }

@@ -2,33 +2,24 @@
   <div class="col-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
+
         <div class="row">
-          <div class="col-4">
+          <div class="col-3">
             <h4 class="text-left mb-4 text-dark">
               <a [routerLink]="['/obras']"
-                ><i class="icon-action-undo mr-2"></i>{{ obra.codigo }} |
-                {{ obra.nombre }}</a
+                ><i class="icon-action-undo mr-2"></i>{{ obra.codigo }} | {{ obra.nombre }}</a
               >
             </h4>
           </div>
-          <div class="col-sm-4 col-4">
-            <h3 id="quote">Detalle pagos {{titlepage}} <span [ngClass]="datosParametros.estado == 'A' ? 'text-success' : 'text-danger'"><u>{{ParametrosService.getEstado(datosParametros.estado)}}</u></span></h3>
-
-          </div>
-          <div class="col-sm-4 col-4">
+          <div class="col-6">
+            <app-cabecera-pages [titulo]="'Detalle pagos'"></app-cabecera-pages>
+        </div>
+          <div class="col-sm-3 col-3">
             <div class="btn-group pull-right">
-           <!--    <button
-              type="button"
-              class="btn btn-outline-primary btn-rounded pull-right"
-
-              (click)="integracion();"
-            >
-              <i class="icon-reload"></i>Integración
-            </button> -->
-
               <button
+              *ngIf="!mesesAtras"
                 type="button"
-                class="btn btn-outline-primary btn-rounded pull-right"
+                class="btn btn-outline-primary btn-rounded "
                 data-toggle="modal"
                 data-target="#modalNuevoPago"
                 (click)="getEspecialidad(); resetForm()"
@@ -73,6 +64,7 @@
             <div class="table-responsive1" >
               <strong>Total trabajadores: {{ collectionSize }}</strong>
               <ag-grid-angular
+              *ngIf="isVisible"
                 #dtGrid
                 style="width: 100%; height: 100%"
                 class="ag-theme-alpine"
@@ -95,6 +87,7 @@
                 [pinnedBottomRowData]="pinnedBottomRowData"
                 [rowClassRules]="rowClassRules"
                 (rowValueChanged)="onRowValueChanged($event)"
+                (gridReady)="onGridReady($event)"
                 [editType]="'fullRow'"
               ></ag-grid-angular>
 

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -12,6 +12,9 @@ import { APP_BASE_HREF, HashLocationStrategy, LocationStrategy } from '@angular/
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
 import { SuperAdminModule } from './super-admin/super-admin.module';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { FlatpickrModule } from 'angularx-flatpickr';
+import { NgxSpinnerModule } from "ngx-spinner";
 //I keep the new line
 @NgModule({
   declarations: [
@@ -27,8 +30,9 @@ import { SuperAdminModule } from './super-admin/super-admin.module';
     SharedModule,
     SuperAdminModule,
     NgbModule,
-
-
+    NgSelectModule,
+    FlatpickrModule.forRoot(),
+    NgxSpinnerModule.forRoot()
   ],
   providers: [
     LoginService,
@@ -37,7 +41,7 @@ import { SuperAdminModule } from './super-admin/super-admin.module';
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     {provide: APP_BASE_HREF, useValue: '/'}
   ],
-
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule {
