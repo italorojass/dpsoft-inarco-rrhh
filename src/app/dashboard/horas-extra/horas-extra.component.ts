@@ -14,7 +14,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
 import { ToastrService } from 'ngx-toastr';
 import { CentralizaPeriodosService } from 'src/app/shared/services/centraliza-periodos.service';
-import { switchMap } from 'rxjs';
+import { Subscription, switchMap } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -68,102 +68,54 @@ export class HorasExtraComponent implements OnInit {
 
   };
 
+  private subscription: Subscription;
 
   ngOnInit() {
     this.datosParametros = JSON.parse(sessionStorage.getItem('peridoAbierto'));
     this.titlepage = sessionStorage.getItem('titlePage');
 
-    this.getPeriodo().pipe(
-      switchMap((r:any)=>{
-        this.columnDefs.push(
-          {
-            headerName: 'ID',
-            field: 'correlativo',
-            width: 80,
-            pinned: 'left',
-            filter: false,
-            floatingFilter: false,
-            editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
-          },
-          {
-            field: 'nombre',
-            headerName: 'Nombre',
-            width: 250,
-            minWidth: 170,
-            suppressSizeToFit: true,
-            pinned: 'left',
-            lockPinned: true,
-            cellClass: 'lock-pinned',
+    this.getPeriodo().subscribe((r:any)=>{
+      this.columnDefs.push(
+        {
+          headerName: 'ID',
+          field: 'correlativo',
+          width: 80,
+          pinned: 'left',
+          filter: false,
+          floatingFilter: false,
+          editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
+        },
+        {
+          field: 'nombre',
+          headerName: 'Nombre',
+          width: 250,
+          minWidth: 170,
+          suppressSizeToFit: true,
+          pinned: 'left',
+          lockPinned: true,
+          cellClass: 'lock-pinned',
 
-            editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
-          }
-        );
-        let res = r['result'].parametros[0];
+          editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
+        }
+      );
+      let res = r['result'].parametros[0];
 
-        this.formDate.patchValue({
-          inicio: res.inicio_periodo,
-          final: res.final_periodo,
-        });
-        let cabecera = this.buildHeader(res.inicio_periodo, res.final_periodo);
-        //console.log('datos dias', cabecera);
+      this.formDate.patchValue({
+        inicio: res.inicio_periodo,
+        final: res.final_periodo,
+      });
+      let cabecera = this.buildHeader(res.inicio_periodo, res.final_periodo);
+      //console.log('datos dias', cabecera);
 
-        let counTotalSemana = 0;
-        for (let i = 0; i < cabecera.length; i++) {
-          if (cabecera[i].nombre.includes('Domingo')) {
-            counTotalSemana++; //agrego acontador a total semaa
-            //console.log('CANTIDAD DE SEMANAS', counTotalSemana);
-            this.columnDefs.push({
-              headerName: `Semana ${counTotalSemana}`,
-              children: [
-                {
-                  field: `dia${i + 1}`,
-                  headerName: cabecera[i].nombre.includes('totsem')
-                    ? !`${cabecera[i].nombre}`
-                    : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
-                  headerClass: 'text-vertical',
-                  width: 80,
-                  suppressSizeToFit: true,
-                  filter: false,
-                  floatingFilter: false,
-                  editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
-
-                  cellEditor: 'agNumberCellEditor',
-                  cellEditorParams: {
-                    min: 1,
-                    max: 100,
-                    precision: 0,
-                  },
-                  cellStyle: {
-                    // you can use either came case or dashes, the grid converts to whats needed
-                    backgroundColor: '#ff5e5e', // light green
-                  },
-                },
-              ],
-            });
-
-            this.columnDefs.push({
-              // headerName:`Semana ${counTotalSemana}`,
-              children: [
-                {
-                  headerName: `Total semana ${counTotalSemana}`,
-
-                  field: `totsem${counTotalSemana}`,
-                  width: 100,
-                  suppressSizeToFit: true,
-                  filter: false,
-                  floatingFilter: false,
-                  editable: false,
-
-                  cellStyle: {
-                    // you can use either came case or dashes, the grid converts to whats needed
-                    backgroundColor: '#439aff', // light green
-                  },
-                },
-              ],
-            });
-          } else {
-            if (cabecera[i].nombre.includes('Sábado')) {
-              this.columnDefs.push({
+      let counTotalSemana = 0;
+      for (let i = 0; i < cabecera.length; i++) {
+        if (cabecera[i].nombre.includes('Domingo')) {
+          counTotalSemana++; //agrego acontador a total semaa
+          //console.log('CANTIDAD DE SEMANAS', counTotalSemana);
+          this.columnDefs.push({
+            headerName: `Semana ${counTotalSemana}`,
+            children: [
+              {
                 field: `dia${i + 1}`,
                 headerName: cabecera[i].nombre.includes('totsem')
                   ? !`${cabecera[i].nombre}`
@@ -174,6 +126,7 @@ export class HorasExtraComponent implements OnInit {
                 filter: false,
                 floatingFilter: false,
                 editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
+
                 cellEditor: 'agNumberCellEditor',
                 cellEditorParams: {
                   min: 1,
@@ -182,98 +135,138 @@ export class HorasExtraComponent implements OnInit {
                 },
                 cellStyle: {
                   // you can use either came case or dashes, the grid converts to whats needed
-                  backgroundColor: '#7ed321', // light green
+                  backgroundColor: '#ff5e5e', // light green
                 },
-              });
-            } else {
-              this.columnDefs.push({
-                field: `dia${i + 1}`,
-                headerName: cabecera[i].nombre.includes('totsem')
-                  ? !`${cabecera[i].nombre}`
-                  : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
-                headerClass: 'text-vertical',
+              },
+            ],
+          });
+
+          this.columnDefs.push({
+            // headerName:`Semana ${counTotalSemana}`,
+            children: [
+              {
+                headerName: `Total semana ${counTotalSemana}`,
+
+                field: `totsem${counTotalSemana}`,
                 width: 100,
                 suppressSizeToFit: true,
                 filter: false,
                 floatingFilter: false,
-                editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
-                cellEditor: 'agNumberCellEditor',
-                  cellEditorParams: {
-                    min: 1,
-                    max: 100,
-                    precision: 0,
-                  },
-              });
-            }
+                editable: false,
+
+                cellStyle: {
+                  // you can use either came case or dashes, the grid converts to whats needed
+                  backgroundColor: '#439aff', // light green
+                },
+              },
+            ],
+          });
+        } else {
+          if (cabecera[i].nombre.includes('Sábado')) {
+            this.columnDefs.push({
+              field: `dia${i + 1}`,
+              headerName: cabecera[i].nombre.includes('totsem')
+                ? !`${cabecera[i].nombre}`
+                : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
+              headerClass: 'text-vertical',
+              width: 80,
+              suppressSizeToFit: true,
+              filter: false,
+              floatingFilter: false,
+              editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
+              cellEditor: 'agNumberCellEditor',
+              cellEditorParams: {
+                min: 1,
+                max: 100,
+                precision: 0,
+              },
+              cellStyle: {
+                // you can use either came case or dashes, the grid converts to whats needed
+                backgroundColor: '#7ed321', // light green
+              },
+            });
+          } else {
+            this.columnDefs.push({
+              field: `dia${i + 1}`,
+              headerName: cabecera[i].nombre.includes('totsem')
+                ? !`${cabecera[i].nombre}`
+                : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
+              headerClass: 'text-vertical',
+              width: 100,
+              suppressSizeToFit: true,
+              filter: false,
+              floatingFilter: false,
+              editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
+              cellEditor: 'agNumberCellEditor',
+                cellEditorParams: {
+                  min: 1,
+                  max: 100,
+                  precision: 0,
+                },
+            });
           }
         }
-        this.columnDefs.push(
-          {
-            field: `tothormes`,
-            headerName: 'Total h. extras del mes',
-            headerClass: 'text-vertical',
-            width: 80,
-            suppressSizeToFit: true,
-            filter: false,
-            floatingFilter: false,
-            editable: false,
-            lockPinned: true,
-            pinned: 'right',
-          },
-          {
-            field: `valhor`,
-            headerName: 'Valor líquido hora extra',
-            headerClass: 'text-vertical',
-            width: 100,
-            suppressSizeToFit: true,
-            filter: false,
-            floatingFilter: false,
-            editable: false,
-            lockPinned: true,
-            pinned: 'right',
-            cellRenderer: this.CurrencyCellRenderer,
-
-            cellRendererParams: {
-              currency: 'CLP',
-            },
-          },
-          {
-            field: `totvalhor`,
-            headerName: 'Valor líquido total horas del mes',
-            headerClass: 'text-vertical',
-            width: 100,
-            suppressSizeToFit: true,
-            filter: false,
-
-            floatingFilter: false,
-            editable: false,
-            lockPinned: true,
-            pinned: 'right',
-            cellRenderer: this.CurrencyCellRenderer,
-            cellRendererParams: {
-              currency: 'CLP',
-            },
-          }
-        ); //los ultimos/.
-        console.log('columDef Final', this.columnDefs);
-
-        this.grid.api.setColumnDefs(this.columnDefs);
-        return  this.getHoraExtra();
-      })
-    ).subscribe((r:any)=>{
-      console.log('data final', r);
-      let c = 0;
-      if(r.status != 'error'){
-        this.data = r.result.extras.map((value) => {
-          c++;
-          return {
-            ...value,
-            correlativo: c,
-          };
-        });
       }
+      this.columnDefs.push(
+        {
+          field: `tothormes`,
+          headerName: 'Total h. extras del mes',
+          headerClass: 'text-vertical',
+          width: 80,
+          suppressSizeToFit: true,
+          filter: false,
+          floatingFilter: false,
+          editable: false,
+          lockPinned: true,
+          pinned: 'right',
+        },
+        {
+          field: `valhor`,
+          headerName: 'Valor líquido hora extra',
+          headerClass: 'text-vertical',
+          width: 100,
+          suppressSizeToFit: true,
+          filter: false,
+          floatingFilter: false,
+          editable: false,
+          lockPinned: true,
+          pinned: 'right',
+          cellRenderer: this.CurrencyCellRenderer,
 
+          cellRendererParams: {
+            currency: 'CLP',
+          },
+        },
+        {
+          field: `totvalhor`,
+          headerName: 'Valor líquido total horas del mes',
+          headerClass: 'text-vertical',
+          width: 100,
+          suppressSizeToFit: true,
+          filter: false,
+
+          floatingFilter: false,
+          editable: false,
+          lockPinned: true,
+          pinned: 'right',
+          cellRenderer: this.CurrencyCellRenderer,
+          cellRendererParams: {
+            currency: 'CLP',
+          },
+        }
+      ); //los ultimos/.
+      console.log('columDef Final', this.columnDefs);
+
+      this.grid.api.setColumnDefs(this.columnDefs);
     })
+
+
+    let req = this.periodos.getPeriodoSeleccionado();
+    this.subscription = req.subscribe(value => {
+      if (value) {
+        this.getHoraExtra(value); // Actualiza el valor con el período seleccionado
+      }
+    });
 
   }
 
@@ -337,28 +330,24 @@ export class HorasExtraComponent implements OnInit {
   data: any = [];
   mesesAtras : any
   getHoraExtra(mesesAtras?) {
+    let body = this.periodos.buildBodyRequestComponents('extras',mesesAtras?.quemes,'C')
     this.mesesAtras=mesesAtras;
     this.data=[];
-    let body = {
-      tipo: 'extras',
-      obra: this.obra.codigo,
-      accion: 'C',
-      quemes : mesesAtras? mesesAtras.quemes : this.datosParametros?.quemes,
-      abierto : mesesAtras? mesesAtras.estado : this.datosParametros?.estado
-    };
 
-    return this.dtSv.get(body);
-   /*  this.dtSv.get(body).subscribe((r: any) => {
+    return this.dtSv.get(body).subscribe((r: any) => {
       console.log('data final', r);
       let c = 0;
-      this.data = r.result.extras.map((value) => {
-        c++;
-        return {
-          ...value,
-          correlativo: c,
-        };
-      });
-    }); */
+      if(!r.result.error_msg){
+        this.data = r.result.extras.map((value) => {
+          c++;
+          return {
+            ...value,
+            correlativo: c,
+          };
+        });
+      }
+
+    });
   }
 
   headings = [

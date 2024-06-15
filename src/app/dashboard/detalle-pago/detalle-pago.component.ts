@@ -106,20 +106,14 @@ export class DetallePagoComponent implements OnInit {
           }
         })
 
-        //this.getObras(valueEdit)
       })
     }
-    //this.getParametros();
     this.getEspecialidad();
     this.datosParametros = JSON.parse(sessionStorage.getItem('peridoAbierto'));
 
   }
 
- /*  getParametros(){
-    this.datosParametros = JSON.parse(sessionStorage.getItem('datosParam'));
-    this.titlepage = sessionStorage.getItem('titlePage');
 
-  } */
 
 
   titlepage = '';
@@ -149,6 +143,7 @@ export class DetallePagoComponent implements OnInit {
     let req = this.periodos.getPeriodoSeleccionado();
     this.subscription = req.subscribe(value => {
       if (value) {
+        this.mesesAtras = value;
         this.getPagos(value); // Actualiza el valor con el período seleccionado
       }
     });
@@ -297,7 +292,8 @@ export class DetallePagoComponent implements OnInit {
           });
 
           //this.grid.api.destroy();
-          this.grid.api.setRowData(this.data);
+          //this.grid.api.setRowData(this.data);
+         // this.gridOptions.rowData = this.data;
           this.grid.api.setPinnedBottomRowData(result);
           this.grid.api.getDisplayedRowCount();
           this.grid.defaultColDef.editable = (o) => !o.node.isRowPinned();

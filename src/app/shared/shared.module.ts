@@ -116,6 +116,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
     BtnEliminarDetallePagoComponent,
     CabeceraPagesComponent,
     SelectNgSelectAggridComponent
-  ],schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule { }

@@ -9,6 +9,8 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { InputHeaderComponent } from 'src/app/shared/components/table-aggrid/input-header/input-header.component';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { CentralizaPeriodosService } from 'src/app/shared/services/centraliza-periodos.service';
+import { Subscription } from 'rxjs';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 @Component({
   selector: 'app-detalle-bono',
@@ -24,7 +26,8 @@ export class DetalleBonoComponent implements OnInit {
     private toast: ToastrService,
     private paramSV: ParametrosService,
     private aggsv: AgGridSpanishService,
-    public ParametrosService : ParametrosService
+    public ParametrosService : ParametrosService,
+    private periodos : CentralizaPeriodosService
   ) {}
 
   overlayLoadingTemplate = this.aggsv.overlayLoadingTemplate;
@@ -32,11 +35,18 @@ export class DetalleBonoComponent implements OnInit {
   localeText = this.aggsv.getLocale();
   datosParametros:any;
   titlepage ='';
+  private subscription: Subscription;
+
   ngOnInit() {
     this.datosParametros = JSON.parse(sessionStorage.getItem('datosParam'));
     this.titlepage = sessionStorage.getItem('titlePage');
+    let req = this.periodos.getPeriodoSeleccionado();
+    this.subscription = req.subscribe(value => {
+      if (value) {
+        this.get(value); // Actualiza el valor con el período seleccionado
+      }
+    });
 
-    this.get();
     this.getBonos();
   }
   defaultColDef: ColDef = {
@@ -126,13 +136,14 @@ export class DetalleBonoComponent implements OnInit {
   };
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
   data: any = [];
-  get() {
-    let body = {
+  get(mesesAtras?) {
+    let body = this.periodos.buildBodyRequestComponents('bonos',mesesAtras?.quemes,'C')
+    /* let body = {
       tipo: 'bonos',
       obra: this.obra.codigo,
       accion: 'C',
       quemes : this.datosParametros.quemes
-    };
+    }; */
     this.bonoSV.get(body).subscribe((r: any) => {
       //this.data = r.result.bonos;
       this.data = r.result.bonos.map((value, i) => {

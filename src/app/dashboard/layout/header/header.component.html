@@ -8,20 +8,31 @@
         <a class="navbar-brand brand-logo-mini" href="/obras/inicio"><img [src]="rutaLogo" alt="logo" /></a>
         <h4 class="text-white pl-3">Sistema de RRHH - Obras</h4>
       </div>
-     <!--  <div class="navbar-menu-wrapper d-flex  justify-content-between flex-grow-1">
+      <div class="navbar-menu-wrapper d-flex  justify-content-between flex-grow-1">
 
         <ul class="navbar-nav navbar-nav-right mr-0 ml-auto">
 
           <li class="nav-item dropdown d-none d-lg-flex">
             <div class="nav-link" >
-              <a class="btn btn-link text-white" [routerLink]="['/admin']" *ngIf="rolUser=='1'" >
-                <i class="icon-directions text-white mr-2"></i>
-                Ver Administración
-              </a>
+              <button class="btn btn-rounded btn-sm  dropdown-toggle"
+              [ngClass]="periodoActualAbierto?.estado == 'C' ? 'btn-outline-danger':'btn-outline-success'"
+               type="button" id="dropdownMenuButton5"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span><i  [ngClass]="periodoActualAbierto?.estado == 'C' ? 'icon-lock':'icon-power'"></i>  {{periodoActualAbierto.quemes}} </span>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton5" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 33px, 0px); top: 0px; left: 0px; will-change: transform;">
+                <div *ngFor="let item of periodos.reverse()">
+
+                  <a class="dropdown-item "
+                  [ngClass]="item?.estado == 'C' ? ' text-danger': 'text-success'"  (click)="changeData(item)"
+                    style="cursor: pointer;">{{item?.quemes}} <i class="ml-2"  [ngClass]="item?.estado == 'C' ? 'icon-lock':'icon-power'"></i>
+                    </a>
+                </div>
+              </div>
             </div>
           </li>
         </ul>
-      </div> -->
+      </div>
 
       <!--BOTON SALIDA -->
       <div class="navbar-menu-wrapper d-flex  justify-content-between flex-grow-1 text-white">
@@ -66,19 +77,21 @@
           </li>
 
           <ng-template #submenu>
-            <li class="nav-item " *ngIf="periodoActualAbierto">
+           <!--  <li class="nav-item " *ngIf="periodoActualAbierto">
 
-              <a class="nav-link"><i class="link-icon"></i>
+              <a class="nav-link">
+                <i class="link-icon"></i>
                 <span class="menu-title"
                 [ngClass]="periodoActualAbierto.estado == 'C' ? ' text-danger': 'text-success'">
 
-                  {{periodoActualAbierto.quemes}}<i class="ml-1"
-                    [ngClass]="periodoActualAbierto.estado == 'C' ? 'icon-lock':'icon-power'"></i>
+                  {{periodoActualAbierto.quemes}}
+                  <i class="ml-1" [ngClass]="periodoActualAbierto.estado == 'C' ? 'icon-lock':'icon-power'"></i>
                 </span>
                 <i class="menu-arrow"></i>
               </a>
 
               <div class="submenu">
+
                 <ul class="submenu-item" >
                   <li class="nav-item" *ngFor="let item1 of periodos.reverse()">
 
@@ -86,17 +99,18 @@
                     [ngClass]="item1?.estado == 'C' ? ' text-danger': 'text-success'"  (click)="changeData(item1)"
                       style="cursor: pointer;">{{item1?.quemes}} <i class="ml-2"  [ngClass]="item1?.estado == 'C' ? 'icon-lock':'icon-power'"></i>
 
-                        <!-- <i class=" icon-lock ml-2"></i> -->
+
                       </a></li>
                 </ul>
               </div>
 
-            </li>
+            </li> -->
           </ng-template>
 
 
         </ng-container>
       </ul>
+
     </div>
   </div>
 </nav>

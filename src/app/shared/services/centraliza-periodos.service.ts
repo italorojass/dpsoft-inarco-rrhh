@@ -30,13 +30,40 @@ export class CentralizaPeriodosService {
   }
 
   buildBodyRequestComponents(tipo,queMes,accion){
-    let body = {
-      tipo: tipo,
-      accion: accion,
-      obra: this.obra.codigo,
-      quemes : queMes
+    let body = {}
+    switch(tipo){
+      case 'pagos':
+        body = {
+          tipo: tipo,
+          accion: accion,
+          obra: this.obra.codigo,
+          quemes : queMes
+        }
+      break;
+      case 'extras':
+        body= { tipo: tipo,
+          accion: accion,
+          obra: this.obra.codigo,
+          quemes : queMes,
+          abierto : this.periodoSeleccionado.estado}
+      break;
+       case 'finde':
+        body = {
+          tipo: tipo,
+          accion: accion,
+          obra: this.obra.codigo,
+          quemes : queMes
+        }
+      break;
+      case 'bonos':
+        body = {
+          tipo: tipo,
+          accion: accion,
+          obra: this.obra.codigo,
+          quemes : queMes
+        }
+      break;
     }
-
     return body
   }
 

@@ -10,6 +10,8 @@ import { AgGridAngular } from 'ag-grid-angular';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
+import { CentralizaPeriodosService } from 'src/app/shared/services/centraliza-periodos.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-diferencia-sab-dom',
@@ -18,29 +20,39 @@ import { ParametrosService } from 'src/app/shared/components/parametros/services
 })
 export class DiferenciaSabDomComponent implements OnInit {
 
-  constructor(private bm: BuildMonthService, private sb: DifSabDomService, private toast: ToastrService, public ParametrosService: ParametrosService,
+  constructor(private bm: BuildMonthService,
+    private periodos : CentralizaPeriodosService,
+    private sb: DifSabDomService, private toast: ToastrService, public ParametrosService: ParametrosService,
     private aggsv: AgGridSpanishService) { }
     @ViewChild('heGrid') grid!: AgGridAngular;
     titlepage ='';
     datosParametros : any;
+    private subscription: Subscription;
 
   ngOnInit(): void {
 
     this.datosParametros = JSON.parse(sessionStorage.getItem('datosParam'));
     this.titlepage = sessionStorage.getItem('titlePage');
-    this.get();
+   /*  this.get(); */
+   let req = this.periodos.getPeriodoSeleccionado();
+   this.subscription = req.subscribe(value => {
+     if (value) {
+       this.get(value); // Actualiza el valor con el período seleccionado
+     }
+   });
   }
 
   data: any = [];
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
-  get() {
+  get(mesesAtras?) {
     this.data=[];
-    let body = {
+    let body = this.periodos.buildBodyRequestComponents('finde',mesesAtras?.quemes,'C')
+   /*  let body = {
       tipo: 'finde',
       accion: 'C',
       obra: this.obra.codigo,
       quemes : this.datosParametros.quemes
-    }
+    } */
     let c = 0;
     this.sb.get(body).subscribe((r: any) => {
       this.data = r.result.sab_dom.map((value) => {
