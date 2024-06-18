@@ -28,7 +28,7 @@ export class HeaderComponent implements OnInit {
     private ParametrosService: ParametrosService,
     private periodosSv: PeriodosService,
     private CentralizaPeriodosService: CentralizaPeriodosService,
-  private spinner : NgxSpinnerService) { }
+    private spinner: NgxSpinnerService) { }
 
   user: string = '';
   rolUser: string;
@@ -75,32 +75,6 @@ export class HeaderComponent implements OnInit {
         icon: 'icon-present'
       });
 
-    /*  if(!this.periodoActualAbierto){
-       this.CentralizaPeriodosService.getPeriodoActivo().pipe(
-         switchMap((r:any)=>{
-           this.periodoActualAbierto = r.result.parametros.filter(x=>x.estado=='A')[0];
-           sessionStorage.setItem('periodoAbiertoAUX',JSON.stringify(this.periodoActualAbierto));
-           return this.obtenerParametros('R')
-         })
-       ).subscribe((r:any)=>{
-         r.result.parametros.map(x=>{
-           this.periodos.push(x);
-         });
-         this.periodos.push(this.periodoActualAbierto);
-         this.menu.push({});
-       })
-     }else{
-       this.obtenerParametros('R').subscribe((r:any)=>{
-         r.result.parametros.map(x=>{
-           this.periodos.push(x);
-         });
-         let periodoAbiertoSession = JSON.parse(sessionStorage.getItem('periodoAbiertoAUX'));
-         this.periodos.push(periodoAbiertoSession);
-         this.menu.push({});
-       })
-
-     } */
-
     this.obtenerParametros('R').subscribe((r: any) => {
       r.result.parametros.map(x => {
         this.periodos.push(x);
@@ -110,7 +84,13 @@ export class HeaderComponent implements OnInit {
       this.menu.push({});
     });
     this.periodoActualAbierto = JSON.parse(sessionStorage.getItem('periodoAbierto'));
+    if (!this.periodoActualAbierto) {
+      this.getMesActual().subscribe((r: any) => {
+        this.periodoActualAbierto = r.result.parametros.filter(x => x.estado == 'A')[0];
+        sessionStorage.setItem('periodoAbierto', JSON.stringify(this.periodoActualAbierto))
 
+      });
+    }
     if (this.rolUser == '1') {
       this.menu.push({
         title: 'Administración',
@@ -122,17 +102,18 @@ export class HeaderComponent implements OnInit {
 
     this.changePassForm.setValidators(this.passwordMatchValidator);
   }
+  getMesActual() {
+    return this.CentralizaPeriodosService.getPeriodoActivo();
+  }
+
   changeData(item) {
-    this.spinner.show();
-    if (item) {
-      this.periodoActualAbierto = item;
-      this.CentralizaPeriodosService.setPeriodoSeleccionado(item);
-      setTimeout(()=>{
-        window.location.reload();
-    }, 100);
-    }
+    alert(item);
+    /*  this.spinner.show();
+     sessionStorage.setItem('periodoAbierto',JSON.stringify(item))
 
-
+     setTimeout(()=>{
+       window.location.reload();
+   }, 100); */
   }
 
 

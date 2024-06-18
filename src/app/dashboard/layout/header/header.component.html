@@ -8,33 +8,23 @@
         <a class="navbar-brand brand-logo-mini" href="/obras/inicio"><img [src]="rutaLogo" alt="logo" /></a>
         <h4 class="text-white pl-3">Sistema de RRHH - Obras</h4>
       </div>
-      <div class="navbar-menu-wrapper d-flex  justify-content-between flex-grow-1">
+      <!-- PERIODO SELECCIONADO -->
+    <!--   <button class="btn btn-rounded btn-sm  dropdown-toggle"
+      [ngClass]="periodoActualAbierto?.estado == 'C' ? 'btn-outline-danger':'btn-outline-success'"
+       type="button" id="dropdownMenuButton5"
+       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span><i  [ngClass]="periodoActualAbierto?.estado == 'C' ? 'icon-lock':'icon-power'"></i>  {{periodoActualAbierto?.quemes}} </span>
+      </button> -->
+      <!-- PERIODOS CERRADOS -->
+     <!--  <div class="dropdown-menu" >
+        <div *ngFor="let item of periodos.reverse()">
 
-        <ul class="navbar-nav navbar-nav-right mr-0 ml-auto">
-
-          <li class="nav-item dropdown d-none d-lg-flex" *ngIf="periodoActualAbierto">
-            <div class="nav-link" >
-              <!-- PERIODO SELECCIONADO -->
-              <button class="btn btn-rounded btn-sm  dropdown-toggle"
-              [ngClass]="periodoActualAbierto?.estado == 'C' ? 'btn-outline-danger':'btn-outline-success'"
-               type="button" id="dropdownMenuButton5"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span><i  [ngClass]="periodoActualAbierto?.estado == 'C' ? 'icon-lock':'icon-power'"></i>  {{periodoActualAbierto.quemes}} </span>
-              </button>
-              <!-- PERIODOS CERRADOS -->
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton5" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 33px, 0px); top: 0px; left: 0px; will-change: transform;">
-                <div *ngFor="let item of periodos.reverse()">
-
-                  <a class="dropdown-item "
-                  [ngClass]="item?.estado == 'C' ? ' text-danger': 'text-success'"  (click)="changeData(item)"
-                    style="cursor: pointer;">{{item?.quemes}} <i class="ml-2"  [ngClass]="item?.estado == 'C' ? 'icon-lock':'icon-power'"></i>
-                    </a>
-                </div>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
+          <button class="dropdown-item "  (click)="changeData(item)"
+          [ngClass]="item?.estado == 'C' ? ' text-danger': 'text-success'"
+            style="cursor: pointer;">{{item?.quemes}} <i class="ml-2"  [ngClass]="item?.estado == 'C' ? 'icon-lock':'icon-power'"></i>
+            </button>
+        </div>
+      </div> -->
 
       <!--BOTON SALIDA -->
       <div class="navbar-menu-wrapper d-flex  justify-content-between flex-grow-1 text-white">
@@ -79,7 +69,7 @@
           </li>
 
           <ng-template #submenu>
-           <!--  <li class="nav-item " *ngIf="periodoActualAbierto">
+            <!-- <li class="nav-item " *ngIf="periodoActualAbierto">
 
               <a class="nav-link">
                 <i class="link-icon"></i>
@@ -97,12 +87,12 @@
                 <ul class="submenu-item" >
                   <li class="nav-item" *ngFor="let item1 of periodos.reverse()">
 
-                    <a class="nav-link "
-                    [ngClass]="item1?.estado == 'C' ? ' text-danger': 'text-success'"  (click)="changeData(item1)"
+                    <button class="nav-link " (click)="changeData(item1)"
+                    [ngClass]="item1?.estado == 'C' ? ' text-danger': 'text-success'"
                       style="cursor: pointer;">{{item1?.quemes}} <i class="ml-2"  [ngClass]="item1?.estado == 'C' ? 'icon-lock':'icon-power'"></i>
 
 
-                      </a></li>
+                      </button></li>
                 </ul>
               </div>
 

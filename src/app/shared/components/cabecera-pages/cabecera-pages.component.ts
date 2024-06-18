@@ -31,24 +31,13 @@ export class CabeceraPagesComponent implements OnDestroy {
   private subscription: Subscription;
   getMesAnterior() {
     this.quemesViene = JSON.parse(sessionStorage.getItem('periodoAbierto'));
-    let req = this.periodos.getPeriodoSeleccionado();
-    /* if (this.subscription) {
-      this.subscription.unsubscribe(); // Desuscribirse de la suscripción anterior si existe
-    }else{
+    if(!this.quemesViene){
       this.getMesActual().subscribe((r: any) => {
         this.quemesViene = r.result.parametros.filter(x => x.estado == 'A')[0];
         this.periodos.setPeriodoSeleccionado(this.quemesViene);
         this._tituloComponent.emit(this.quemesViene);
       }) ;
-    } */
-/*
-    this.subscription = req.subscribe(value => {
-      if (value) {
-        this.quemesViene = value; // Actualiza el valor con el período seleccionado
-      }
-    }); */
-
-
+    }
 
   }
 

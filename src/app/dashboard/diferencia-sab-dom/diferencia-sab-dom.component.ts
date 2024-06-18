@@ -33,38 +33,31 @@ export class DiferenciaSabDomComponent implements OnInit {
 
     this.datosParametros = JSON.parse(sessionStorage.getItem('datosParam'));
     this.titlepage = sessionStorage.getItem('titlePage');
-   /*  this.get(); */
-   let req = this.periodos.getPeriodoSeleccionado();
-   this.subscription = req.subscribe(value => {
-     if (value) {
-       this.get(value); // Actualiza el valor con el período seleccionado
-     }
-   });
+   this.get();
   }
 
   data: any = [];
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
-  get(mesesAtras?) {
+  get() {
     this.data=[];
-    let body = this.periodos.buildBodyRequestComponents('finde','C')
-   /*  let body = {
-      tipo: 'finde',
-      accion: 'C',
-      obra: this.obra.codigo,
-      quemes : this.datosParametros.quemes
-    } */
+    let body = this.periodos.buildBodyRequestComponents('finde','C');
+
     let c = 0;
     this.sb.get(body).subscribe((r: any) => {
-      this.data = r.result.sab_dom.map((value) => {
-        c++
-        return {
-          ...value,
-          correlativo: c
-        }
-      });
-      console.log(this.data);
-      this.buildTbl();
-      this.buildHeader();
+      console.log('data sabdom',r);
+      if(r.status =='ok'){
+        this.data = r.result.sab_dom.map((value) => {
+          c++
+          return {
+            ...value,
+            correlativo: c
+          }
+        });
+
+        this.buildTbl();
+        this.buildHeader();
+      }
+
     })
 
   }

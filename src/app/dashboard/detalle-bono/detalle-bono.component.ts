@@ -10,7 +10,7 @@ import { InputHeaderComponent } from 'src/app/shared/components/table-aggrid/inp
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { CentralizaPeriodosService } from 'src/app/shared/services/centraliza-periodos.service';
-import { Subscription } from 'rxjs';
+import { Subscription, switchMap } from 'rxjs';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 @Component({
   selector: 'app-detalle-bono',
@@ -40,14 +40,83 @@ export class DetalleBonoComponent implements OnInit {
   ngOnInit() {
     this.datosParametros = JSON.parse(sessionStorage.getItem('datosParam'));
     this.titlepage = sessionStorage.getItem('titlePage');
-    let req = this.periodos.getPeriodoSeleccionado();
-    this.subscription = req.subscribe(value => {
-      if (value) {
-        this.get(value); // Actualiza el valor con el período seleccionado
-      }
-    });
+    this.getAllData();
 
-    this.getBonos();
+  }
+
+  getAllData(){
+    let body = this.periodos.buildBodyRequestComponents('bonos','C')
+    //obtiene trabajadores
+    this.bonoSV.get(body).pipe(
+      switchMap((r:any)=>{
+        this.data = r.result.bonos.map((value, i) => {
+          return {
+            ...value,
+            correlativo: i + 1,
+            rutF: this.formatRut(value.rut, value.dig),
+            isEdit: false,
+          };
+        });
+      return  this.paramSV.getBonos(body)
+      })
+    ).subscribe(r=>{
+      this.bonos = r['result'].bonos.map((x, i) => {
+        return {
+          key: `bono${i + 1}`,
+          descripcion: x.descripcion,
+        };
+      });
+      console.log('response parametros bonos agregados', this.bonos);
+      for (let i = 0; i < 10; i++) {
+        if (this.bonos[i]) {
+          this.columnDefs.push({
+            headerComponent: InputHeaderComponent,
+            headerComponentParams: {
+              label: this.bonos[i].descripcion,
+              index: i,
+            },
+            //headerName: this.bonos[i].descripcion,
+            field: `bono${i + 1}`,
+            width: 150,
+            filter: false,
+            floatingFilter: false,
+            editable : (params) => params.data.ciequicena !== 'S' && this.datosParametros.estado =='A',
+            cellRenderer: this.CurrencyCellRenderer,
+            cellRendererParams: {
+              currency: 'CLP',
+            },
+          });
+        } else {
+          this.columnDefs.push({
+            headerComponent: InputHeaderComponent,
+            headerComponentParams: {
+              index: i,
+            },
+            // headerName: '',
+            field: `bono${i + 1}`,
+            width: 150,
+            filter: false,
+            floatingFilter: false,
+            editable : (params) => params.data.ciequicena !== 'S' && this.datosParametros.estado =='A',
+          });
+        }
+      }
+
+      this.columnDefs.push({
+        headerName: 'Total bonos del mes',
+        field: `total_bonos`,
+        filter: false,
+        floatingFilter: false,
+
+        editable: false,
+        cellRenderer: this.CurrencyCellRenderer,
+        cellRendererParams: {
+          currency: 'CLP',
+        },
+      });
+
+      this.agGrid.api.setColumnDefs(this.columnDefs);
+    })
   }
   defaultColDef: ColDef = {
     resizable: true,
@@ -136,97 +205,11 @@ export class DetalleBonoComponent implements OnInit {
   };
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
   data: any = [];
-  get(mesesAtras?) {
-    let body = this.periodos.buildBodyRequestComponents('bonos','C')
-    /* let body = {
-      tipo: 'bonos',
-      obra: this.obra.codigo,
-      accion: 'C',
-      quemes : this.datosParametros.quemes
-    }; */
-    this.bonoSV.get(body).subscribe((r: any) => {
-      //this.data = r.result.bonos;
-      this.data = r.result.bonos.map((value, i) => {
-        return {
-          ...value,
-          correlativo: i + 1,
-          rutF: this.formatRut(value.rut, value.dig),
-          isEdit: false,
-        };
-      });
-      //this.agGrid.api.sizeColumnsToFit();
-      console.log(this.data);
-    });
-  }
+
 
   bonos = [];
-  getBonos() {
-this.bonos=[];
-    let b = {
-      accion: 'C',
-      obra: this.obra.codigo,
-      quemes : this.datosParametros.quemes
-    };
-    this.paramSV.getBonos(b).subscribe((r) => {
-      console.log(r);
-      this.bonos = r['result'].bonos.map((x, i) => {
-        return {
-          key: `bono${i + 1}`,
-          descripcion: x.descripcion,
-        };
-      });
-      console.log('response parametros bonos agregados', this.bonos);
-      for (let i = 0; i < 10; i++) {
-        if (this.bonos[i]) {
-          this.columnDefs.push({
-            headerComponent: InputHeaderComponent,
-            headerComponentParams: {
-              label: this.bonos[i].descripcion,
-              index: i,
-            },
-            //headerName: this.bonos[i].descripcion,
-            field: `bono${i + 1}`,
-            width: 150,
-            filter: false,
-            floatingFilter: false,
-            editable : (params) => params.data.ciequicena !== 'S' && this.datosParametros.estado =='A',
-            cellRenderer: this.CurrencyCellRenderer,
-            cellRendererParams: {
-              currency: 'CLP',
-            },
-          });
-        } else {
-          this.columnDefs.push({
-            headerComponent: InputHeaderComponent,
-            headerComponentParams: {
-              index: i,
-            },
-            // headerName: '',
-            field: `bono${i + 1}`,
-            width: 150,
-            filter: false,
-            floatingFilter: false,
-            editable : (params) => params.data.ciequicena !== 'S' && this.datosParametros.estado =='A',
-          });
-        }
-      }
 
-      this.columnDefs.push({
-        headerName: 'Total bonos del mes',
-        field: `total_bonos`,
-        filter: false,
-        floatingFilter: false,
 
-        editable: false,
-        cellRenderer: this.CurrencyCellRenderer,
-        cellRendererParams: {
-          currency: 'CLP',
-        },
-      });
-
-      this.agGrid.api.setColumnDefs(this.columnDefs);
-    });
-  }
   CurrencyCellRenderer(params: any) {
     return params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
@@ -247,7 +230,7 @@ this.bonos=[];
       console.log(r);
       /*  let reemplazar = this.data.findIndex(x=>x.id == r['result'].bonos[0].id);
        this.data[reemplazar] = r['result'].bonos[0]; */
-      this.get();
+       this.getAllData();
       this.toast.success(
         'Actualizado con éxito',
         `Bono de ${item.data.nombre}`

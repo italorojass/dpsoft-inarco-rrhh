@@ -21,47 +21,52 @@ export class CentralizaPeriodosService {
      }) */
   }
 
+  getPeriodosCerrados(){
+    return this.ParametrosService.get({accion : 'R'});
+
+
+  }
+
   periodoSelect =new BehaviorSubject<any>(null);
   data$ = this.periodoSelect.asObservable();
   periodoSeleccionado : any;
   setPeriodoSeleccionado(periodoSeleccionado){
     this.periodoSeleccionado= periodoSeleccionado;
-    sessionStorage.setItem('periodoAbierto',JSON.stringify(periodoSeleccionado))
-    this.periodoSelect.next(periodoSeleccionado);
+
+   // this.periodoSelect.next(periodoSeleccionado);
    //
   }
 
-  buildBodyRequestComponents(tipo,accion){
 
-    let periodoSession = JSON.parse(sessionStorage.getItem('periodoAbierto'));
-   // this.periodoSelect.next(periodoSession);
-   /*  switch(tipo){
-      case 'pagos':
-        body = {
-          accion: accion
-        }
-      break;
-      case 'extras':
-        body= { tipo: tipo
-         }
-      break;
-       case 'finde':
-        body = {
-          tipo: tipo,
-        }
-      break;
-      case 'bonos':
-        body = {
-          tipo: tipo,
-        }
-      break;
-    } */
+ buildBodyRequestComponents(tipo,accion){
 
-    return { tipo : tipo,
+    let periodoSession = JSON.parse(sessionStorage.getItem('periodoAbierto')!);
+    let body = {};
+    body = {
+      tipo : tipo,
       accion: accion,
       obra: this.obra.codigo,
-      quemes :periodoSession.quemes,
-      abierto : periodoSession.estado}
+    }
+    console.log('periodoSession',periodoSession);
+   if(!periodoSession){
+    let periodoAux = JSON.parse(sessionStorage.getItem('periodoAbiertoAUX')!);
+    body = {
+      ...body,
+        quemes :periodoAux?.quemes,
+        abierto : periodoAux?.estado
+      }
+    console.log('body build',body);
+    body
+   }else{
+   body = {
+      ...body,
+      quemes :periodoSession.quemes ,
+      abierto : periodoSession.estado
+    }
+   }
+
+    console.log('body build',body);
+    return body;
   }
 
 

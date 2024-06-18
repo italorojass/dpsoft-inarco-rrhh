@@ -262,11 +262,7 @@ export class HorasExtraComponent implements OnInit {
 
 
     let req = this.periodos.getPeriodoSeleccionado();
-    this.subscription = req.subscribe(value => {
-      if (value) {
-        this.getHoraExtra(value); // Actualiza el valor con el período seleccionado
-      }
-    });
+    this.getHoraExtra();
 
   }
 
@@ -329,16 +325,16 @@ export class HorasExtraComponent implements OnInit {
   tblHeader = [];
   data: any = [];
   mesesAtras : any
-  getHoraExtra(mesesAtras?) {
+  getHoraExtra() {
     let body = this.periodos.buildBodyRequestComponents('extras','C')
-    this.mesesAtras=mesesAtras;
+
     this.data=[];
 
     return this.dtSv.get(body).subscribe((r: any) => {
       console.log('data final', r);
       let c = 0;
-      if(!r.result.error_msg){
-        this.data = r.result.extras.map((value) => {
+      if(r.status=='ok'){
+        this.data = r.result[0].map((value) => {
           c++;
           return {
             ...value,
