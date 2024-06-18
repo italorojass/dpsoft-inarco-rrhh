@@ -137,7 +137,7 @@ export class DetalleBonoComponent implements OnInit {
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
   data: any = [];
   get(mesesAtras?) {
-    let body = this.periodos.buildBodyRequestComponents('bonos',mesesAtras?.quemes,'C')
+    let body = this.periodos.buildBodyRequestComponents('bonos','C')
     /* let body = {
       tipo: 'bonos',
       obra: this.obra.codigo,

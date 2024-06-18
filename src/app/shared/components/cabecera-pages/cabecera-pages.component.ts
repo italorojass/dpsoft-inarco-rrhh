@@ -30,9 +30,9 @@ export class CabeceraPagesComponent implements OnDestroy {
   }
   private subscription: Subscription;
   getMesAnterior() {
-    //this.quemesViene = JSON.parse(sessionStorage.getItem('periodoAbierto'));
+    this.quemesViene = JSON.parse(sessionStorage.getItem('periodoAbierto'));
     let req = this.periodos.getPeriodoSeleccionado();
-    if (this.subscription) {
+    /* if (this.subscription) {
       this.subscription.unsubscribe(); // Desuscribirse de la suscripción anterior si existe
     }else{
       this.getMesActual().subscribe((r: any) => {
@@ -40,13 +40,13 @@ export class CabeceraPagesComponent implements OnDestroy {
         this.periodos.setPeriodoSeleccionado(this.quemesViene);
         this._tituloComponent.emit(this.quemesViene);
       }) ;
-    }
-
+    } */
+/*
     this.subscription = req.subscribe(value => {
       if (value) {
         this.quemesViene = value; // Actualiza el valor con el período seleccionado
       }
-    });
+    }); */
 
 
 

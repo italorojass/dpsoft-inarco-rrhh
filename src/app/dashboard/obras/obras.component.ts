@@ -12,7 +12,9 @@ import { switchMap } from 'rxjs';
 })
 export class ObrasComponent implements OnInit {
 
-  constructor(private router :Router, private ParametrosService : ParametrosService) { }
+  constructor(private router :Router, private ParametrosService : ParametrosService
+
+  ) { }
 
   obras:any = [];
   usuario : any;
@@ -31,7 +33,12 @@ export class ObrasComponent implements OnInit {
 
   go(i:any){
     //
-    //this.router.navigate(['/inicio/detalle-pagos']);
+    this.ParametrosService.get({accion : 'P'}).subscribe((r:any)=>{
+    let periodoActualAbierto = r.result.parametros.filter(x=>x.estado=='A')[0];
+      sessionStorage.setItem('periodoAbierto',JSON.stringify(periodoActualAbierto));
+      sessionStorage.setItem('periodoAbiertoAUX',JSON.stringify(periodoActualAbierto));
+    })
+    this.router.navigate(['/obras/inicio/detalle-pagos']);
     sessionStorage.setItem('obraSelect',JSON.stringify(i))
 
   }

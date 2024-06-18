@@ -12,14 +12,16 @@
 
         <ul class="navbar-nav navbar-nav-right mr-0 ml-auto">
 
-          <li class="nav-item dropdown d-none d-lg-flex">
+          <li class="nav-item dropdown d-none d-lg-flex" *ngIf="periodoActualAbierto">
             <div class="nav-link" >
+              <!-- PERIODO SELECCIONADO -->
               <button class="btn btn-rounded btn-sm  dropdown-toggle"
               [ngClass]="periodoActualAbierto?.estado == 'C' ? 'btn-outline-danger':'btn-outline-success'"
                type="button" id="dropdownMenuButton5"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span><i  [ngClass]="periodoActualAbierto?.estado == 'C' ? 'icon-lock':'icon-power'"></i>  {{periodoActualAbierto.quemes}} </span>
               </button>
+              <!-- PERIODOS CERRADOS -->
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton5" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 33px, 0px); top: 0px; left: 0px; will-change: transform;">
                 <div *ngFor="let item of periodos.reverse()">
 

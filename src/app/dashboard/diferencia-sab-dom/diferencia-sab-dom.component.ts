@@ -46,7 +46,7 @@ export class DiferenciaSabDomComponent implements OnInit {
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
   get(mesesAtras?) {
     this.data=[];
-    let body = this.periodos.buildBodyRequestComponents('finde',mesesAtras?.quemes,'C')
+    let body = this.periodos.buildBodyRequestComponents('finde','C')
    /*  let body = {
       tipo: 'finde',
       accion: 'C',

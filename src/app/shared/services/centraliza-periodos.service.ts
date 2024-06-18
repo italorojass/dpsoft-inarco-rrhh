@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
 
 @Injectable({
@@ -21,50 +21,47 @@ export class CentralizaPeriodosService {
      }) */
   }
 
-  periodoSelect = new Subject<any>();
+  periodoSelect =new BehaviorSubject<any>(null);
+  data$ = this.periodoSelect.asObservable();
   periodoSeleccionado : any;
   setPeriodoSeleccionado(periodoSeleccionado){
     this.periodoSeleccionado= periodoSeleccionado;
     sessionStorage.setItem('periodoAbierto',JSON.stringify(periodoSeleccionado))
     this.periodoSelect.next(periodoSeleccionado);
+   //
   }
 
-  buildBodyRequestComponents(tipo,queMes,accion){
-    let body = {}
-    switch(tipo){
+  buildBodyRequestComponents(tipo,accion){
+
+    let periodoSession = JSON.parse(sessionStorage.getItem('periodoAbierto'));
+   // this.periodoSelect.next(periodoSession);
+   /*  switch(tipo){
       case 'pagos':
         body = {
-          tipo: tipo,
-          accion: accion,
-          obra: this.obra.codigo,
-          quemes : queMes
+          accion: accion
         }
       break;
       case 'extras':
-        body= { tipo: tipo,
-          accion: accion,
-          obra: this.obra.codigo,
-          quemes : queMes,
-          abierto : this.periodoSeleccionado.estado}
+        body= { tipo: tipo
+         }
       break;
        case 'finde':
         body = {
           tipo: tipo,
-          accion: accion,
-          obra: this.obra.codigo,
-          quemes : queMes
         }
       break;
       case 'bonos':
         body = {
           tipo: tipo,
-          accion: accion,
-          obra: this.obra.codigo,
-          quemes : queMes
         }
       break;
-    }
-    return body
+    } */
+
+    return { tipo : tipo,
+      accion: accion,
+      obra: this.obra.codigo,
+      quemes :periodoSession.quemes,
+      abierto : periodoSession.estado}
   }
 
 
@@ -72,7 +69,7 @@ export class CentralizaPeriodosService {
     return this.periodoSelect.asObservable();
   }
 
-  cleanPeriodoSelect(){
-    this.periodoSelect = new Subject<any>();
-  }
+  /* cleanPeriodoSelect(){
+    this.periodoSelect = new BehaviorSubject<any>(null);
+  } */
 }

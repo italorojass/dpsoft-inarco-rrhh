@@ -1,6 +1,6 @@
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
 import { BuildMonthService } from 'src/app/shared/services/build-month.service';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DetallePagoService } from './services/detalle-pago.service';
 import { ToastrService } from 'ngx-toastr';
@@ -53,7 +53,7 @@ export class DetallePagoComponent implements OnInit {
     private deletePago: EliminarPagoService,
     public ParametrosService: ParametrosService,
     private router: Router,
-    private periodos : CentralizaPeriodosService) {
+    private periodos: CentralizaPeriodosService) {
 
   }
 
@@ -128,7 +128,7 @@ export class DetallePagoComponent implements OnInit {
   navigationSubscription: any;
 
   private subscription: Subscription;
-
+  quemesViene:any;
   ngOnInit() {
 
     this.numbers = Array.from(Array(20).keys())
@@ -137,19 +137,16 @@ export class DetallePagoComponent implements OnInit {
       this.editPagoForm.controls['dig'].patchValue(dig);
 
     })
-    this.initData();
-    //this.getPagos();
 
-    let req = this.periodos.getPeriodoSeleccionado();
-    this.subscription = req.subscribe(value => {
-      if (value) {
-        this.mesesAtras = value;
-        this.getPagos(value); // Actualiza el valor con el período seleccionado
-      }
-    });
+    this.quemesViene = JSON.parse(sessionStorage.getItem('periodoAbierto'));
+    this.initData();
+    this.getPagos()
+
 
   }
-
+  /* ngOnDestroy(): void {
+    this.periodos.periodoSelect.unsubscribe();
+  } */
   especialidades = [];
   getEspecialidad() {
     let b = {
@@ -231,78 +228,77 @@ export class DetallePagoComponent implements OnInit {
   page = 1;
   pageSize = 4;
   collectionSize: number;
-  mesesAtras: any;
 
+  getPagos() {
+    let body = this.periodos.buildBodyRequestComponents('pagos', 'C')
 
-
-
-  getPagos(mesesAtras?:any) {
-    let body = this.periodos.buildBodyRequestComponents('pagos',mesesAtras?.quemes,'C')
-
-    this.data=[];
+    this.data = [];
 
     this.dtSv.get(body).subscribe((r: any) => {
 
       console.log(r)
       let c = 0;
-      if (r.result.pagos) {
-        if(r.result.pagos.length >0){
-          this.collectionSize = r.result.pagos.length;
-          this.data = r.result.pagos.map(x => {
-            c++;
+      if (r.status != 'error') {
+        if (r.result) {
+          if (r.result[0].length > 0) {
+            this.collectionSize = r.result[0].length;
+            this.data = r.result[0].map(x => {
+              c++;
 
-            return {
-              ...x,
-              correlativo: c,
-              rutF: ChileanRutify.formatRut(`${x.rut}-${x.dig}`)
-            }
-          });
-          let result = [{}];
-          let calcTotalCols = [
-            'sueldo_liq',
-            'valor_hora',
-            'total_periodo',
-
-            'val_lun_sab',
-            'difer_sabado',
-            'difer_domingo',
-            'total_bonos',
-            'zona10',
-            'viatico',
-            'aguinaldo',
-            'asignaciones',
-            'ajuste_pos',
-            'total_ganado',
-            'anticipo',
-            'dctos_varios',
-            'a_pagar',
-            'finiquito',
-            'finiquito_findemes',
-            'liq_apagar'
-          ];
-          // initialize all total columns to zero
-          calcTotalCols.forEach((params) => {
-            result[0][params] = 0
-          });
-          // calculate all total columns
-          calcTotalCols.forEach((params) => {
-            this.data.forEach((line) => {
-              result[0][params] += line[params];
+              return {
+                ...x,
+                correlativo: c,
+                rutF: ChileanRutify.formatRut(`${x.rut}-${x.dig}`)
+              }
             });
-          });
+            let result = [{}];
+            let calcTotalCols = [
+              'sueldo_liq',
+              'valor_hora',
+              'total_periodo',
 
-          //this.grid.api.destroy();
-          //this.grid.api.setRowData(this.data);
-         // this.gridOptions.rowData = this.data;
-          this.grid.api.setPinnedBottomRowData(result);
-          this.grid.api.getDisplayedRowCount();
-          this.grid.defaultColDef.editable = (o) => !o.node.isRowPinned();
+              'val_lun_sab',
+              'difer_sabado',
+              'difer_domingo',
+              'total_bonos',
+              'zona10',
+              'viatico',
+              'aguinaldo',
+              'asignaciones',
+              'ajuste_pos',
+              'total_ganado',
+              'anticipo',
+              'dctos_varios',
+              'a_pagar',
+              'finiquito',
+              'finiquito_findemes',
+              'liq_apagar'
+            ];
+            // initialize all total columns to zero
+            calcTotalCols.forEach((params) => {
+              result[0][params] = 0
+            });
+            // calculate all total columns
+            calcTotalCols.forEach((params) => {
+              this.data.forEach((line) => {
+                result[0][params] += line[params];
+              });
+            });
 
-        }else{
-          this.grid.api.showNoRowsOverlay();
+            //this.grid.api.destroy();
+            this.grid.api.setRowData(this.data);
+            // this.gridOptions.rowData = this.data;
+            this.grid.api.setPinnedBottomRowData(result);
+            this.grid.api.getDisplayedRowCount();
+            this.grid.defaultColDef.editable = (o) => !o.node.isRowPinned();
+
+          } else {
+            this.grid.api.showNoRowsOverlay();
+          }
+
         }
-
       }
+
     })
   }
 
@@ -548,7 +544,7 @@ export class DetallePagoComponent implements OnInit {
 
   }
 
-  integracion(){
+  integracion() {
     this.getPagos();
   }
 
@@ -654,7 +650,7 @@ export class DetallePagoComponent implements OnInit {
   defaultColDef: ColDef = {
     resizable: true,
     initialWidth: 200,
-    enableCellChangeFlash:true,
+    enableCellChangeFlash: true,
     sortable: true,
     filter: true,
     floatingFilter: true,
@@ -691,7 +687,7 @@ export class DetallePagoComponent implements OnInit {
       lockPinned: true,
       pinned: 'left',
       //cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => (params.data.ciequincena !== 'S' && this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A' /* this.datosParametros.estado =='A' */),
+      editable: (params) => (params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A' /* this.datosParametros.estado =='A' */),
     },
     {
       field: 'nombre',
@@ -731,7 +727,7 @@ export class DetallePagoComponent implements OnInit {
       headerName: 'Especialidad',
       width: 280,
       sortable: true,
-      editable: (params) => params.data.ciequincena !== 'S' && this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
       cellEditor: 'agSelectCellEditor',
       cellEditorParams: this.cellCellEditorParams,
       suppressMenu: true
@@ -749,7 +745,7 @@ export class DetallePagoComponent implements OnInit {
       cellRendererParams: {
         currency: 'CLP'
       },
-      editable: (params) => params.data.ciequincena !== 'S' && this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'dias',
@@ -757,7 +753,7 @@ export class DetallePagoComponent implements OnInit {
         'Días a pago',
       width: 110,
       sortable: true,
-      editable: (params) => params.data.ciequincena !== 'S' && this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A'
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A'
     },
     {
       field: 'valor_hora',
@@ -765,7 +761,7 @@ export class DetallePagoComponent implements OnInit {
       width: 100,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S'&& this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'total_periodo',
@@ -817,7 +813,7 @@ export class DetallePagoComponent implements OnInit {
       width: 100,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S'&& this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'viatico',
@@ -826,7 +822,7 @@ export class DetallePagoComponent implements OnInit {
       sortable: true,
       cellRenderer:
         this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S'&& this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'aguinaldo',
@@ -834,7 +830,7 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S'&& this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'asignaciones',
@@ -842,7 +838,7 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S'&& this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'ajuste_pos',
@@ -850,7 +846,7 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S' && this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'total_ganado',
@@ -865,14 +861,14 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S' && this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'dctos_varios',
       headerName: 'Descuentos varios',
       width: 200, sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S' && this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
 
     {
@@ -890,7 +886,7 @@ export class DetallePagoComponent implements OnInit {
       width: 200,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S' && this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A' && this.datosParametros.tipo_mes=='Q' ,
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A' && this.datosParametros.tipo_mes == 'Q',
     },
     {
       field: 'finiquito_findemes',
@@ -899,7 +895,7 @@ export class DetallePagoComponent implements OnInit {
       sortable: true,
 
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S' && this.mesesAtras? this.mesesAtras.estado=='A': this.datosParametros.estado =='A' && this.datosParametros.tipo_mes!='Q',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A' && this.datosParametros.tipo_mes != 'Q',
     },
 
     {

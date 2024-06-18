@@ -330,7 +330,7 @@ export class HorasExtraComponent implements OnInit {
   data: any = [];
   mesesAtras : any
   getHoraExtra(mesesAtras?) {
-    let body = this.periodos.buildBodyRequestComponents('extras',mesesAtras?.quemes,'C')
+    let body = this.periodos.buildBodyRequestComponents('extras','C')
     this.mesesAtras=mesesAtras;
     this.data=[];
 

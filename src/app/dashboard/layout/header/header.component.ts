@@ -10,6 +10,7 @@ import { UsuariosService } from 'src/app/shared/components/usuarios/services/usu
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
 import { PeriodosService } from 'src/app/shared/services/periodos.service';
 import { Subscription, switchMap } from 'rxjs';
+import { NgxSpinner, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-header',
@@ -26,7 +27,8 @@ export class HeaderComponent implements OnInit {
     private ToastrService: ToastrService,
     private ParametrosService: ParametrosService,
     private periodosSv: PeriodosService,
-    private CentralizaPeriodosService: CentralizaPeriodosService) { }
+    private CentralizaPeriodosService: CentralizaPeriodosService,
+  private spinner : NgxSpinnerService) { }
 
   user: string = '';
   rolUser: string;
@@ -37,7 +39,7 @@ export class HeaderComponent implements OnInit {
     this.router.url === item.href;
     return this.router.url === item.href ? 'active' : '';
   }
-  periodoActualAbierto: any=[];
+  periodoActualAbierto: any = [];
   menu = []
   private subscription: Subscription;
 
@@ -45,34 +47,6 @@ export class HeaderComponent implements OnInit {
     this.user = JSON.parse(sessionStorage.getItem('user')!);
     this.rolUser = sessionStorage.getItem('rolUser')!;
     this.obra = this.ObraSelectService.getSelected();
-    let req = this.CentralizaPeriodosService.getPeriodoSeleccionado();
-
-    this.subscription = req.subscribe(value => {
-      if (value) {
-        this.periodoActualAbierto = value; // Actualiza el valor con el período seleccionado
-      }
-    });
-
-    this.CentralizaPeriodosService.getPeriodoActivo().pipe(
-      switchMap((r:any)=>{
-        this.periodoActualAbierto = r.result.parametros.filter(x=>x.estado=='A')[0];
-        return this.obtenerParametros('R')
-      })
-    ).subscribe((r:any)=>{
-      r.result.parametros.map(x=>{
-        this.periodos.push(x);
-      });
-      this.periodos.push(this.periodoActualAbierto);
-      this.menu.push({});
-    })
-
-    if (this.rolUser == '1') {
-      this.menu.push({
-        title: 'Administración',
-        href: '/admin',
-        icon: 'icon-settings'
-      })
-    }
 
     this.menu.push({
       title: 'Obras',
@@ -100,12 +74,62 @@ export class HeaderComponent implements OnInit {
         href: '/obras/inicio/detalle-bonos',
         icon: 'icon-present'
       });
+
+    /*  if(!this.periodoActualAbierto){
+       this.CentralizaPeriodosService.getPeriodoActivo().pipe(
+         switchMap((r:any)=>{
+           this.periodoActualAbierto = r.result.parametros.filter(x=>x.estado=='A')[0];
+           sessionStorage.setItem('periodoAbiertoAUX',JSON.stringify(this.periodoActualAbierto));
+           return this.obtenerParametros('R')
+         })
+       ).subscribe((r:any)=>{
+         r.result.parametros.map(x=>{
+           this.periodos.push(x);
+         });
+         this.periodos.push(this.periodoActualAbierto);
+         this.menu.push({});
+       })
+     }else{
+       this.obtenerParametros('R').subscribe((r:any)=>{
+         r.result.parametros.map(x=>{
+           this.periodos.push(x);
+         });
+         let periodoAbiertoSession = JSON.parse(sessionStorage.getItem('periodoAbiertoAUX'));
+         this.periodos.push(periodoAbiertoSession);
+         this.menu.push({});
+       })
+
+     } */
+
+    this.obtenerParametros('R').subscribe((r: any) => {
+      r.result.parametros.map(x => {
+        this.periodos.push(x);
+      });
+      let periodoAbiertoSession = JSON.parse(sessionStorage.getItem('periodoAbiertoAUX'));
+      this.periodos.push(periodoAbiertoSession);
+      this.menu.push({});
+    });
+    this.periodoActualAbierto = JSON.parse(sessionStorage.getItem('periodoAbierto'));
+
+    if (this.rolUser == '1') {
+      this.menu.push({
+        title: 'Administración',
+        href: '/admin',
+        icon: 'icon-settings'
+      })
+    }
+
+
     this.changePassForm.setValidators(this.passwordMatchValidator);
   }
   changeData(item) {
-    if(item){
+    this.spinner.show();
+    if (item) {
       this.periodoActualAbierto = item;
       this.CentralizaPeriodosService.setPeriodoSeleccionado(item);
+      setTimeout(()=>{
+        window.location.reload();
+    }, 100);
     }
 
 

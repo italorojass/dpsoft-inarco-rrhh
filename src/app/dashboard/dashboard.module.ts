@@ -87,6 +87,7 @@ registerLocaleData(localeEs);
     DifSabDomService,
     BonosService,
     CurrencyPipe
+
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
