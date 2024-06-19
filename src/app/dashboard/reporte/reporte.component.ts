@@ -25,7 +25,7 @@ export class ReporteComponent implements OnInit {
     private aggsv: AgGridSpanishService) { }
     titlepage:string=''
   ngOnInit(): void {
-    this.paramSV.get({accion:'C'}).subscribe((r:any)=>{
+    this.paramSV.get({accion:'P'}).subscribe((r:any)=>{
       console.log(r);
       //console.log('datos parametros', this.datosParametros);
       //this.datosParametros.tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed

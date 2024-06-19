@@ -1,8 +1,6 @@
-
-
 <div class="row">
   <div class="col-12">
-    <img class="img" [src]="rutaLogo"  width="400" height="220" class="img-fluid">
+    <img class="img " [src]="rutaLogo" width="400" height="220" class="img-fluid">
 
   </div>
 </div>
@@ -10,65 +8,80 @@
 <div class="container-fluid page-body-wrapper">
   <div class="main-panel">
     <div class="content-wrapper">
-      <div class="row">
-        <div class="col-12">
-                <h3>{{title}}<span class="float-right">Bienvenido: {{usuario}}
-                   <button type="button" class="btn btn-primary" [routerLink]="['/admin']" *ngIf="rolUser=='1'"><i class="icon-directions" aria-hidden="true"></i></button>
-                  <button type="button" class="btn btn-light" (click)="logout()"><i class="icon-logout" aria-hidden="true"></i></button> </span></h3>
+      <div class="row mb-2">
+        <div class="col-12 ">
+          <span class="display-4 text-center mr-2">
+            <span class="text-primary">Bienvenido, {{usuario.charAt(0).toUpperCase() + usuario.slice(1)}} </span>
+          </span>
+          <div class="btn-group float-right">
+            <button type="button" class="btn btn-light btn-fw" [routerLink]="['/admin']" *ngIf="rolUser=='1'"><i
+              class="fa fa-cogs" aria-hidden="true"></i></button>
+
+          <button type="button" class="btn btn-outline-dark btn-fw" (click)="logout()"><i class="icon-logout"
+              aria-hidden="true"></i></button>
+          </div>
+
 
         </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-6">
+          <h3 class="display-4">{{title}}</h3>
+        </div>
+        <div class="col-6">
+          <ng-select placeholder="Seleccionar periodo a ver" *ngIf="periodoActualAbierto"
+            (change)="selectPeriodo(modelPeriodo)" [(ngModel)]="modelPeriodo">
+            <ng-option [value]="periodoActualAbierto"
+             >
+              <label  [ngClass]="periodoActualAbierto.estado == 'C' ? ' text-danger': 'text-success'"
+              class="mt-2">
+              <i class="mr-1" [ngClass]="periodoActualAbierto.estado == 'C' ? 'icon-lock':'icon-power'"></i> {{periodoActualAbierto.quemes}}
+
+              </label>
+
+
+            </ng-option>
+            <ng-option [value]="item" *ngFor="let item of periodos">
+              <label class=" mt-2"
+                [ngClass]="item.estado == 'C' ? ' text-danger': 'text-success'">
+                <i class="mr-1" [ngClass]="item.estado == 'C' ? 'icon-lock':'icon-power'"></i> {{item.quemes}}
+
+              </label>
+
+            </ng-option>
+          </ng-select>
+
+        </div>
+
       </div>
       <div class="row pt-2">
         <div class="col-md-12 grid-margin stretch-card ">
           <div class="card ">
             <div class="card-body">
-              <ng-select  placeholder="Seleccionar periodo a ver" *ngIf="periodoActualAbierto"
-              (change)="selectPeriodo(modelPeriodo)" [(ngModel)]="modelPeriodo">
-                <ng-option [value]="periodoActualAbierto" >
-                  <label class="text-primary font-weight-normal"  [ngClass]="periodoActualAbierto.estado == 'C' ? ' text-danger': 'text-success'">
-                    {{periodoActualAbierto.quemes}}
-                    <i class="ml-1" [ngClass]="periodoActualAbierto.estado == 'C' ? 'icon-lock':'icon-power'"></i>
-                  </label>
+              <div class="table-responsive">
+                <table class="table  table-hover table-sm">
+                  <tbody>
+                    <tr style="cursor: pointer;" *ngFor="let item of obras" (click)="go(item)">
 
-                </ng-option>
-                <ng-option [value]="item" *ngFor="let item of periodos" >
-                  <label class="text-primary font-weight-normal"  [ngClass]="item.estado == 'C' ? ' text-danger': 'text-success'">
-                    {{item.quemes}}
-                    <i class="ml-1" [ngClass]="item.estado == 'C' ? 'icon-lock':'icon-power'"></i>
-                  </label>
+                      <td align="left">
+                        <h4 class="font-weight-normal">{{item.codigo}} | {{item.nombre}}</h4>
+                      </td>
 
-                </ng-option>
-            </ng-select>
+                    </tr>
 
+                  </tbody>
 
-              <table class="table" *ngIf="showObras">
+                </table>
+              </div>
 
-                <tbody>
-                  <tr style="cursor: pointer;" *ngFor="let item of obras" (click)="go(item)" >
-
-                    <td align="left">
-                      <h4 class="font-weight-normal">{{item.codigo}} | {{item.nombre}}</h4>
-                    </td>
-
-                  </tr>
-
-                </tbody>
-
-              </table>
             </div>
           </div>
         </div>
 
+
       </div>
-
-      <!-- <div class="row">
-        <div class="col-12">
-          <button type="button" class="btn btn-danger btn-block" routerLink="/">Salir</button>
-        </div>
-      </div> -->
-
 
     </div>
   </div>
 </div>
-

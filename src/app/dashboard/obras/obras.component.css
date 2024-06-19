@@ -1,0 +1,7 @@
+.ng-select.ng-select-disabled>.ng-select-container {
+  background-color: red;
+}
+
+.ng-select.ng-select-disabled .ng-arrow-wrapper {
+  display: none;
+}

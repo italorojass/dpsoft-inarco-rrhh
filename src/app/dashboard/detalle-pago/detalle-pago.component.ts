@@ -138,7 +138,7 @@ export class DetallePagoComponent implements OnInit {
 
     })
 
-   // this.quemesViene = JSON.parse(sessionStorage.getItem('periodoAbierto'));
+   this.quemesViene = JSON.parse(sessionStorage.getItem('periodoAbierto'));
 
     this.initData();
     this.getPagos()

@@ -51,13 +51,13 @@ export class HeaderComponent implements OnInit {
     this.menu.push({
       title: 'Obras',
       href: '/obras',
-      icon: 'icon-home'
+      icon: 'fa fa-building'
     },
 
       {
         title: 'Pagos',
         href: '/obras/inicio/detalle-pagos',
-        icon: 'icon-star'
+        icon: 'fa fa-suitcase'
       },
       {
         title: 'Horas extras',

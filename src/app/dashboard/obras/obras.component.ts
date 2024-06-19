@@ -30,7 +30,7 @@ export class ObrasComponent implements OnInit {
     this.obras =  JSON.parse(sessionStorage.getItem('obras')!);
     this.rolUser = sessionStorage.getItem('rolUser')!;
 
-    this.title = 'Seleccionar Periodo y Obra';
+    this.title = 'Seleccionar Obra';
 
     this.getPeriodoActivo();
 
@@ -45,6 +45,7 @@ export class ObrasComponent implements OnInit {
 
       switchMap((r:any)=>{
         this.periodoActualAbierto = r.result.parametros.filter(x=>x.estado=='A')[0];
+        this.modelPeriodo= this.periodoActualAbierto;
         sessionStorage.setItem('periodoAbierto',JSON.stringify(this.periodoActualAbierto));
         sessionStorage.setItem('periodoAbiertoAUX',JSON.stringify(this.periodoActualAbierto));
        // this.periodos.push(this.periodoActualAbierto);
@@ -62,6 +63,7 @@ export class ObrasComponent implements OnInit {
   }
 
   selectPeriodo(periodo){
+
     this.showObras=true;
     sessionStorage.setItem('periodoAbierto',JSON.stringify(periodo));
 

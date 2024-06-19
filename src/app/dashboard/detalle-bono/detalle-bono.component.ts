@@ -38,7 +38,7 @@ export class DetalleBonoComponent implements OnInit {
   private subscription: Subscription;
 
   ngOnInit() {
-    this.datosParametros = JSON.parse(sessionStorage.getItem('datosParam'));
+    this.datosParametros = JSON.parse(sessionStorage.getItem('periodoAbierto'));
     this.titlepage = sessionStorage.getItem('titlePage');
     this.getAllData();
 

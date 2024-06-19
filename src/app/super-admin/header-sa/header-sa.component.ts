@@ -52,12 +52,12 @@ export class HeaderSaComponent {
       title: 'Ver Obras',
       href : '/obras',
 
-      icon: 'icon-star'
+      icon: 'fa fa-building'
     },
     {
       title: 'Dashboard',
       href: '/admin/dashboard',
-      icon: 'icon-graph'
+      icon: 'fa fa-leaf'
     },
     {
       title: 'Proyectos',
@@ -77,7 +77,7 @@ export class HeaderSaComponent {
      {
         title:'Reportes',
         href : '/admin/reportes',
-        icon : 'icon-calculator'
+        icon : 'fa fa-bullseye'
       }
   ]
 
