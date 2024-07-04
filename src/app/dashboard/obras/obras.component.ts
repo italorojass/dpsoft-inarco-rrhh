@@ -54,9 +54,12 @@ export class ObrasComponent implements OnInit {
       })
     ).subscribe((r:any)=>{
 
-      r.result.parametros.map(x => {
+
+      /* r.result.parametros.toReversed().map(x => {
         this.periodos.push(x);
-      });
+      }); */
+      this.periodos = Array.from(r.result.parametros).reverse();
+     //this.periodos.reverse();
 
     })
 

@@ -41,13 +41,15 @@ export class CentralizaPeriodosService {
  buildBodyRequestComponents(tipo,accion){
 
     let periodoSession = JSON.parse(sessionStorage.getItem('periodoAbierto')!);
-    let body = {};
-    body = {
+
+    let body = {
       tipo : tipo,
       accion: accion,
-      obra: this.obra.codigo,
+      obra:  JSON.parse(sessionStorage.getItem('obraSelect')!).codigo,
+      quemes : '',
+      abierto : ''
     }
-    console.log('periodoSession',periodoSession);
+    console.log('BODY Q SE ENVIA',body);
    if(!periodoSession){
     let periodoAux = JSON.parse(sessionStorage.getItem('periodoAbiertoAUX')!);
     body = {
