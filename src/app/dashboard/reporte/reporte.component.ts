@@ -178,7 +178,7 @@ this.fileName='';
         const ws: XLSX.WorkSheet = wb.Sheets[wsname];
         this.fileName = file.name;
         this.showbtn = true;
-        ws['!ref'] = "A6:CE760"
+        ws['!ref'] = "A6:CE3000"
         let dataExcel= XLSX.utils.sheet_to_json(ws);
        // this.data = data;
        console.log('datos excel rem',dataExcel);

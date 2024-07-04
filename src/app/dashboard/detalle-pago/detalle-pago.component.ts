@@ -336,6 +336,7 @@ export class DetallePagoComponent implements OnInit {
         { text: 'Diferencia días sábado', alignment: 'center', margin: [0, 10] },
         { text: 'Diferencia días domingo', alignment: 'center', margin: [0, 10] },
         { text: 'TOTAL BONOS', alignment: 'center', margin: [0, 10] },
+        { text: 'Viático', alignment: 'center', margin: [0, 10] },
         { text: 'Asignaciones', alignment: 'center', margin: [0, 10] },
         { text: 'Total ganado', alignment: 'center', margin: [0, 10] },
         { text: 'Anticipo', alignment: 'center', margin: [0, 10] },
@@ -365,6 +366,7 @@ export class DetallePagoComponent implements OnInit {
           { text: p.difer_sabado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.difer_domingo.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.total_bonos.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.viatico.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.asignaciones.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.total_ganado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.anticipo.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
@@ -446,6 +448,7 @@ export class DetallePagoComponent implements OnInit {
                 'auto',//Diferencia de días sábado
                 'auto', //diferencia dia domingo
                 'auto',//TOTAL BONOS
+                'auto',//VIATICO
                 'auto',//Asignaciones
                 'auto',//Total ganado
                 'auto',//Anticipo
@@ -473,6 +476,7 @@ export class DetallePagoComponent implements OnInit {
                   { text: r['result'].datos.reduce((sum, p) => sum + p.difer_sabado, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.difer_domingo, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.total_bonos, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.viatico, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.asignaciones, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.total_ganado, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.anticipo, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
