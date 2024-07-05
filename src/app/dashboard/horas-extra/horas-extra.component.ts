@@ -71,10 +71,14 @@ export class HorasExtraComponent implements OnInit {
   private subscription: Subscription;
 
   ngOnInit() {
-    this.datosParametros = JSON.parse(sessionStorage.getItem('peridoAbierto'));
+    this.datosParametros = JSON.parse(sessionStorage.getItem('periodoAbierto'));
+
     this.titlepage = sessionStorage.getItem('titlePage');
 
     this.getPeriodo().subscribe((r:any)=>{
+      let res = r['result'].parametros[0];
+      //this.datosParametros = res;
+
       this.columnDefs.push(
         {
           headerName: 'ID',
@@ -98,7 +102,7 @@ export class HorasExtraComponent implements OnInit {
           editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
         }
       );
-      let res = r['result'].parametros[0];
+
 
       this.formDate.patchValue({
         inicio: res.inicio_periodo,
