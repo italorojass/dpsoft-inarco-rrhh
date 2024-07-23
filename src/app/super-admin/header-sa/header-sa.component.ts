@@ -54,11 +54,11 @@ export class HeaderSaComponent {
 
       icon: 'fa fa-building'
     },
-    {
+    /* {
       title: 'Dashboard',
       href: '/admin/dashboard',
       icon: 'fa fa-leaf'
-    },
+    }, */
     {
       title: 'Proyectos',
       href: '/admin/proyectos',

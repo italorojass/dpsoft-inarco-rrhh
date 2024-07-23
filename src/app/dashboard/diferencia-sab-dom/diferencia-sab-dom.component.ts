@@ -31,7 +31,8 @@ export class DiferenciaSabDomComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.datosParametros = JSON.parse(sessionStorage.getItem('datosParam'));
+    this.datosParametros = JSON.parse(sessionStorage.getItem('periodoAbierto'));
+
     this.titlepage = sessionStorage.getItem('titlePage');
    this.get();
   }

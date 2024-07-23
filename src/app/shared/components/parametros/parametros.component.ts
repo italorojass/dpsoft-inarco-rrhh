@@ -74,6 +74,7 @@ export class ParametrosComponent implements OnInit {
 
   ngOnInit(): void {
     this.get();
+    this.getMesesFuturos()
   }
 
 
@@ -265,6 +266,21 @@ export class ParametrosComponent implements OnInit {
       console.log('parametros ',this.paramss,this.parametrosArray);
       this.grid.api.sizeColumnsToFit();
       this.grid.api.setRowData(this.parametrosArray);
+
+    })
+  }
+
+  getMesesFuturos(){
+    let b = {
+      accion : 'K'
+    }
+    this.paramSV.get(b).subscribe(r=>{
+      console.log(r);
+     /*  this.parametrosArray = r['result'].parametros.filter(x=>x.estado != 'C');
+      this.paramss = this.parametrosArray.find(x=>x.estado =='A');
+      console.log('parametros ',this.paramss,this.parametrosArray);
+      this.grid.api.sizeColumnsToFit();
+      this.grid.api.setRowData(this.parametrosArray); */
 
     })
   }

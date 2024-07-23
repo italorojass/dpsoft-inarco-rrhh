@@ -88,19 +88,14 @@ export class BtnReporteExcelComponent {
 
         break;
       case 'hh':
-        this.parametrosService.get({accion:'C'}).subscribe((r:any)=>{
+        this.parametrosService.get({accion:'P'}).subscribe((r:any)=>{
 
-          this.datosParametros =r.result.parametros[0];
-          excelData = this.data.filter(v=>{
-            // v.ciequincena != 'S' && v.finiq == 'F'
-            console.log(this.datosParametros);
-            if(this.datosParametros.tipo_mes =='Q'){
-             return v.finiq == 'Q';
-            }else{
-             return v.finiq  != 'F' && v.ciequincena == 'Q' || v.ciequincena;
-            }
 
-           }).map(x => {
+          console.log(this.data);
+          console.log(r);
+
+          this.datosParametros =sessionStorage.getItem('periodoAbierto');
+          excelData = this.data.map(x => {
             let b = {
               rut: `${x.rut}-${x.dig}`,
               ficha: x.ficha,
