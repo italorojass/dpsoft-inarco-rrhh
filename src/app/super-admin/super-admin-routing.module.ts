@@ -17,10 +17,10 @@ const routes: Routes = [{
      pathMatch : 'full'
 
     },
-    {
+   /*  {
       path:'dashboard',
       component : DashboardComponent
-    },
+    }, */
     {
     path:'proyectos',
     component : ProyectosComponent
