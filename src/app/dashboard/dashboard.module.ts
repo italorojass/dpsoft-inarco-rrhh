@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { CommonModule, CurrencyPipe, registerLocaleData } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
@@ -32,6 +32,7 @@ import { AgGridModule } from 'ag-grid-angular';
 import { HorasExtraComponent } from './horas-extra/horas-extra.component';
 import { LoaderService } from '../shared/services/loader.service';
 import { ReportePdfComponent } from './detalle-pago/reporte-pdf/reporte-pdf.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 // Registra el idioma español
 registerLocaleData(localeEs);
@@ -66,7 +67,9 @@ registerLocaleData(localeEs);
     FormsModule,
     NgbModule,
     SweetAlert2Module,
-    AgGridModule
+    AgGridModule,
+    NgSelectModule,
+
   ],
   providers : [
     LoaderService,
@@ -84,6 +87,8 @@ registerLocaleData(localeEs);
     DifSabDomService,
     BonosService,
     CurrencyPipe
-  ]
+
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class DashboardModule { }

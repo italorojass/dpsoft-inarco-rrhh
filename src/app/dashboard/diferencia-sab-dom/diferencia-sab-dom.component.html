@@ -4,7 +4,7 @@
       <div class="card-body">
         <!--  <h4 class="card-title">Dif. horas sábado y domingo</h4> -->
         <div class="row">
-          <div class="col-4">
+          <div class="col-3">
             <h4 class="text-left mb-4 text-dark">
               <a [routerLink]="['/obras']"
                 ><i class="icon-action-undo mr-2"></i>{{ obra.codigo }} |
@@ -12,10 +12,20 @@
               >
             </h4>
           </div>
-          <div class="col-sm-6 col-4">
-            <h3 id="quote">Dif. horas sábado y domingo {{titlepage}}</h3>
+          <div class="col-sm-6 col-6">
+            <app-cabecera-pages [titulo]="'Dif. horas sábado y domingo'"
+            ></app-cabecera-pages>
           </div>
-          <div class="col-sm-2 col-12">
+          <div class="col-3 ">
+           <!--  <button
+            type="button"
+            class="btn btn-outline-primary btn-rounded pull-right"
+
+            (click)="get();"
+          >
+            <i class="icon-reload"></i>Integración
+          </button> -->
+
             <app-btn-reporte-excel
             [data]="data"
             [headings]="headings"

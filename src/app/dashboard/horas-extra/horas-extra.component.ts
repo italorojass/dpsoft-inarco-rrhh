@@ -13,6 +13,9 @@ import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.se
 import { AgGridAngular } from 'ag-grid-angular';
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
 import { ToastrService } from 'ngx-toastr';
+import { CentralizaPeriodosService } from 'src/app/shared/services/centraliza-periodos.service';
+import { Subscription, switchMap } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-horas-extra',
@@ -24,9 +27,10 @@ export class HorasExtraComponent implements OnInit {
     private dtSv: HoraextraService,
     private bt: BuildMonthService,
     private fb: FormBuilder,
-    private paramSV: ParametrosService,
+    public ParametrosService: ParametrosService,
     private toastr: ToastrService,
-    private aggsv: AgGridSpanishService
+    private aggsv: AgGridSpanishService,
+    private periodos : CentralizaPeriodosService
   ) {}
   @ViewChild('heGrid') grid!: AgGridAngular;
 
@@ -36,7 +40,7 @@ export class HorasExtraComponent implements OnInit {
     inicio: [''],
     final: [''],
   });
-
+  datosParametros: any;
   columnDefs = [];
   defaultColDef: ColDef = {
     resizable: true,
@@ -64,15 +68,17 @@ export class HorasExtraComponent implements OnInit {
 
   };
 
+  private subscription: Subscription;
+
   ngOnInit() {
-    this.paramSV.get({accion:'C'}).subscribe((r:any)=>{
-      console.log(r);
-      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
+    this.datosParametros = JSON.parse(sessionStorage.getItem('periodoAbierto'));
 
-    })
+    this.titlepage = sessionStorage.getItem('titlePage');
 
-    this.getPeriodo().subscribe((r) => {
-      console.log('response', r);
+    this.getPeriodo().subscribe((r:any)=>{
+      let res = r['result'].parametros[0];
+      //this.datosParametros = res;
+
       this.columnDefs.push(
         {
           headerName: 'ID',
@@ -81,7 +87,7 @@ export class HorasExtraComponent implements OnInit {
           pinned: 'left',
           filter: false,
           floatingFilter: false,
-          editable : (params) => params.data.ciequincena !== 'S',
+          editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
         },
         {
           field: 'nombre',
@@ -93,23 +99,23 @@ export class HorasExtraComponent implements OnInit {
           lockPinned: true,
           cellClass: 'lock-pinned',
 
-          editable : (params) => params.data.ciequincena !== 'S',
+          editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
         }
       );
-      let res = r['result'].parametros[0];
+
 
       this.formDate.patchValue({
         inicio: res.inicio_periodo,
         final: res.final_periodo,
       });
       let cabecera = this.buildHeader(res.inicio_periodo, res.final_periodo);
-      console.log('datos dias', cabecera);
+      //console.log('datos dias', cabecera);
 
       let counTotalSemana = 0;
       for (let i = 0; i < cabecera.length; i++) {
         if (cabecera[i].nombre.includes('Domingo')) {
           counTotalSemana++; //agrego acontador a total semaa
-          console.log('CANTIDAD DE SEMANAS', counTotalSemana);
+          //console.log('CANTIDAD DE SEMANAS', counTotalSemana);
           this.columnDefs.push({
             headerName: `Semana ${counTotalSemana}`,
             children: [
@@ -123,7 +129,7 @@ export class HorasExtraComponent implements OnInit {
                 suppressSizeToFit: true,
                 filter: false,
                 floatingFilter: false,
-                editable : (params) => params.data.ciequincena !== 'S',
+                editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
 
                 cellEditor: 'agNumberCellEditor',
                 cellEditorParams: {
@@ -171,7 +177,7 @@ export class HorasExtraComponent implements OnInit {
               suppressSizeToFit: true,
               filter: false,
               floatingFilter: false,
-              editable : (params) => params.data.ciequincena !== 'S',
+              editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
               cellEditor: 'agNumberCellEditor',
               cellEditorParams: {
                 min: 1,
@@ -194,7 +200,7 @@ export class HorasExtraComponent implements OnInit {
               suppressSizeToFit: true,
               filter: false,
               floatingFilter: false,
-              editable : (params) => params.data.ciequincena !== 'S',
+              editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
               cellEditor: 'agNumberCellEditor',
                 cellEditorParams: {
                   min: 1,
@@ -256,9 +262,12 @@ export class HorasExtraComponent implements OnInit {
       console.log('columDef Final', this.columnDefs);
 
       this.grid.api.setColumnDefs(this.columnDefs);
-    });
+    })
 
+
+    let req = this.periodos.getPeriodoSeleccionado();
     this.getHoraExtra();
+
   }
 
   titlepage ='';
@@ -286,10 +295,10 @@ export class HorasExtraComponent implements OnInit {
 
   getPeriodo() {
     let b = {
-      accion: 'C',
-      obra: this.obra.codigo,
+      accion: 'P'
     };
-    return this.paramSV.get(b);
+    //console.log(b);
+    return this.ParametrosService.get(b);
     //return this.buildHeader(this.formDate.value.inicio,this.formDate.value.final);
   }
   weekday = [];
@@ -319,22 +328,25 @@ export class HorasExtraComponent implements OnInit {
 
   tblHeader = [];
   data: any = [];
+  mesesAtras : any
   getHoraExtra() {
-    let body = {
-      tipo: 'extras',
-      obra: this.obra.codigo,
-      accion: 'C',
-    };
-    this.dtSv.get(body).subscribe((r: any) => {
+    let body = this.periodos.buildBodyRequestComponents('extras','C')
+
+    this.data=[];
+
+    return this.dtSv.get(body).subscribe((r: any) => {
       console.log('data final', r);
       let c = 0;
-      this.data = r.result.extras.map((value) => {
-        c++;
-        return {
-          ...value,
-          correlativo: c,
-        };
-      });
+      if(r.status=='ok'){
+        this.data = r.result[0].map((value) => {
+          c++;
+          return {
+            ...value,
+            correlativo: c,
+          };
+        });
+      }
+
     });
   }
 

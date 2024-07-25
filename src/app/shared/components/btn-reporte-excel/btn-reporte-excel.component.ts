@@ -88,19 +88,14 @@ export class BtnReporteExcelComponent {
 
         break;
       case 'hh':
-        this.parametrosService.get({accion:'C'}).subscribe((r:any)=>{
+        this.parametrosService.get({accion:'P'}).subscribe((r:any)=>{
 
-          this.datosParametros =r.result.parametros[0];
-          excelData = this.data.filter(v=>{
-            // v.ciequincena != 'S' && v.finiq == 'F'
-            console.log(this.datosParametros);
-            if(this.datosParametros.tipo_mes =='Q'){
-             return v.finiq == 'Q';
-            }else{
-             return v.finiq  != 'F' && v.ciequincena == 'Q' || v.ciequincena;
-            }
 
-           }).map(x => {
+          console.log(this.data);
+          console.log(r);
+
+          this.datosParametros =sessionStorage.getItem('periodoAbierto');
+          excelData = this.data.map(x => {
             let b = {
               rut: `${x.rut}-${x.dig}`,
               ficha: x.ficha,
@@ -234,6 +229,7 @@ export class BtnReporteExcelComponent {
           'Sueldo sistema',
           'Sueldo BUK',
           'Diferencia sueldo',
+          'Observaciones'
         ]];
 
         this.reporteSV.get(bo).subscribe((r:any)=>{
@@ -254,7 +250,8 @@ export class BtnReporteExcelComponent {
               diferencia_finiquito : x.diferencia_finiquito,
               sueldo_sistema  :x.sueldo_sistema,
               sueldo_buk : x.sueldo_buk,
-              diferencia_sueldo : x.diferencia_sueldo
+              diferencia_sueldo : x.diferencia_sueldo,
+              observaciones : x.observaciones ? x.observaciones : ''
             }
         });
           var ws2 = XLSX.utils.json_to_sheet([]);

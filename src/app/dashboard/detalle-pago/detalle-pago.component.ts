@@ -1,11 +1,11 @@
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
 import { BuildMonthService } from 'src/app/shared/services/build-month.service';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DetallePagoService } from './services/detalle-pago.service';
 import { ToastrService } from 'ngx-toastr';
 import ChileanRutify from 'chilean-rutify';
-import { ColDef, ICellEditorParams, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
+import { ColDef, GridApi, GridReadyEvent, ICellEditorParams, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ProyectosService } from 'src/app/shared/components/proyectos/services/proyectos.service';
@@ -23,6 +23,10 @@ import { BtnEliminarDetallePagoComponent } from 'src/app/shared/components/btn-e
 import { EliminarPagoService } from 'src/app/shared/components/btn-eliminar-detalle-pago/service/eliminar-pago.service';
 import { validateRut } from '@fdograph/rut-utilities';
 import { NavigationEnd, Router } from '@angular/router';
+import { PeriodosService } from 'src/app/shared/services/periodos.service';
+import { CentralizaPeriodosService } from 'src/app/shared/services/centraliza-periodos.service';
+import { SelectNgSelectAggridComponent } from 'src/app/shared/components/select-ng-select-aggrid/select-ng-select-aggrid.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-detalle-pago',
@@ -47,17 +51,10 @@ export class DetallePagoComponent implements OnInit {
     private BuildMonthService: BuildMonthService,
     private currencyPipe: CurrencyPipe,
     private deletePago: EliminarPagoService,
-    private ParametrosService: ParametrosService,
-    private router: Router) {
+    public ParametrosService: ParametrosService,
+    private router: Router,
+    private periodos: CentralizaPeriodosService) {
 
-    // subscribe to the router events. Store the subscription so we can
-    // unsubscribe later.
-    this.navigationSubscription = this.router.events.subscribe((e: any) => {
-      // If it is a NavigationEnd event re-initalise the component
-      if (e instanceof NavigationEnd) {
-        this.initData();
-      }
-    });
   }
 
   initData() {
@@ -109,30 +106,15 @@ export class DetallePagoComponent implements OnInit {
           }
         })
 
-        //this.getObras(valueEdit)
       })
     }
-    this.getParametros();
     this.getEspecialidad();
+    this.datosParametros = JSON.parse(sessionStorage.getItem('peridoAbierto'));
 
-    this.getPagos();
   }
 
-  getParametros(){
-    this.ParametrosService.get({ accion: 'C' }).subscribe((r: any) => {
 
-      this.datosParametros = r.result.parametros[0];
-      console.log('datos parametros', this.datosParametros);
-      //this.datosParametros.tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
-      this.titlepage = r.result.parametros[0].quemes;
-    })
-  }
 
-  ngOnDestroy() {
-    if (this.navigationSubscription) {
-      this.navigationSubscription.unsubscribe();
-    }
-  }
 
   titlepage = '';
   dictFicha: any = {
@@ -145,20 +127,27 @@ export class DetallePagoComponent implements OnInit {
   datosParametros: any;
   navigationSubscription: any;
 
-
+  private subscription: Subscription;
+  quemesViene:any;
   ngOnInit() {
-    this.initData();
 
+    this.numbers = Array.from(Array(20).keys())
     this.editPagoForm.controls['rut'].valueChanges.subscribe(value => {
       let dig = ChileanRutify.getRutVerifier(value);
       this.editPagoForm.controls['dig'].patchValue(dig);
 
     })
 
+   this.quemesViene = JSON.parse(sessionStorage.getItem('periodoAbierto'));
+
+    this.initData();
+    this.getPagos()
+
+
   }
-
-
-
+  /* ngOnDestroy(): void {
+    this.periodos.periodoSelect.unsubscribe();
+  } */
   especialidades = [];
   getEspecialidad() {
     let b = {
@@ -181,7 +170,7 @@ export class DetallePagoComponent implements OnInit {
 
     return {
       values: keys,
-      formatValue: (value) => `${value} (${selectedCountry})`,
+      formatValue: (value) => `${value} (${selectedCountry})`
     };
   };
 
@@ -223,6 +212,16 @@ export class DetallePagoComponent implements OnInit {
 
     return this.BuildMonthService.formatRut(rut, dig);
   }
+  private gridApi!: GridApi;
+  public isVisible = true
+  onGridReady(params: GridReadyEvent) {
+    this.gridApi = params.api
+
+  }
+  reloadGrid() {
+    this.isVisible = false
+    setTimeout(() => (this.isVisible = true), 1)
+  }
 
   data = [];
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
@@ -230,76 +229,80 @@ export class DetallePagoComponent implements OnInit {
   page = 1;
   pageSize = 4;
   collectionSize: number;
+
   getPagos() {
-    let body = {
-      tipo: 'pagos',
-      obra: this.obra.codigo,
-      accion: 'C'
-    }
+    let body = this.periodos.buildBodyRequestComponents('pagos', 'C')
+
+    this.data = [];
+
     this.dtSv.get(body).subscribe((r: any) => {
-      // this.data = r.result.pagos;
+
       console.log(r)
       let c = 0;
-      if (r.result.pagos) {
-        this.collectionSize = r.result.pagos.length;
-        this.data = r.result.pagos.map(x => {
-          c++;
+      if (r.status != 'error') {
+        if (r.result) {
+          if (r.result[0].length > 0) {
+            this.collectionSize = r.result[0].length;
+            this.data = r.result[0].map(x => {
+              c++;
 
-          return {
-            ...x,
-            correlativo: c,
-            rutF: ChileanRutify.formatRut(`${x.rut}-${x.dig}`)
+              return {
+                ...x,
+                correlativo: c,
+                rutF: ChileanRutify.formatRut(`${x.rut}-${x.dig}`)
+              }
+            });
+            let result = [{}];
+            let calcTotalCols = [
+              'sueldo_liq',
+              'valor_hora',
+              'total_periodo',
+
+              'val_lun_sab',
+              'difer_sabado',
+              'difer_domingo',
+              'total_bonos',
+              'zona10',
+              'viatico',
+              'aguinaldo',
+              'asignaciones',
+              'ajuste_pos',
+              'total_ganado',
+              'anticipo',
+              'dctos_varios',
+              'a_pagar',
+              'finiquito',
+              'finiquito_findemes',
+              'liq_apagar'
+            ];
+            // initialize all total columns to zero
+            calcTotalCols.forEach((params) => {
+              result[0][params] = 0
+            });
+            // calculate all total columns
+            calcTotalCols.forEach((params) => {
+              this.data.forEach((line) => {
+                result[0][params] += line[params];
+              });
+            });
+
+            //this.grid.api.destroy();
+            this.grid.api.setRowData(this.data);
+            // this.gridOptions.rowData = this.data;
+            this.grid.api.setPinnedBottomRowData(result);
+            this.grid.api.getDisplayedRowCount();
+            this.grid.defaultColDef.editable = (o) => !o.node.isRowPinned();
+
+          } else {
+            this.grid.api.showNoRowsOverlay();
           }
-        });
-        //this.loading = false;
-        this.grid.api.setRowData(this.data);
 
-        let result = [{}];
-        let calcTotalCols = [
-          'sueldo_liq',
-          'valor_hora',
-          'total_periodo',
-
-          'val_lun_sab',
-          'difer_sabado',
-          'difer_domingo',
-          'total_bonos',
-          'zona10',
-          'viatico',
-          'aguinaldo',
-          'asignaciones',
-          'ajuste_pos',
-          'total_ganado',
-          'anticipo',
-          'dctos_varios',
-          'a_pagar',
-          'finiquito',
-          'finiquito_findemes',
-          'liq_apagar'
-        ];
-        // initialize all total columns to zero
-        calcTotalCols.forEach((params) => {
-          result[0][params] = 0
-        });
-        // calculate all total columns
-        calcTotalCols.forEach((params) => {
-          this.data.forEach((line) => {
-            result[0][params] += line[params];
-          });
-        });
-
-
-
-        this.grid.api.setPinnedBottomRowData(result);
-        this.grid.api.getDisplayedRowCount();
-        this.grid.defaultColDef.editable = (o) => !o.node.isRowPinned();
-      } else {
-
+        }
       }
 
-      //this.pinnedBottomRowData = this.createPinnedData(this.data)
     })
   }
+
 
   rowClassRules: RowClassRules = {
     // row style function
@@ -333,6 +336,7 @@ export class DetallePagoComponent implements OnInit {
         { text: 'Diferencia días sábado', alignment: 'center', margin: [0, 10] },
         { text: 'Diferencia días domingo', alignment: 'center', margin: [0, 10] },
         { text: 'TOTAL BONOS', alignment: 'center', margin: [0, 10] },
+        { text: 'Viático', alignment: 'center', margin: [0, 10] },
         { text: 'Asignaciones', alignment: 'center', margin: [0, 10] },
         { text: 'Total ganado', alignment: 'center', margin: [0, 10] },
         { text: 'Anticipo', alignment: 'center', margin: [0, 10] },
@@ -362,6 +366,7 @@ export class DetallePagoComponent implements OnInit {
           { text: p.difer_sabado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.difer_domingo.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.total_bonos.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.viatico.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.asignaciones.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.total_ganado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.anticipo.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
@@ -443,6 +448,7 @@ export class DetallePagoComponent implements OnInit {
                 'auto',//Diferencia de días sábado
                 'auto', //diferencia dia domingo
                 'auto',//TOTAL BONOS
+                'auto',//VIATICO
                 'auto',//Asignaciones
                 'auto',//Total ganado
                 'auto',//Anticipo
@@ -470,6 +476,7 @@ export class DetallePagoComponent implements OnInit {
                   { text: r['result'].datos.reduce((sum, p) => sum + p.difer_sabado, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.difer_domingo, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.total_bonos, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.viatico, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.asignaciones, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.total_ganado, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.anticipo, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
@@ -540,23 +547,10 @@ export class DetallePagoComponent implements OnInit {
       }
     })
 
+  }
 
-
-    /*  let r['result'].datos =  this.data.filter(v=>{
-      // v.ciequincena != 'S' && v.finiq == 'F'
-      if(this.datosParametros.tipo_mes =='Q'){
-       return v.finiq == 'Q';
-      }else{
-       return v.finiq  != 'F' && v.ciequincena == 'Q' || v.ciequincena;
-      }
-
-     }); */
-
-
-
-
-
-
+  integracion() {
+    this.getPagos();
   }
 
   headings = [
@@ -657,10 +651,11 @@ export class DetallePagoComponent implements OnInit {
   }
 
   @ViewChild('dtGrid') grid!: AgGridAngular;
+
   defaultColDef: ColDef = {
     resizable: true,
     initialWidth: 200,
-    editable: true,
+    enableCellChangeFlash: true,
     sortable: true,
     filter: true,
     floatingFilter: true,
@@ -675,46 +670,11 @@ export class DetallePagoComponent implements OnInit {
   localeText = this.aggsv.getLocale();
 
   columnDefs: ColDef[] = [
-    /* {
-      headerName: 'Acciones',
-      cellRenderer: ButtonCellRendererComponent,
-      cellRendererParams: {
-        clicked: (field: any) => {
-          console.log('item click', field);
-        }
-      },
-      pinned: 'left',
-      filter: false,
-      floatingFilter: false,
-      width: 100,
-      autoHeight: true,
-      editable : false
-    }, */
-    /* {
-      headerName: 'ID',
-      field: 'correlativo',
-      width: 80,
-      pinned: 'left',
-      filter: false,
-      floatingFilter: false,
-      editable : false
-    }, */
-    /* {
-      field: 'ciequincena',
-      headerName: 'Cierre fin de mes',
-      width: 100,
-      sortable: true,
-      editable : false,
-      cellClass: 'badge badge-danger'
-     }, */
+
     {
       headerName: 'Acciones',
       cellRenderer: BtnEliminarDetallePagoComponent,
-      cellRendererParams: {
-        clicked: (field: any) => {
-          console.log('item click', field);
-        }
-      },
+
       filter: false,
       floatingFilter: false,
       lockPinned: true,
@@ -732,7 +692,7 @@ export class DetallePagoComponent implements OnInit {
       lockPinned: true,
       pinned: 'left',
       //cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => (params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A' /* this.datosParametros.estado =='A' */),
     },
     {
       field: 'nombre',
@@ -742,13 +702,14 @@ export class DetallePagoComponent implements OnInit {
       pinned: 'left',
       lockPinned: true,
       cellClass: 'lock-pinned',
-
+      enableCellChangeFlash: true,
       editable: false
     },
     {
       field: 'rutF',
       headerName: 'Rut',
       width: 140,
+      enableCellChangeFlash: true,
       sortable: true,
       pinned: 'left',
       lockPinned: true,
@@ -771,8 +732,7 @@ export class DetallePagoComponent implements OnInit {
       headerName: 'Especialidad',
       width: 280,
       sortable: true,
-      editable: (params) => params.data.ciequincena !== 'S',
-
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
       cellEditor: 'agSelectCellEditor',
       cellEditorParams: this.cellCellEditorParams,
       suppressMenu: true
@@ -790,7 +750,7 @@ export class DetallePagoComponent implements OnInit {
       cellRendererParams: {
         currency: 'CLP'
       },
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'dias',
@@ -798,7 +758,7 @@ export class DetallePagoComponent implements OnInit {
         'Días a pago',
       width: 110,
       sortable: true,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A'
     },
     {
       field: 'valor_hora',
@@ -806,7 +766,7 @@ export class DetallePagoComponent implements OnInit {
       width: 100,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'total_periodo',
@@ -858,7 +818,7 @@ export class DetallePagoComponent implements OnInit {
       width: 100,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'viatico',
@@ -867,7 +827,7 @@ export class DetallePagoComponent implements OnInit {
       sortable: true,
       cellRenderer:
         this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'aguinaldo',
@@ -875,7 +835,7 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'asignaciones',
@@ -883,7 +843,7 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'ajuste_pos',
@@ -891,7 +851,7 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'total_ganado',
@@ -906,14 +866,14 @@ export class DetallePagoComponent implements OnInit {
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
     {
       field: 'dctos_varios',
       headerName: 'Descuentos varios',
       width: 200, sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
     },
 
     {
@@ -931,7 +891,7 @@ export class DetallePagoComponent implements OnInit {
       width: 200,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A' && this.datosParametros.tipo_mes == 'Q',
     },
     {
       field: 'finiquito_findemes',
@@ -940,7 +900,7 @@ export class DetallePagoComponent implements OnInit {
       sortable: true,
 
       cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => params.data.ciequincena !== 'S',
+      editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A' && this.datosParametros.tipo_mes != 'Q',
     },
 
     {

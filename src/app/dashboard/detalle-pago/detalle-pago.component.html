@@ -2,24 +2,24 @@
   <div class="col-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
+
         <div class="row">
-          <div class="col-4">
+          <div class="col-3">
             <h4 class="text-left mb-4 text-dark">
               <a [routerLink]="['/obras']"
-                ><i class="icon-action-undo mr-2"></i>{{ obra.codigo }} |
-                {{ obra.nombre }}</a
+                ><i class="icon-action-undo mr-2"></i>{{ obra.codigo }} | {{ obra.nombre }}</a
               >
             </h4>
           </div>
-          <div class="col-sm-4 col-4">
-            <h3 id="quote">Detalle pagos {{titlepage}}</h3>
-
-          </div>
-          <div class="col-sm-4 col-4">
+          <div class="col-6">
+            <app-cabecera-pages [titulo]="'Detalle pagos'"></app-cabecera-pages>
+        </div>
+          <div class="col-sm-3 col-3">
             <div class="btn-group pull-right">
               <button
+              *ngIf="quemesViene?.estado =='A'"
                 type="button"
-                class="btn btn-outline-primary btn-rounded pull-right"
+                class="btn btn-outline-primary btn-rounded "
                 data-toggle="modal"
                 data-target="#modalNuevoPago"
                 (click)="getEspecialidad(); resetForm()"
@@ -48,7 +48,7 @@
               [headings]="headings"
               [sheetName]="'Hoja1'"
               [_from]="'dp'"
-              [fileName]="'Reporte_DetallePagos_'+obra.codigo+'_'+obra.nombre+'_'+titlepage"
+              [fileName]="'Reporte_DetallePagos_'+obra.codigo+'_'+obra.nombre"
               [datosParametros]="datosParametros"
             >
             </app-btn-reporte-excel>
@@ -58,17 +58,19 @@
 
 
         <div class="row mt-3">
-          <div class="col-12">
+          <div class="col-12" >
 
 
-            <div class="table-responsive1">
+            <div class="table-responsive1" >
               <strong>Total trabajadores: {{ collectionSize }}</strong>
               <ag-grid-angular
+              *ngIf="isVisible"
                 #dtGrid
                 style="width: 100%; height: 100%"
                 class="ag-theme-alpine"
                 [defaultColDef]="defaultColDef"
                 [gridOptions]="gridOptions"
+                [rowData]="data"
                 [suppressMenuHide]="true"
                 [suppressColumnVirtualisation]="false"
                 [suppressRowVirtualisation]="false"
@@ -86,12 +88,23 @@
                 [pinnedBottomRowData]="pinnedBottomRowData"
                 [rowClassRules]="rowClassRules"
                 (rowValueChanged)="onRowValueChanged($event)"
+                (gridReady)="onGridReady($event)"
                 [editType]="'fullRow'"
               ></ag-grid-angular>
 
 
             </div>
+
           </div>
+          <ng-template #sinData>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="text-alert-danger">
+                  Sin datos
+                </div>
+              </div>
+            </div>
+          </ng-template>
         </div>
       </div>
     </div>

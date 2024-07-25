@@ -10,6 +10,8 @@ import { AgGridAngular } from 'ag-grid-angular';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
+import { CentralizaPeriodosService } from 'src/app/shared/services/centraliza-periodos.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-diferencia-sab-dom',
@@ -18,43 +20,45 @@ import { ParametrosService } from 'src/app/shared/components/parametros/services
 })
 export class DiferenciaSabDomComponent implements OnInit {
 
-  constructor(private bm: BuildMonthService, private sb: DifSabDomService, private toast: ToastrService, private ParametrosService : ParametrosService,
+  constructor(private bm: BuildMonthService,
+    private periodos : CentralizaPeriodosService,
+    private sb: DifSabDomService, private toast: ToastrService, public ParametrosService: ParametrosService,
     private aggsv: AgGridSpanishService) { }
     @ViewChild('heGrid') grid!: AgGridAngular;
     titlepage ='';
     datosParametros : any;
+    private subscription: Subscription;
 
   ngOnInit(): void {
-    this.get();
-    this.ParametrosService.get({accion:'C'}).subscribe((r:any)=>{
-      console.log(r);
-      this.datosParametros =r.result.parametros[0];
-      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
 
-    })
+    this.datosParametros = JSON.parse(sessionStorage.getItem('periodoAbierto'));
+
+    this.titlepage = sessionStorage.getItem('titlePage');
+   this.get();
   }
 
   data: any = [];
   obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
   get() {
     this.data=[];
-    let body = {
-      tipo: 'finde',
-      accion: 'C',
-      obra: this.obra.codigo
-    }
+    let body = this.periodos.buildBodyRequestComponents('finde','C');
+
     let c = 0;
     this.sb.get(body).subscribe((r: any) => {
-      this.data = r.result.sab_dom.map((value) => {
-        c++
-        return {
-          ...value,
-          correlativo: c
-        }
-      });
-      console.log(this.data);
-      this.buildTbl();
-      this.buildHeader();
+      console.log('data sabdom',r);
+      if(r.status =='ok'){
+        this.data = r.result.sab_dom.map((value) => {
+          c++
+          return {
+            ...value,
+            correlativo: c
+          }
+        });
+
+        this.buildTbl();
+        this.buildHeader();
+      }
+
     })
 
   }
@@ -157,7 +161,7 @@ export class DiferenciaSabDomComponent implements OnInit {
       },
       {
         headerName: 'Semana 1',
-        editable : (params) => params.data.ciequincena !== 'S',
+        editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
         children: [
           {
             headerName: 'H. extra sábado',
@@ -194,7 +198,7 @@ export class DiferenciaSabDomComponent implements OnInit {
               'Valor sábado 1/2 día',
             width: 110,
             sortable: true,
-            editable : (params) => params.data.ciequincena !== 'S',
+            editable : (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A',
             cellRenderer: this.CurrencyCellRenderer, cellRendererParams: {
               currency: 'CLP'
             },
@@ -205,7 +209,7 @@ export class DiferenciaSabDomComponent implements OnInit {
             width: 100,
             sortable: true,
             cellRenderer: this.CurrencyCellRenderer,
-            editable : (params) => params.data.ciequincena !== 'S'
+            editable : (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A'
           },
           {
             field: 'h_ex_domingo_sem1',
@@ -228,7 +232,7 @@ export class DiferenciaSabDomComponent implements OnInit {
             headerName: 'Valor domingo 1/2 día',
             width: 180, sortable: true,
             cellRenderer: this.CurrencyCellRenderer,
-            editable : (params) => params.data.ciequincena !== 'S'
+            editable : (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A'
           },
           {
             field: 'dom_entero_sem1',
@@ -236,7 +240,7 @@ export class DiferenciaSabDomComponent implements OnInit {
             width: 150,
             sortable: true,
             cellRenderer: this.CurrencyCellRenderer,
-            editable : (params) => params.data.ciequincena !== 'S'
+            editable : (params) => params.data.ciequincena !== 'S' && this.datosParametros.estado =='A'
           },
           {
             field: 'dif_sab_sem1',

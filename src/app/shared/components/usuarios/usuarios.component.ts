@@ -227,6 +227,7 @@ cellClas(params){
       this.closeModalAsociar.nativeElement.click();
       this.toastr.success('Obras asociadas con éxito','')
       this.getUsers()
+      this.allSelected=false;
     })
   }
 
@@ -242,6 +243,7 @@ cellClas(params){
     nombre: ['', Validators.required],
     mail: ['', Validators.required],
     estado: ['', Validators.required],
+    firma : [''],
     pass: ['', Validators.required],
     confirmPassword: ['', Validators.required],
 
@@ -273,6 +275,7 @@ cellClas(params){
       mail: item.mail,
       pass: item.pass,
       estado: item.estado,
+      firma : item.firma,
       accion : 'M'
     }
     this.userTitleEditModal = item.usuario;
@@ -289,6 +292,7 @@ cellClas(params){
       mail: this.userForm.value.mail,
       pass: this.userForm.value.pass,
       estado: this.userForm.value.estado,
+      firma : this.userForm.value.firma,
       accion : 'A'
     }
     this.userSv.crearEditUsuario(bodyEdit).subscribe((r: any) => {
@@ -310,6 +314,7 @@ cellClas(params){
       nombre: this.userForm.value.nombre,
       mail: this.userForm.value.mail,
       estado: this.userForm.value.estado,
+      firma : this.userForm.value.firma,
       accion : 'M'
     };
     console.log(bodyEdit);
@@ -352,6 +357,19 @@ cellClas(params){
       }
     })
 
+  }
+
+
+  allSelected = false;
+
+  toggleAll(event: any) {
+    this.allSelected = event.target.checked;
+    this.obrasAsociar.forEach(item => item.isCheck = this.allSelected);
+  }
+
+  toggleItem(item: any) {
+    item.isCheck = !item.isCheck;
+    this.allSelected = this.obrasAsociar.every(i => i.isCheck);
   }
 
 }

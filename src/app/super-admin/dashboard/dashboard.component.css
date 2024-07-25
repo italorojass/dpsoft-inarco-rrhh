@@ -1,0 +1,15 @@
+.chartClass{
+  width: auto;
+  height: 20rem;
+  padding: 1rem 5px 1rem 0px;
+
+  border: 1px solid #d8d7d7;
+  border-radius: 10px;
+
+}
+
+.title{
+  font-style: oblique;
+  font-weight: bold;
+  padding-bottom: 1rem;
+}

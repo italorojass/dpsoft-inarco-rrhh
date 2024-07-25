@@ -13,6 +13,7 @@ import { LoaderInterceptorInterceptor } from '../shared/interceptors/loader-inte
 import { SharedModule } from '../shared/shared.module';
 import { HeaderInterceptor } from '../shared/interceptors/header.interceptor';
 import { HomeComponent } from './home/home.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { HomeComponent } from './home/home.component';
     HeaderSaComponent,
     LayoutComponent,
     HomeComponent,
+    DashboardComponent,
   ],
   imports: [
     CommonModule,

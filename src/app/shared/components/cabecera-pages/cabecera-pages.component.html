@@ -1,0 +1,13 @@
+
+<h1 class="display-4" *ngIf="quemesViene">
+
+  {{titulo}}
+  {{quemesViene.quemes}}
+<!--  -->
+    <i class="ml-1" [ngClass]="quemesViene.estado == 'C' ? 'text-danger icon-lock':'text-success icon-power'"></i> <!-- {{quemesViene.estado=='A' ? 'ABIERTO' : 'CERRADO'}} -->
+</h1>
+
+
+
+
+

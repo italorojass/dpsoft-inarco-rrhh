@@ -3,12 +3,14 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import Swal from 'sweetalert2';
 import { FormBuilder } from '@angular/forms';
-import { ColDef } from 'ag-grid-community';
+import { CellValueChangedEvent, ColDef, RowValueChangedEvent } from 'ag-grid-community';
 import { DetallePagoService } from '../detalle-pago/services/detalle-pago.service';
 import ChileanRutify from 'chilean-rutify';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
 import { ReporteService } from './service/reporte.service';
+import { switchMap } from 'rxjs';
+import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 @Component({
   selector: 'app-reporte',
   templateUrl: './reporte.component.html',
@@ -19,12 +21,15 @@ export class ReporteComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private dtSv: DetallePagoService,
     private paramSV: ParametrosService,
-    private reporteSV : ReporteService) { }
+    private reporteSV : ReporteService,
+    private aggsv: AgGridSpanishService) { }
     titlepage:string=''
   ngOnInit(): void {
-    this.paramSV.get({accion:'C'}).subscribe((r:any)=>{
+    this.paramSV.get({accion:'P'}).subscribe((r:any)=>{
       console.log(r);
-      r.result.parametros[0].tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
+      //console.log('datos parametros', this.datosParametros);
+      //this.datosParametros.tipo_mes =='Q' || r.result.parametros[0].tipo_mes =='I' ? this.titlepage ='QUINCENA '+r.result.parametros[0].computed : this.titlepage ='FIN DE MES '+r.result.parametros[0].computed
+      this.titlepage = r.result.parametros[0].quemes;
 
     })
   }
@@ -155,7 +160,7 @@ export class ReporteComponent implements OnInit {
   fileName:string;
   fileNameFiniq : string;
   handleFileInput(event: any): void {
-
+this.fileName='';
   this.data = [];
     const file = event.target.files[0];
 
@@ -173,7 +178,7 @@ export class ReporteComponent implements OnInit {
         const ws: XLSX.WorkSheet = wb.Sheets[wsname];
         this.fileName = file.name;
         this.showbtn = true;
-        ws['!ref'] = "A6:CE758"
+        ws['!ref'] = "A6:CE3000"
         let dataExcel= XLSX.utils.sheet_to_json(ws);
        // this.data = data;
        console.log('datos excel rem',dataExcel);
@@ -267,7 +272,9 @@ export class ReporteComponent implements OnInit {
           floatingFilter: true,
         editable: false,
         cellRenderer: this.CurrencyCellRenderer
-      },]
+      },
+
+    ]
         console.log('data REM FInal',this.data);
         let body ={
           accion : 'R',
@@ -279,6 +286,9 @@ export class ReporteComponent implements OnInit {
 
           //Swal.fire(this.fileName,'Datos ingresados correctamente','success')
         });
+
+
+
       };
     } else {
       Swal.fire('Formato no permitido', 'Solo se admite formato .xls/.xlsx', 'warning');
@@ -288,6 +298,7 @@ export class ReporteComponent implements OnInit {
 
   handleFileInputFiniq(event:any){
     this.dataFiniq=[];
+    this.fileNameFiniq='';
 
     const file = event.target.files[0];
     console.log(file);
@@ -408,160 +419,338 @@ export class ReporteComponent implements OnInit {
 
   resultadosComparados =[];
   columnDefsComparados = [];
+  resultadosComparadosBUK = [];
+  columnDefsComparadosBUK =[];
   comparar(){
+    this.resultadosComparados=[];
+    this.resultadosComparadosBUK = [];
     let body = {
       accion : 'C',
       detalle:[]
     }
-    this.reporteSV.get(body).subscribe((r:any)=>{
-      console.log("Response comparativo", r);
 
-      this.resultadosComparados = r.result.diferencias.map(x=>{
-        return {
-          ...x,
-          rutF : x.rut+'-'+x.dig,
+    this.reporteSV.get(body).pipe(
+      switchMap((r:any)=>{
+        this.resultadosComparados = r.result.diferencias.map(x=>{
+          return {
+            ...x,
+            rutF : x.rut+'-'+x.dig,
 
+          }
+        });
+        this.columnDefsComparados = [
+      {
+        headerName: 'RUT',
+        field: 'rutF',
+        filter: true,
+        width: 150,
+        floatingFilter: true,
+        editable: false
+      },
+      {
+        headerName: 'Nombre completo',
+        field: 'nombre',
+        filter: true,
+        width: 200,
+        floatingFilter: true,
+        editable: false
+      },
+      {
+        headerName: 'Obra',
+        field: 'obra',
+        filter: true,
+        width: 95,
+        floatingFilter: true,
+        editable: false
+      },
+
+      {
+        headerName: 'Dias sistema',
+        field: 'dias_sistema',
+        filter: true,
+        width: 120,
+          floatingFilter: true,
+        editable: false,
+        cellRenderer: this.CurrencyCellRenderer
+      },
+
+      {
+        headerName: 'Dias BUK',
+        field: 'dias_buk',
+        filter: true,
+        width: 120,
+          floatingFilter: true,
+        editable: false,
+        cellRenderer: this.CurrencyCellRenderer
+      },
+      {
+        headerName: 'Diferencia dias',
+        field: 'diferencia_dias',
+        filter: true,
+        width: 120,
+          floatingFilter: true,
+        editable: false,
+        cellRenderer: this.CurrencyCellRenderer
+      },
+      {
+        headerName: 'Anticipo sistema',
+        field: 'anticipo_sistema',
+        filter: true,
+        width: 100,
+          floatingFilter: true,
+        editable: false,
+        cellRenderer: this.CurrencyCellRenderer
+      },
+      {
+        headerName: 'Anticipo BUK',
+        field: 'anticipo_buk',
+        filter: true,
+        width: 100,
+          floatingFilter: true,
+        editable: false,
+        cellRenderer: this.CurrencyCellRenderer
+      },
+      {
+        headerName: 'Diferencia anticipo',
+        field: 'diferencia_anticipo',
+        filter: true,
+        width: 120,
+          floatingFilter: true,
+        editable: false,
+        cellRenderer: this.CurrencyCellRenderer
+      },
+      {
+        headerName: 'Finiquito sistema',
+        field: 'finiquito_sistema',
+        filter: true,
+        width: 120,
+          floatingFilter: true,
+        editable: false,
+        cellRenderer: this.CurrencyCellRenderer
+      },
+      {
+        headerName: 'Finiquito BUK',
+        field: 'finiquito_buk',
+        filter: true,
+        width: 100,
+          floatingFilter: true,
+        editable: false,
+        cellRenderer: this.CurrencyCellRenderer
+      },
+
+      {
+        headerName: 'Diferencia finiquito',
+        field: 'diferencia_finiquito',
+        filter: true,
+        width: 120,
+          floatingFilter: true,
+        editable: false,
+        cellRenderer: this.CurrencyCellRenderer
+      },
+      {
+        headerName: 'Sueldo sistema',
+        field: 'sueldo_sistema',
+        filter: true,
+        width: 120,
+          floatingFilter: true,
+        editable: false,
+        cellRenderer: this.CurrencyCellRenderer
+      },
+      {
+        headerName: 'Sueldo BUK',
+        field: 'sueldo_buk',
+        filter: true,
+        width: 100,
+          floatingFilter: true,
+        editable: false,
+        cellRenderer: this.CurrencyCellRenderer
+      }
+      ,
+      {
+        headerName: 'Diferencia sueldo',
+        field: 'diferencia_sueldo',
+        filter: true,
+        width: 120,
+          floatingFilter: true,
+        editable: false,
+        cellRenderer: this.CurrencyCellRenderer
+      }
+      ,
+      {
+        headerName: 'Observaciones',
+        field: 'observaciones',
+        filter: true,
+        width: 150,
+        floatingFilter: false,
+        editable: true,
+        lockPinned: true,
+        pinned: 'right',
+        cellEditor: 'agLargeTextCellEditor',
+          cellEditorPopup: true,
+          cellEditorParams: {
+              maxLength: 100,
+              rows: 15,
+              cols: 50
+          }
+      }
+      ]
+      let bo= {
+        accion : 'T',
+        detalle:[]
+      }
+
+      return this.reporteSV.get(bo);
+      })
+    ).subscribe((r:any)=>{
+      console.log('DATOS COMPARADOS BUK',r);
+      this.columnDefsComparadosBUK = [
+        {
+          headerName: 'Obra',
+          field: 'obra',
+          filter: true,
+          width: 100,
+          floatingFilter: true,
+          editable: false
+        },
+        {
+          headerName: 'Días sistema',
+          field: 'diasSistema',
+          filter: true,
+          width: 100,
+          floatingFilter: true,
+          editable: false,
+          cellRenderer: this.CurrencyCellRenderer
+        },
+        {
+          headerName: 'Diferencia días',
+          field: 'diferencia_dias',
+          filter: true,
+          width: 100,
+          floatingFilter: true,
+          editable: false,
+          cellRenderer: this.CurrencyCellRenderer
+        },
+        {
+          headerName: 'Anticipo Sistema',
+          field: 'anticipo_sistema',
+          filter: true,
+          floatingFilter: true,
+          editable: false,
+          cellRenderer: this.CurrencyCellRenderer
+        },
+        {
+          headerName: 'Anticipo BUK',
+          field: 'anticipo_buk',
+          filter: true,
+          floatingFilter: true,
+          editable: false,
+          cellRenderer: this.CurrencyCellRenderer
+        },
+        {
+          headerName: 'Diferencia anticipo',
+          field: 'diferencia_anticipo',
+          filter: true,
+          floatingFilter: true,
+          editable: false,
+          cellRenderer: this.CurrencyCellRenderer
+        },
+        {
+          headerName: 'Finiquito sistema',
+          field: 'finiquito_sistema',
+          filter: true,
+          floatingFilter: true,
+          editable: false,
+          cellRenderer: this.CurrencyCellRenderer
+        },
+        {
+          headerName: 'Finiquito BUK',
+          field: 'finiquito_buk',
+          filter: true,
+          floatingFilter: true,
+          editable: false,
+          cellRenderer: this.CurrencyCellRenderer
+        },
+        {
+          headerName: 'Diferencia finiquito',
+          field: 'diferencia_finiquito',
+          filter: true,
+          floatingFilter: true,
+          editable: false,
+          cellRenderer: this.CurrencyCellRenderer
+        },
+        {
+          headerName: 'Sueldo sistema',
+          field: 'sueldo_sistema',
+          filter: true,
+          floatingFilter: true,
+          editable: false,
+          cellRenderer: this.CurrencyCellRenderer
+        },
+        {
+          headerName: 'Sueldo BUK',
+          field: 'sueldo_buk',
+          filter: true,
+          floatingFilter: true,
+          editable: false,
+          cellRenderer: this.CurrencyCellRenderer
+        },
+        {
+          headerName: 'Diferencia sueldo',
+          field: 'diferencia_sueldo',
+          filter: true,
+          floatingFilter: true,
+          editable: false,
+          cellRenderer: this.CurrencyCellRenderer
+        },
+        {
+          headerName: 'Observaciones',
+          field: 'observaciones',
+          filter: true,
+          width: 200,
+          floatingFilter: false,
+          editable: true,
+          lockPinned: true,
+          pinned: 'right',
+          cellEditor: 'agLargeTextCellEditor',
+            cellEditorPopup: true,
+            cellEditorParams: {
+                maxLength: 100,
+                rows: 15,
+                cols: 50
+            }
         }
-      });
-      this.columnDefsComparados = [
-    {
-      headerName: 'RUT',
-      field: 'rutF',
-      filter: true,
-      width: 150,
-      floatingFilter: true,
-      editable: false
-    },
-    {
-      headerName: 'Nombre completo',
-      field: 'nombre',
-      filter: true,
-      width: 200,
-      floatingFilter: true,
-      editable: false
-    },
-    {
-      headerName: 'Obra',
-      field: 'obra',
-      filter: true,
-      width: 90,
-      floatingFilter: true,
-      editable: false
-    },
+      ]
 
-    {
-      headerName: 'Dias sistema',
-      field: 'dias_sistema',
-      filter: true,
-      width: 120,
-        floatingFilter: true,
-      editable: false,
-      cellRenderer: this.CurrencyCellRenderer
-    },
 
-    {
-      headerName: 'Dias BUK',
-      field: 'dias_buk',
-      filter: true,
-      width: 120,
-        floatingFilter: true,
-      editable: false,
-      cellRenderer: this.CurrencyCellRenderer
-    },
-    {
-      headerName: 'Diferencia dias',
-      field: 'diferencia_dias',
-      filter: true,
-      width: 120,
-        floatingFilter: true,
-      editable: false,
-      cellRenderer: this.CurrencyCellRenderer
-    },
-    {
-      headerName: 'Anticipo sistema',
-      field: 'anticipo_sistema',
-      filter: true,
-      width: 120,
-        floatingFilter: true,
-      editable: false,
-      cellRenderer: this.CurrencyCellRenderer
-    },
-    {
-      headerName: 'Anticipo BUK',
-      field: 'anticipo_buk',
-      filter: true,
-      width: 120,
-        floatingFilter: true,
-      editable: false,
-      cellRenderer: this.CurrencyCellRenderer
-    },
-    {
-      headerName: 'Diferencia anticipo',
-      field: 'diferencia_anticipo',
-      filter: true,
-      width: 120,
-        floatingFilter: true,
-      editable: false,
-      cellRenderer: this.CurrencyCellRenderer
-    },
-    {
-      headerName: 'Finiquito sistema',
-      field: 'finiquito_sistema',
-      filter: true,
-      width: 120,
-        floatingFilter: true,
-      editable: false,
-      cellRenderer: this.CurrencyCellRenderer
-    },
-    {
-      headerName: 'Finiquito BUK',
-      field: 'finiquito_buk',
-      filter: true,
-      width: 120,
-        floatingFilter: true,
-      editable: false,
-      cellRenderer: this.CurrencyCellRenderer
-    },
+      this.resultadosComparadosBUK=r.result.diferencias.map(x=>{
+        return {
+         /*  rut : x.rutF,
+          nombreCompleto: x.nombre, */
+          obra : x.obra,
+          diasSistema : x.dias_sistema,
+          diasBuk : x.dias_buk,
+          diferencia_dias : x.diferencia_dias,
+          anticipo_sistema : x.anticipo_sistema,
+          anticipo_buk : x.anticipo_buk,
+          diferencia_anticipo : x.diferencia_anticipo,
+          finiquito_sistema : x.finiquito_sistema,
+          finiquito_buk : x.finiquito_buk,
+          diferencia_finiquito : x.diferencia_finiquito,
+          sueldo_sistema  :x.sueldo_sistema,
+          sueldo_buk : x.sueldo_buk,
+          diferencia_sueldo : x.diferencia_sueldo,
+          observaciones : x.observaciones ? x.observaciones : ''
+        }
 
-    {
-      headerName: 'Diferencia finiquito',
-      field: 'diferencia_finiquito',
-      filter: true,
-      width: 120,
-        floatingFilter: true,
-      editable: false,
-      cellRenderer: this.CurrencyCellRenderer
-    },
-    {
-      headerName: 'Sueldo sistema',
-      field: 'sueldo_sistema',
-      filter: true,
-      width: 120,
-        floatingFilter: true,
-      editable: false,
-      cellRenderer: this.CurrencyCellRenderer
-    },
-    {
-      headerName: 'Sueldo BUK',
-      field: 'sueldo_buk',
-      filter: true,
-      width: 120,
-        floatingFilter: true,
-      editable: false,
-      cellRenderer: this.CurrencyCellRenderer
-    }
-    ,
-    {
-      headerName: 'Diferencia sueldo',
-      field: 'diferencia_sueldo',
-      filter: true,
-      width: 120,
-        floatingFilter: true,
-      editable: false,
-      cellRenderer: this.CurrencyCellRenderer
-    }
-    ]});
+
+    });
+    this.currentStep++;
+
+    })
+
+
   }
+
 
   headings=[
     [
@@ -580,8 +769,26 @@ export class ReporteComponent implements OnInit {
     'Sueldo sistema',
     'Sueldo BUK',
     'Diferencia sueldo',
+    'Observaciones'
   ]
 ]
+
+
+currentStep: number = 1;
+
+nextStep() {
+  if (this.currentStep < 3) {
+    this.currentStep++;
+  }
+}
+
+prevStep() {
+  if (this.currentStep > 1) {
+    this.currentStep--;
+  }
+}
+
+
 
 
 }

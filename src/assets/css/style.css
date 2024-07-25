@@ -13237,7 +13237,6 @@ input[type="button"].btn-block {
 .navbar .container,
 .navbar .container-fluid, .navbar .container-sm, .navbar .container-md, .navbar .container-lg, .navbar .container-xl {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
 }
@@ -21153,6 +21152,7 @@ pre {
 
 .badge.badge-pill {
   border-radius: 10rem;
+  width: 10rem;
 }
 
 .badge.badge-fw {
@@ -21176,7 +21176,8 @@ pre {
 
 .badge-success, .preview-list .preview-item .preview-thumbnail .badge.badge-online {
   border: 1px solid #7ed321;
-  color: #fff;
+  color: #000;
+
 }
 
 .badge-info, .preview-list .preview-item .preview-thumbnail .badge.badge-offline {

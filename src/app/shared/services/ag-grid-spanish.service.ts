@@ -16,7 +16,7 @@ export class AgGridSpanishService {
   public overlayLoadingTemplate =
     '<span class="ag-overlay-loading-center">Recargando tabla, favor espere</span>';
   public overlayNoRowsTemplate =
-    '<span class="padding: 10px; border: 2px solid #fff; background: #439aff;">Cargando data..</span>';
+    '<span class="padding: 10px; border: 2px solid #fff; background: red;">**Sin datos**</span>';
 
   getLocale(){
     return {

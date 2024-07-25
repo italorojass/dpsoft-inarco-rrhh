@@ -23,7 +23,7 @@ export class BtnEliminarDetallePagoComponent implements ICellRendererAngularComp
     //console.log('AG INIT',params.data)
   }
   buttonClicked() {
-    console.log(this.cellValue)
+   // console.log(this.cellValue)
 
    this.deletePago.dataEdit.next(this.cellValue);
 
@@ -34,7 +34,7 @@ export class BtnEliminarDetallePagoComponent implements ICellRendererAngularComp
   // gets called whenever the user gets the cell to refresh
   refresh(params: ICellRendererParams) {
     // set value into cell again
-    console.log('refresh fx',params);
+    //console.log('refresh fx',params);
     this.cellValue =params.data;
     return true;
   }

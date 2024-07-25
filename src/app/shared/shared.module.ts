@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoaderComponent } from './loader/loader.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -34,6 +34,17 @@ import { InputHeaderService } from './components/table-aggrid/input-header/input
 import { BtnEliminarDetallePagoComponent } from './components/btn-eliminar-detalle-pago/btn-eliminar-detalle-pago.component';
 import { EliminarPagoService } from './components/btn-eliminar-detalle-pago/service/eliminar-pago.service';
 import { ReporteService } from '../dashboard/reporte/service/reporte.service';
+import { PeriodosService } from './services/periodos.service';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { DatepickerAgGridComponent } from './components/datepicker-ag-grid/datepicker-ag-grid.component';
+import { FlatpickrModule } from 'angularx-flatpickr';
+import { DatepickerAgGridFinalComponent } from './components/datepicker-ag-grid-final/datepicker-ag-grid-final.component';
+import { CabeceraPagesComponent } from './components/cabecera-pages/cabecera-pages.component';
+import { RouterModule } from '@angular/router';
+import { CentralizaPeriodosService } from './services/centraliza-periodos.service';
+import { SelectNgSelectAggridComponent } from './components/select-ng-select-aggrid/select-ng-select-aggrid.component';
+import { NgxSpinnerModule } from "ngx-spinner";
+
 @NgModule({
   declarations: [
     LoaderComponent,
@@ -46,7 +57,11 @@ import { ReporteService } from '../dashboard/reporte/service/reporte.service';
     UsuariosComponent,
     BtnReporteExcelComponent,
     InputHeaderComponent,
-    BtnEliminarDetallePagoComponent
+    BtnEliminarDetallePagoComponent,
+    DatepickerAgGridComponent,
+    DatepickerAgGridFinalComponent,
+    CabeceraPagesComponent,
+    SelectNgSelectAggridComponent
   ],
   imports: [
     CommonModule,
@@ -62,7 +77,12 @@ import { ReporteService } from '../dashboard/reporte/service/reporte.service';
     GuiGridModule,
     AgGridModule,
     NgbModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgSelectModule,
+    FlatpickrModule.forRoot(),
+    RouterModule,
+    NgxSpinnerModule.forRoot()
+
   ],
   providers:[
 
@@ -78,7 +98,9 @@ import { ReporteService } from '../dashboard/reporte/service/reporte.service';
     ObraSelectService,
     InputHeaderService,
     EliminarPagoService,
-    ReporteService
+    ReporteService,
+    PeriodosService,
+    CentralizaPeriodosService
   ],
   exports : [
     LoaderComponent,
@@ -91,7 +113,10 @@ import { ReporteService } from '../dashboard/reporte/service/reporte.service';
     UsuariosComponent,
     BtnReporteExcelComponent,
     InputHeaderComponent,
-    BtnEliminarDetallePagoComponent
-  ]
+    BtnEliminarDetallePagoComponent,
+    CabeceraPagesComponent,
+    SelectNgSelectAggridComponent
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule { }

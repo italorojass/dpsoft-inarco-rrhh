@@ -28,22 +28,6 @@ const routes: Routes = [
       component : DashboardComponent
 
     },
-   /*  {
-      path : 'proyectos',
-      component : ProyectosComponent
-    },
-    {
-      path : 'usuarios',
-      component : UsuariosComponent
-    },
-    {
-      path : 'parametros',
-      component : ParametrosComponent
-    }, */
-    {
-      path : 'requerimientos',
-      component : RequerimientosComponent
-    },
 
     {
       path : 'horas-extras',
@@ -61,10 +45,7 @@ const routes: Routes = [
       path : 'detalle-bonos',
       component : DetalleBonoComponent
     },
-    {
-      path : 'maestro-especialidad',
-      component : MaestroEspecialidadComponent
-    },
+
   ]
   },
 ];
