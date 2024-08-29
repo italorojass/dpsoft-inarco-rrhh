@@ -200,11 +200,13 @@ export class ParametrosComponent implements OnInit {
     return `${dia}-${mes}-${year}`;
   }
 
-  cierre(tipo,msj){
+  cierre(tipo){
 
 
+    console.log(tipo,this.paramss);
+    this.paramss.tipo_proceso
     Swal.fire({
-      title: 'Está seguro de que desea cerrar '+msj+'?',
+      title: 'Está seguro de que desea cerrar '+this.paramss.quemes+'?',
       showDenyButton: true,
       showCancelButton: false,
       confirmButtonText: 'Cerrar',
@@ -212,11 +214,11 @@ export class ParametrosComponent implements OnInit {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        let body = {accion : tipo};
+        let body = {accion : this.paramss.tipo_proceso};
         console.log(body)
         this.paramSV.cierre(body).subscribe(r=>{
           console.log(r);
-          this.ToastrService.success('Realizado con éxito',msj);
+          this.ToastrService.success('Para '+this.paramss.quemes,'Cierre realizado con éxito');
 
           this.get();
         })

@@ -32,8 +32,8 @@
 
                   <div class="row mt-1">
                     <div class="col-12">
-                      <button class="btn btn-inverse-danger btn-rounded btn-block" (click)="cierre('Q','quincena')"
-                        *ngIf="parametrosArray[0].estado == 'A'" [disabled]="paramss.tipo_proceso=='S'">
+                      <button class="btn btn-inverse-danger btn-rounded btn-block" (click)="cierre(paramss.tipo_proceso)"
+                        *ngIf="paramss.estado == 'A'" [disabled]="paramss.tipo_proceso=='S'">
                         <i class="icon-lock text-white icon-md"></i>
                       </button>
                     </div>
@@ -67,7 +67,7 @@
                 </div>
 
 
-                <div class="d-inline-block">
+               <!--  <div class="d-inline-block">
                   <div class="badge  badge-pill"
                     [ngClass]="parametrosArray[1].estado == 'A' ? 'badge-success': 'badge-dark'" style=" font-size: 1rem;
                   font-weight: bold;">
@@ -84,7 +84,7 @@
                     <i class="icon-lock text-white icon-lg"></i>
                   </button>
 
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
