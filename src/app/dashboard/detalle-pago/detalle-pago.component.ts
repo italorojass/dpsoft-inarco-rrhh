@@ -202,7 +202,7 @@ export class DetallePagoComponent implements OnInit {
     }
     console.log('body edit', body1);
     this.dtSv.get(body1).subscribe(r => {
-      this.toastr.success('Actualizado con éxito', `Pago trabajador ${e.nombre}`);
+      this.toastr.success('Actualizado con éxito', `trabajador ${e.nombre}`);
       this.getPagos();
 
     })

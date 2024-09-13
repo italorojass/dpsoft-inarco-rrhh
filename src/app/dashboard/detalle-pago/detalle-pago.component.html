@@ -72,8 +72,6 @@
                 [gridOptions]="gridOptions"
                 [rowData]="data"
                 [suppressMenuHide]="true"
-                [suppressColumnVirtualisation]="false"
-                [suppressRowVirtualisation]="false"
                 [pagination]="true"
                 [groupSelectsChildren]="true"
                 [rowSelection]="rowSelection"
@@ -87,7 +85,8 @@
                 [paginationPageSize]="15"
                 [pinnedBottomRowData]="pinnedBottomRowData"
                 [rowClassRules]="rowClassRules"
-                (rowValueChanged)="onRowValueChanged($event)"
+
+                (rowEditingStopped)="onRowValueChanged($event)"
                 (gridReady)="onGridReady($event)"
                 [editType]="'fullRow'"
               ></ag-grid-angular>

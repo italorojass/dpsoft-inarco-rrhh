@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/thesabbir/simple-line-icons/issues"
   },
-  "bundleDependencies": false,
+  "bundleDependencies": [],
   "deprecated": false,
   "description": "Simple and elegent line icons.",
   "homepage": "https://thesabbir.github.io/simple-line-icons",
@@ -49,5 +49,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "2.4.1"
+  "version": "2.4.1",
+  "dependencies": {
+    "simple-line-icons": "file:"
+  }
 }

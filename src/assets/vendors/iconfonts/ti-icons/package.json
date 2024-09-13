@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/lykmapipo/themify-icons/issues"
   },
-  "bundleDependencies": false,
+  "bundleDependencies": [],
   "deprecated": false,
   "description": "Pixel-perfect, hand-crafted icons that draw inspiration from Apple iOS 7",
   "homepage": "https://github.com/lykmapipo/themify-icons#readme",
@@ -46,5 +46,8 @@
     "type": "git",
     "url": "git+https://github.com/lykmapipo/themify-icons.git"
   },
-  "version": "0.1.2"
+  "version": "0.1.2",
+  "dependencies": {
+    "ti-icons": "file:"
+  }
 }
