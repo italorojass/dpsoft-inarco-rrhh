@@ -15,6 +15,18 @@ export class ParametrosService {
     return this._http.post(`${environment.url}ws_parame_rrhh.php`,body);
   }
 
+  getFeriadosMonthYear(year,month){
+    return this._http.get(`${ environment.apiFeriadosv}${year}/${month}`);
+  }
+
+  getFeriadosYear(year){
+    return this._http.get(`${ environment.apiFeriadosv}${year}`);
+  }
+
+  updateSueldos(){
+    return this._http.get(`${environment.url}ws_calculo_sueldo_rrhh.php`);
+  }
+
   getBonos(body){
     return this._http.post(`${environment.url}ws_nombrebonos_rrhh.php`,body);
   }

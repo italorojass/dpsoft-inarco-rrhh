@@ -44,6 +44,7 @@ import { RouterModule } from '@angular/router';
 import { CentralizaPeriodosService } from './services/centraliza-periodos.service';
 import { SelectNgSelectAggridComponent } from './components/select-ng-select-aggrid/select-ng-select-aggrid.component';
 import { NgxSpinnerModule } from "ngx-spinner";
+import { BtnFiniquitarComponent } from './components/btn-finiquitar/btn-finiquitar.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { NgxSpinnerModule } from "ngx-spinner";
     DatepickerAgGridComponent,
     DatepickerAgGridFinalComponent,
     CabeceraPagesComponent,
-    SelectNgSelectAggridComponent
+    SelectNgSelectAggridComponent,
+    BtnFiniquitarComponent
   ],
   imports: [
     CommonModule,

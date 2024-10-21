@@ -85,8 +85,9 @@
                 [paginationPageSize]="15"
                 [pinnedBottomRowData]="pinnedBottomRowData"
                 [rowClassRules]="rowClassRules"
+                [readOnlyEdit]="true"
+                (cellEditRequest)="onRowValueChanged($event)"
 
-                (rowEditingStopped)="onRowValueChanged($event)"
                 (gridReady)="onGridReady($event)"
                 [editType]="'fullRow'"
               ></ag-grid-angular>

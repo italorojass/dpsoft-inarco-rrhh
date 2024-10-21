@@ -350,6 +350,30 @@ export class HorasExtraComponent implements OnInit {
     });
   }
 
+  feriados :any=[]
+  getFeriados(){
+
+    let periodoSelect = this.datosParametros.inicio_periodo.split('-');
+
+    let testData = [
+      {
+        "nombre": "Día de la Virgen del Carmen",
+        "comentarios": null,
+        "fecha": "2024-07-16",
+        "irrenunciable": "0",
+        "tipo": "Religioso"
+      }
+    ]
+
+    this.feriados = testData;
+
+    /* this.ParametrosService.getFeriadosMonthYear(periodoSelect[0],periodoSelect[1]).subscribe((r:any)=>{
+      this.feriados=r
+    }) */
+  }
+
+
+
   headings = [
     [
       'Empleado',

@@ -5,7 +5,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { DetallePagoService } from './services/detalle-pago.service';
 import { ToastrService } from 'ngx-toastr';
 import ChileanRutify from 'chilean-rutify';
-import { ColDef, GridApi, GridReadyEvent, ICellEditorParams, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
+import { ColDef, GridApi, GridOptions, GridReadyEvent, ICellEditorParams, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ProyectosService } from 'src/app/shared/components/proyectos/services/proyectos.service';
@@ -67,7 +67,7 @@ export class DetallePagoComponent implements OnInit {
           tipo: 'pagos',
           obra: this.obra.codigo,
         }
-        console.log('click edit ', format);
+        console.log('click edit ', format,valueEdit);
         const swalWithBootstrapButtons = Swal.mixin({
           customClass: {
             confirmButton: 'btn btn-success',
@@ -89,7 +89,7 @@ export class DetallePagoComponent implements OnInit {
             this.deletePago.deleteTrabajador(format).subscribe(r => {
               console.log('click edit response ', r);
               this.toastr.success('Eliminado', `Trabajador ${valueEdit.nombre} eliminado del sistema`);
-              this.getPagos()
+              this.getPagos();
               result.dismiss === Swal.DismissReason.cancel
             })
 
@@ -175,9 +175,9 @@ export class DetallePagoComponent implements OnInit {
   };
 
   getChanges(e) {
-    console.log('este cambiar', e);
+    //console.log('este cambiar', e);
     let indexEspecialidad = this.especialidades.find(x => x.descripcion == e.descripcion);
-    console.log('especialidad id', indexEspecialidad);
+    console.log('especialidad id', this.itemEditPago);
 
     let body1 = {
       tipo: "pagos",
@@ -200,10 +200,19 @@ export class DetallePagoComponent implements OnInit {
       finiquito: Number(e.finiquito),
       finiquito_findemes: Number(e.finiquito_findemes)
     }
-    console.log('body edit', body1);
+   // console.log('body edit', body1);
     this.dtSv.get(body1).subscribe(r => {
+      console.log('response edit', r);
       this.toastr.success('Actualizado con éxito', `trabajador ${e.nombre}`);
-      this.getPagos();
+      const rowNode = this.gridOptions.api.getRowNode(e.id);
+      if (rowNode) {
+        rowNode.setData(e);  // Actualiza solo la fila con la nueva data
+      }
+
+            this.grid.api.getPinnedBottomRow(5);
+            this.grid.api.getDisplayedRowCount();
+
+      //this.getPagos();
 
     })
 
@@ -679,7 +688,7 @@ export class DetallePagoComponent implements OnInit {
       floatingFilter: false,
       lockPinned: true,
       pinned: 'left',
-      width: 100,
+      width: 150,
       autoHeight: true,
       editable: false,
       suppressSizeToFit: true,
@@ -692,7 +701,7 @@ export class DetallePagoComponent implements OnInit {
       lockPinned: true,
       pinned: 'left',
       //cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => (params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A' /* this.datosParametros.estado =='A' */),
+      editable: (params) => (params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A'  ),
     },
     {
       field: 'nombre',
@@ -923,9 +932,10 @@ export class DetallePagoComponent implements OnInit {
     },
 
   ];
-  gridOptions = {
+  gridOptions = <GridOptions>{
     columnDefs: this.columnDefs,
-    rowData: []
+    rowData: [],
+    pinnedBottomRowData: []
   };
   pinnedBottomRowData: any[];
 
@@ -998,13 +1008,7 @@ export class DetallePagoComponent implements OnInit {
   @ViewChild('closeModalEdit') closeModalEdit: ElementRef;
 
   saveEditDetallePago() {
-    /*   let body ={
-        tipo:"pagos",
-        obra : this.obra.codigo,
-        accion : 'M',
-        id_detalle : this.itemEditPago.id,
-        ...this.editPagoForm.value
-     } */
+
 
     let body1 = {
       tipo: "pagos",

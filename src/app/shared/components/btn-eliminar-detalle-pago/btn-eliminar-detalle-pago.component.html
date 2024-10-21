@@ -1,3 +1,8 @@
 
-<button type="button" class="btn btn-outline-danger btn-rounded btn-sm" (click)="buttonClicked()" *ngIf="cellValue.id"
+<button type="button" class="btn btn-outline-danger btn-rounded btn-sm" (click)="buttonClicked('D')" *ngIf="cellValue.id"
 ><i class="icon-trash ml-1"></i></button>
+
+<button type="button" class="btn btn-outline-dark btn-rounded btn-sm ml-2" (click)="buttonClicked('F')" *ngIf="cellValue.id"
+><i class="icon-flag ml-1"></i></button>
+
+

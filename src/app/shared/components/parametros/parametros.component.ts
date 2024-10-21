@@ -9,6 +9,7 @@ import { AgGridSpanishService } from '../../services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { DatepickerAgGridComponent } from '../datepicker-ag-grid/datepicker-ag-grid.component';
 import { DatepickerAgGridFinalComponent } from '../datepicker-ag-grid-final/datepicker-ag-grid-final.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-parametros',
@@ -74,9 +75,104 @@ export class ParametrosComponent implements OnInit {
 
   ngOnInit(): void {
     this.get();
-    this.getMesesFuturos()
+    this.getMesesFuturos();
+    //this.getFeriadosActuales();
   }
+  feriados:any = [];
+  columnDefsFeriados = [
+    {
+      field: 'nombre',
+      headerName: 'Motivo',
+      width : 280,
+      suppressSizeToFit: true,
+      editable : false,
+    },
+    {
+      field: 'fecha',
+      headerName: 'Fecha',
+      editable : true,
+      width : 200,
+      //filter: 'agDateColumnFilter',
+      //cellRenderer: DatepickerAgGridComponent,
+      //cellEditor: DatepickerAgGridComponent,
+      cellEditor: "agDateStringCellEditor",
+      valueFormatter: (params: ValueFormatterParams<any>) => {
+        if (!params.value) {
+          return "";
+        }
+        return this.formatfecha(params.value);
+      }
+    },
+    {
+      field: 'irrenunciable',
+      headerName: 'Irrenunciable',
+      cellEditor: 'agSelectCellEditor',
+      suppressSizeToFit: true,
+      editable : false,
+      suppressMenu: true,
+      valueFormatter: this.formatFeriado,
 
+      cellStyle: params => {
+        // you can use either came case or dashes, the grid converts to whats needed
+        // light green
+        if (params.value ==1) {
+          return { backgroundColor: '#ff5e5e', color : '#000' }
+        } else if(params.value ==0) {
+          return { backgroundColor: '#7ed321' };
+        }else {
+          return { backgroundColor: '#959595' };
+        }
+      },
+    },
+
+  ];
+getFeriadosActuales(){
+  let date = new Date;
+  let year = date.getFullYear();
+
+  this.paramSV.getFeriadosYear(year).subscribe((feriados)=>{
+    console.log(feriados);
+    this.feriados = feriados;
+  })
+
+}
+
+dataFeriadosTest = [
+  {
+    "nombre": "Independencia Nacional",
+    "comentarios": "",
+    "fecha": "2014-09-18",
+    "irrenunciable": "1",
+    "tipo": "Civil",
+    "leyes": [
+      {
+        "nombre": "Ley 2.977",
+        "url": "http://www.leychile.cl/Navegar?idNorma=23639"
+      },
+      {
+        "nombre": "Ley 19.973",
+        "url": "http://www.leychile.cl/Navegar?idNorma=230132"
+      }
+    ]
+  },
+  {
+    "nombre": "Día de las Glorias del Ejército",
+    "comentarios": "",
+    "fecha": "2014-09-19",
+    "irrenunciable": "1",
+    "tipo": "Civil",
+    "leyes": [
+      {
+        "nombre": "Ley 2.977",
+        "url": "http://www.leychile.cl/Navegar?idNorma=23639"
+      },
+      {
+        "nombre": "Ley 20.629",
+        "url": "http://www.leychile.cl/Navegar?idNorma=1043726"
+      }
+    ]
+  }
+]
 
   cellCellEditorParams = (params: ICellEditorParams<any>) => {
     //
@@ -230,12 +326,22 @@ export class ParametrosComponent implements OnInit {
 
   }
 
+  actualizarSueldos(){
+  this.paramSV.updateSueldos().subscribe(r=>{
+    console.log(r);
+    Swal.fire('Actualizar sueldos','Sueldos actualizados con éxito','success')
+  })
+  }
 
+  formatFeriado(irrenunciable : ValueFormatterParams){
+
+    return irrenunciable.value ==1 ? 'Si':'No';
+  }
 
   formatEstado(estado : ValueFormatterParams){
     let value ='';
     switch(estado.value){
-      case 'A':
+      case 1:
       value ='Abierto'
       break;
       case 'C' :

@@ -11,7 +11,10 @@
     </div> -->
     <br>
     <div class="container">
+
       <div class="row" *ngIf="parametrosArray.length>0 && paramss">
+
+
         <div class="col-6 grid-margin">
           <div class="card ">
             <div class="card-body ">
@@ -32,18 +35,21 @@
 
                   <div class="row mt-1">
                     <div class="col-12">
-                      <button class="btn btn-inverse-danger btn-rounded btn-block" (click)="cierre(paramss.tipo_proceso)"
-                        *ngIf="paramss.estado == 'A'" [disabled]="paramss.tipo_proceso=='S'">
+                      <button class="btn btn-inverse-danger btn-rounded btn-block"
+                        (click)="cierre(paramss.tipo_proceso)" *ngIf="paramss.estado == 'A'"
+                        [disabled]="paramss.tipo_proceso=='S'">
                         <i class="icon-lock text-white icon-md"></i>
                       </button>
                     </div>
                   </div>
 
-
-
                 </div>
+
+
               </div>
             </div>
+
+
           </div>
         </div>
         <div class="col-6 grid-margin">
@@ -67,7 +73,7 @@
                 </div>
 
 
-               <!--  <div class="d-inline-block">
+                <!--  <div class="d-inline-block">
                   <div class="badge  badge-pill"
                     [ngClass]="parametrosArray[1].estado == 'A' ? 'badge-success': 'badge-dark'" style=" font-size: 1rem;
                   font-weight: bold;">
@@ -89,7 +95,32 @@
             </div>
           </div>
         </div>
+        <div class="col-6 grid-margin">
+          <div class="card ">
+            <div class="card-body ">
+              <div class="row">
+                <div class="col-8">
+                  <h4 class="mb-0 text-info">Actualizar sueldos del sistema<span class=" text-bold">
+                    </span> </h4>
+                </div>
+
+                <div class="col-4 mt-2">
+                  <button class="btn btn-success btn-rounded btn-block" (click)="actualizarSueldos()"
+                    [disabled]="paramss.tipo_proceso=='S'">
+                    <i class="icon-refresh text-white icon-md"></i>
+                  </button>
+
+
+                </div>
+              </div>
+
+            </div>
+
+
+          </div>
+        </div>
       </div>
+
       <div class="row">
         <div class="col-12">
           <div class="card ">
@@ -104,6 +135,30 @@
                   [suppressMaxRenderedRowRestriction]="true" [paginationPageSize]="15" [rowClassRules]="rowClassRules"
                   (gridReady)="onGridReady($event)" (rowValueChanged)="onRowValueChanged($event)"
                   [editType]="'fullRow'"></ag-grid-angular>
+              </div>
+
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-12">
+          <div class="card ">
+            <div class="card-body">
+              <h1 class="display-4">Feriados del año</h1>
+              <div class="table-responsive1">
+                <app-table-aggrid [datos]="dataFeriadosTest" [columnas]="columnDefsFeriados"></app-table-aggrid>
+              <!--   <ag-grid-angular #pGrid style="width: 100%; height: 100%" class="ag-theme-alpine"
+                  [gridOptions]="gridOptions" [defaultColDef]="defaultColDef" [suppressMenuHide]="true"
+                  [suppressColumnVirtualisation]="false" [suppressRowVirtualisation]="false" [pagination]="true"
+                  [groupSelectsChildren]="true" [rowSelection]="rowSelection" [enableCellChangeFlash]="true"
+                  [alwaysShowHorizontalScroll]="false" [alwaysShowVerticalScroll]="true"
+                  [suppressMaxRenderedRowRestriction]="true" [paginationPageSize]="15" [rowClassRules]="rowClassRules"
+                  (gridReady)="onGridReady($event)" (rowValueChanged)="onRowValueChanged($event)"
+                  [editType]="'fullRow'"></ag-grid-angular> -->
               </div>
 
             </div>
