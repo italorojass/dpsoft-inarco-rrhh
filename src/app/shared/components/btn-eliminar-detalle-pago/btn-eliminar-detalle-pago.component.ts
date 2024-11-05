@@ -18,6 +18,9 @@ export class BtnEliminarDetallePagoComponent implements ICellRendererAngularComp
     ){
 
   }
+
+  rolUser = sessionStorage.getItem('rolUser');
+
   agInit(params: ICellRendererParams): void {
     this.cellValue =params.data;
     //console.log('AG INIT',params.data)

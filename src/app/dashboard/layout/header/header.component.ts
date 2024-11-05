@@ -73,6 +73,11 @@ export class HeaderComponent implements OnInit {
         title: 'Bonos',
         href: '/obras/inicio/detalle-bonos',
         icon: 'icon-present'
+      },
+      {
+        title: 'Calendario hora extra',
+        href: '/obras/inicio/calendario-hora-extra',
+        icon: 'icon-calendar'
       });
 
     this.obtenerParametros('R').subscribe((r: any) => {

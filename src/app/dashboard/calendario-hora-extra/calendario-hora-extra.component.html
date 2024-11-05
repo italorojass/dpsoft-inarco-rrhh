@@ -1,0 +1,73 @@
+<div class="card">
+  <div class="card-body">
+
+    <div class="row">
+      <div class="col-3">
+        <h4 class="text-left mb-4 text-dark">
+          <a [routerLink]="['/obras']"><i class="icon-action-undo mr-2"></i>{{ obra.codigo }} | {{ obra.nombre }}</a>
+        </h4>
+      </div>
+      <div class="col-9">
+        <app-cabecera-pages [titulo]="'Calendario hora extra'"></app-cabecera-pages>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-12">
+        <div class="container">
+
+          <div class="row">
+
+
+            <div class="col-6 grid-margin" *ngIf="paramss">
+              <h4 class="mb-0 text-dark">PERIODO OBRA ACTUAL: <span class=" text-bold">
+                </span> </h4>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-inline-block pt-3">
+
+                  <div class="mb-0"><span class="text-gray">Primer Lunes del periodo:
+                      {{formatfecha(paramss.inicio_periodo)
+                      }}</span>
+
+                  </div>
+
+                  <div class="mb-0">
+                    <span class="text-gray">
+                      Último día del periodo:
+                      {{formatfecha(paramss.final_periodo)
+                      }}</span>
+
+
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+            <div class="col-6 grid-margin">
+              <h4 class="card-title mb-0">Cambiar periodos
+
+              </h4>
+              <div class="date-range-container pt-3">
+                <input #fromDate type="text" placeholder="Inicio del periodo" class="date-input" />
+
+
+
+                <button class="btn btn-primary btn-sm" [disabled]="dateRangeInvalid" (click)="updateCalendarioHoraExtra()">Actualizar</button>
+              <!--   <input #toDate type="text" placeholder="Final del periodo" class="date-input" readonly /> -->
+            </div>
+            <div *ngIf="dateRangeInvalid" class="text-danger">
+              El rango no debe exceder los 35 días.
+            </div>
+
+            </div>
+
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

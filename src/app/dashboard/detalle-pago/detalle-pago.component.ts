@@ -5,7 +5,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { DetallePagoService } from './services/detalle-pago.service';
 import { ToastrService } from 'ngx-toastr';
 import ChileanRutify from 'chilean-rutify';
-import { ColDef, GridApi, GridOptions, GridReadyEvent, ICellEditorParams, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
+import { ColDef, GetRowIdFunc, GetRowIdParams, GridApi, GridOptions, GridReadyEvent, ICellEditorParams, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ProyectosService } from 'src/app/shared/components/proyectos/services/proyectos.service';
@@ -61,13 +61,8 @@ export class DetallePagoComponent implements OnInit {
     if (this.deletePago.dataEdit) {
       this.deletePago.dataEdit.subscribe((valueEdit: any) => {
 
-        let format = {
-          accion: 'E',
-          id_detalle: valueEdit.id,
-          tipo: 'pagos',
-          obra: this.obra.codigo,
-        }
-        console.log('click edit ', format,valueEdit);
+
+        console.log('click edit ', valueEdit);
         const swalWithBootstrapButtons = Swal.mixin({
           customClass: {
             confirmButton: 'btn btn-success',
@@ -76,35 +71,92 @@ export class DetallePagoComponent implements OnInit {
           buttonsStyling: false
         })
 
-        swalWithBootstrapButtons.fire({
-          title: 'Estás eliminando un trabajador!',
-          text: `Estas seguro de eliminar al trabajador ${valueEdit.nombre} de manera permanente de la obra ${this.obra.nombre}`,
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Si, Eliminar',
-          cancelButtonText: 'No, cancelar',
-          reverseButtons: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.deletePago.deleteTrabajador(format).subscribe(r => {
-              console.log('click edit response ', r);
-              this.toastr.success('Eliminado', `Trabajador ${valueEdit.nombre} eliminado del sistema`);
-              this.getPagos();
+        if (valueEdit.tipoClick == 'D') {
+          swalWithBootstrapButtons.fire({
+            title: 'Estás eliminando un trabajador!',
+            text: `Estas seguro de eliminar al trabajador ${valueEdit.nombre} de manera permanente de la obra ${this.obra.nombre}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si, Eliminar',
+            cancelButtonText: 'No, cancelar',
+            reverseButtons: true
+          }).then((result) => {
+            let format = {
+              accion: 'E',
+              id_detalle: valueEdit.id,
+              tipo: 'pagos',
+              obra: this.obra.codigo,
+            }
+
+            if (result.isConfirmed) {
+              this.deletePago.deleteTrabajador(format).subscribe(r => {
+                console.log('click edit response ', r);
+                this.toastr.success('Eliminado', `Trabajador ${valueEdit.nombre} eliminado del sistema`);
+                this.getPagos();
+                result.dismiss === Swal.DismissReason.cancel
+              })
+
+
+            } else if (
+              /* Read more about handling dismissals below */
               result.dismiss === Swal.DismissReason.cancel
-            })
+            ) {
+              /* swalWithBootstrapButtons.fire(
+                'Cancelled',
+                'Your imaginary file is safe :)',
+                'error'
+              ) */
+            }
+          })
+        } else {
+          swalWithBootstrapButtons.fire({
+            title: 'Estás finiquitando un trabajador!',
+            text: `Estas seguro de finiquitar al trabajador ${valueEdit.nombre} de la obra ${this.obra.nombre}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si, Finiquitar',
+            cancelButtonText: 'No, cancelar',
+            reverseButtons: true
+          }).then((result) => {
+            let format = {
+              id_detalle_pagos: valueEdit.id,
+
+            }
+
+            if (result.isConfirmed) {
+              this.deletePago.finiquitarTrabajador(format).subscribe((r: any) => {
+                console.log('click edit response ', r);
+                this.toastr.success('Finiquitado', `Trabajador ${valueEdit.nombre} finiquitado con éxito`);
+
+                let body = {
+                  ... r.result.respuesta[0],
+                  rutF: ChileanRutify.formatRut(`${r.result.respuesta[0].rut}-${r.result.respuesta[0].dig}`)
+                }
+                let updateRowid = body.id;
+
+               let rowNode= this.gridOptions.api.getRowNode(updateRowid);
+
+                if (rowNode) {
+                  rowNode.setData(body);  // Actualiza solo la fila con la nueva data
+                   result.dismiss === Swal.DismissReason.cancel
+                }
+
+              })
 
 
-          } else if (
-            /* Read more about handling dismissals below */
-            result.dismiss === Swal.DismissReason.cancel
-          ) {
-            /* swalWithBootstrapButtons.fire(
-              'Cancelled',
-              'Your imaginary file is safe :)',
-              'error'
-            ) */
-          }
-        })
+            } else if (
+              /* Read more about handling dismissals below */
+              result.dismiss === Swal.DismissReason.cancel
+            ) {
+              /* swalWithBootstrapButtons.fire(
+                'Cancelled',
+                'Your imaginary file is safe :)',
+                'error'
+              ) */
+            }
+          })
+        }
+
 
       })
     }
@@ -113,7 +165,9 @@ export class DetallePagoComponent implements OnInit {
 
   }
 
-
+  public getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
+    return params.data.id;
+  };
 
 
   titlepage = '';
@@ -128,7 +182,7 @@ export class DetallePagoComponent implements OnInit {
   navigationSubscription: any;
 
   private subscription: Subscription;
-  quemesViene:any;
+  quemesViene: any;
   ngOnInit() {
 
     this.numbers = Array.from(Array(20).keys())
@@ -138,7 +192,7 @@ export class DetallePagoComponent implements OnInit {
 
     })
 
-   this.quemesViene = JSON.parse(sessionStorage.getItem('periodoAbierto'));
+    this.quemesViene = JSON.parse(sessionStorage.getItem('periodoAbierto'));
 
     this.initData();
     this.getPagos()
@@ -200,7 +254,7 @@ export class DetallePagoComponent implements OnInit {
       finiquito: Number(e.finiquito),
       finiquito_findemes: Number(e.finiquito_findemes)
     }
-   // console.log('body edit', body1);
+    // console.log('body edit', body1);
     this.dtSv.get(body1).subscribe(r => {
       console.log('response edit', r);
       this.toastr.success('Actualizado con éxito', `trabajador ${e.nombre}`);
@@ -209,8 +263,8 @@ export class DetallePagoComponent implements OnInit {
         rowNode.setData(e);  // Actualiza solo la fila con la nueva data
       }
 
-            this.grid.api.getPinnedBottomRow(5);
-            this.grid.api.getDisplayedRowCount();
+      this.grid.api.getPinnedBottomRow(5);
+      this.grid.api.getDisplayedRowCount();
 
       //this.getPagos();
 
@@ -673,13 +727,29 @@ export class DetallePagoComponent implements OnInit {
 
 
   };
-  rowSelection = this.aggsv.rowSelection;
+
+  public rowSelection: any | "single" | "multiple" = {
+    mode: "multiRow",
+    enableSelectionWithoutKeys: true,
+    enableClickSelection: true,
+    checkboxes: false,
+    headerCheckbox: false,
+  };
+
+  //rowSelection = this.aggsv.rowSelection;
   overlayLoadingTemplate = this.aggsv.overlayLoadingTemplate;
   overlayNoRowsTemplate = this.aggsv.overlayNoRowsTemplate;
   localeText = this.aggsv.getLocale();
 
   columnDefs: ColDef[] = [
-
+    /*   {
+        headerCheckboxSelection: true, // Habilita el checkbox en el header
+        checkboxSelection: true,       // Habilita los checkboxes en las filas
+        headerName: '',
+        width: 50,
+    filter:false,
+        pinned: 'left'
+      }, */
     {
       headerName: 'Acciones',
       cellRenderer: BtnEliminarDetallePagoComponent,
@@ -701,7 +771,7 @@ export class DetallePagoComponent implements OnInit {
       lockPinned: true,
       pinned: 'left',
       //cellRenderer: this.CurrencyCellRenderer,
-      editable: (params) => (params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A'  ),
+      editable: (params) => (params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A'),
     },
     {
       field: 'nombre',
@@ -935,7 +1005,9 @@ export class DetallePagoComponent implements OnInit {
   gridOptions = <GridOptions>{
     columnDefs: this.columnDefs,
     rowData: [],
-    pinnedBottomRowData: []
+    pinnedBottomRowData: [],
+    rowSelection: 'multiple', // Habilita selección múltiple
+    suppressRowClickSelection: false // Permite seleccionar filas al hacer clic
   };
   pinnedBottomRowData: any[];
 
@@ -1007,36 +1079,7 @@ export class DetallePagoComponent implements OnInit {
   }
   @ViewChild('closeModalEdit') closeModalEdit: ElementRef;
 
-  saveEditDetallePago() {
 
-
-    let body1 = {
-      tipo: "pagos",
-      accion: "M",
-      especialidad: this.editPagoForm.value.especialidad,
-      sueldo_liq: this.editPagoForm.value.sueldo_liq,
-      id_detalle: this.itemEditPago.id,
-      obra: this.obra.codigo,
-      dias: Number(this.editPagoForm.value.dias),
-      valor_hora: this.editPagoForm.value.valor_hora,
-      ajuste_pos: this.editPagoForm.value.ajuste_pos,
-      anticipo: this.editPagoForm.value.anticipo,
-      dctos_varios: this.editPagoForm.value.dctos_varios,
-      finiquito: this.editPagoForm.value.finiquito,
-      finiq: this.editPagoForm.value.finiq,
-      zona10: this.editPagoForm.value.zona10,
-      viatico: this.editPagoForm.value.viatico,
-      asignaciones: this.editPagoForm.value.asignaciones,
-      aguinaldo: this.editPagoForm.value.aguinaldo,
-      finiquito_findemes: this.editPagoForm.value.finiquito_findemes
-    }
-    console.log('body edit', body1);
-    this.dtSv.get(body1).subscribe(r => {
-      //console.log('response edit',r);
-
-      this.getPagos();
-    })
-  }
 
   @ViewChild('closeModal') closeModal: ElementRef;
 

@@ -36,6 +36,10 @@ export class ParametrosService {
 
   }
 
+  getCalendarioHoraExtra(body){
+    return this._http.post(`${environment.url}ws_parameobras_rrhh.php`,body);
+  }
+
 
   getEstado(estado){
     return estado =='A' ? 'ABIERTO' : 'CERRADO'
