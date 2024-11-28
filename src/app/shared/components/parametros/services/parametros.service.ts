@@ -23,8 +23,8 @@ export class ParametrosService {
     return this._http.get(`${ environment.apiFeriadosv}${year}`);
   }
 
-  updateSueldos(){
-    return this._http.get(`${environment.url}ws_calculo_sueldo_rrhh.php`);
+  updateSueldos(body){
+    return this._http.post(`${environment.url}ws_calculo_sueldo_rrhh.php`,body);
   }
 
   getBonos(body){

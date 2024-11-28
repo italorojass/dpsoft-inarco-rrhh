@@ -61,8 +61,20 @@ export class HeaderComponent implements OnInit {
       },
       {
         title: 'Horas extras',
-        href: '/obras/inicio/horas-extras',
-        icon: 'icon-clock'
+        //href: '/obras/inicio/horas-extras',
+        icon: 'icon-clock',
+        submenu: [
+          {
+            title: 'Ver hora extras',
+            href: '/obras/inicio/horas-extras',
+           // icon: 'icon-calendar'
+          },
+          {
+            title: 'Calendario hora extra',
+            href: '/obras/inicio/calendario-hora-extra',
+           // icon: 'icon-calendar'
+          }
+        ]
       },
       {
         title: 'Diferencia sab. dom.',
@@ -74,10 +86,15 @@ export class HeaderComponent implements OnInit {
         href: '/obras/inicio/detalle-bonos',
         icon: 'icon-present'
       },
-      {
+    /*   {
         title: 'Calendario hora extra',
         href: '/obras/inicio/calendario-hora-extra',
         icon: 'icon-calendar'
+      }, */
+      {
+        title: 'Feriados',
+        href: '/obras/inicio/calendario-feriados',
+        icon: 'icon-plane'
       });
 
     this.obtenerParametros('R').subscribe((r: any) => {

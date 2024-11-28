@@ -884,6 +884,14 @@ export class DetallePagoComponent implements OnInit {
       editable: false
     },
     {
+      field: 'feriados',
+      headerName: 'Feriados',
+      width: 150,
+      sortable: true,
+      cellRenderer: this.CurrencyCellRenderer,
+      editable: false
+    },
+    {
       field: 'total_bonos',
       headerName: 'Total bonos',
       width: 100,
@@ -1025,7 +1033,7 @@ export class DetallePagoComponent implements OnInit {
     var usdFormate = new Intl.NumberFormat('es-ES');
     //return usdFormate.format(params.value);
 
-    return params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return params.value ? params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '';
   }
 
 

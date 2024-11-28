@@ -1,5 +1,5 @@
 import { ToastrService } from 'ngx-toastr';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild,ElementRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ParametrosService } from './services/parametros.service';
 import { ObrasService } from 'src/app/dashboard/obras/services/obras.service';
@@ -10,6 +10,8 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { DatepickerAgGridComponent } from '../datepicker-ag-grid/datepicker-ag-grid.component';
 import { DatepickerAgGridFinalComponent } from '../datepicker-ag-grid-final/datepicker-ag-grid-final.component';
 import { environment } from 'src/environments/environment';
+import flatpickr from 'flatpickr';
+import { Spanish } from 'flatpickr/dist/l10n/es'; // Importa el idioma español
 
 @Component({
   selector: 'app-parametros',
@@ -19,6 +21,7 @@ import { environment } from 'src/environments/environment';
 export class ParametrosComponent implements OnInit {
 
   nombreDias = ['Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo'];
+  @ViewChild('fromDate') fromDateInput!: ElementRef;
 
   constructor(private fb : FormBuilder,
     private paramSV : ParametrosService,
@@ -76,6 +79,23 @@ export class ParametrosComponent implements OnInit {
   ngOnInit(): void {
     this.get();
     this.getMesesFuturos();
+
+    let today = new Date();
+
+    flatpickr(this.fromDateInput.nativeElement, {
+      dateFormat: 'd-m-Y',
+      locale: Spanish,
+      defaultDate: [this.formatfecha(today.toISOString().split('T')[0])],
+      onChange: (selectedDates) => {
+        if (selectedDates.length === 2) {
+          //abrir alerta y mandar a guardar
+          /* this.fromDateInput.nativeElement.value = selectedDates[0].toLocaleDateString();
+          this.toDateInput.nativeElement.value = selectedDates[1].toLocaleDateString(); */
+
+        }
+      }
+    });
+
     //this.getFeriadosActuales();
   }
   feriados:any = [];
@@ -325,9 +345,18 @@ dataFeriadosTest = [
 
 
   }
+  obras =  JSON.parse(sessionStorage.getItem('obras')!);
 
+  fechaFeriado = '';
+  agregarFecha(){
+    console.log('agregar fecha');
+  }
+  selectedObra = '';
   actualizarSueldos(){
-  this.paramSV.updateSueldos().subscribe(r=>{
+    let body = {
+
+    }
+  this.paramSV.updateSueldos(body).subscribe(r=>{
     console.log(r);
     Swal.fire('Actualizar sueldos','Sueldos actualizados con éxito','success')
   })

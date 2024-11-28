@@ -2,7 +2,11 @@
 <button type="button" class="btn btn-outline-danger btn-rounded btn-sm" (click)="buttonClicked('D')" *ngIf="cellValue.id" ngbTooltip="Eliminar trabajador"
 ><i class="icon-trash ml-1"></i></button>
 
-<button type="button" class="btn btn-outline-dark btn-rounded btn-sm ml-2" (click)="buttonClicked('F')" *ngIf="cellValue.id && cellValue.ciequincena !=='S' && rolUser === '1'" ngbTooltip="Finiquitar trabajador"
-><i class="icon-flag ml-1"></i></button>
+<button type="button" class="btn btn-outline-dark btn-rounded btn-sm ml-2" (click)="buttonClicked('F')" *ngIf="cellValue.id && cellValue.ciequincena !=='S' && rolUser === '1';else btnReintegrar" ngbTooltip="Finiquitar trabajador"
+><i class="icon-ban ml-1"></i></button>
 
+<ng-template #btnReintegrar>
+  <button type="button" class="btn btn-outline-primary btn-rounded btn-sm ml-2" (click)="buttonClicked('R')" *ngIf="cellValue.id && cellValue.ciequincena =='S' && rolUser === '1' " ngbTooltip="Reintegrar trabajador"
+  ><i class="icon-reload ml-1"></i></button>
+</ng-template>
 

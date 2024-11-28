@@ -35,6 +35,7 @@ import { ReportePdfComponent } from './detalle-pago/reporte-pdf/reporte-pdf.comp
 import { NgSelectModule } from '@ng-select/ng-select';
 import { CalendarioHoraExtraComponent } from './calendario-hora-extra/calendario-hora-extra.component';
 import { FlatpickrModule } from 'angularx-flatpickr';
+import { CalendarioFeriadosComponent } from './calendario-feriados/calendario-feriados.component';
 
 // Registra el idioma español
 registerLocaleData(localeEs);
@@ -54,7 +55,8 @@ registerLocaleData(localeEs);
     DetalleBonoComponent,
     MaestroEspecialidadComponent,
     ReportePdfComponent,
-    CalendarioHoraExtraComponent
+    CalendarioHoraExtraComponent,
+    CalendarioFeriadosComponent
 
 
 

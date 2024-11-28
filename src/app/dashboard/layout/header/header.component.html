@@ -69,34 +69,21 @@
           </li>
 
           <ng-template #submenu>
-            <!-- <li class="nav-item " *ngIf="periodoActualAbierto">
-
-              <a class="nav-link">
-                <i class="link-icon"></i>
-                <span class="menu-title"
-                [ngClass]="periodoActualAbierto.estado == 'C' ? ' text-danger': 'text-success'">
-
-                  {{periodoActualAbierto.quemes}}
-                  <i class="ml-1" [ngClass]="periodoActualAbierto.estado == 'C' ? 'icon-lock':'icon-power'"></i>
-                </span>
-                <i class="menu-arrow"></i>
-              </a>
+            <li class="nav-item " >
+              <a
+              class="nav-link" *ngIf="item.submenu?.length > 0"><i class="link-icon {{item.icon}}"></i><span class="menu-title">{{item.title}}</span><i class="menu-arrow"></i></a>
 
               <div class="submenu">
+                <ul class="submenu-item" #submenu>
+                  <li class="nav-item"  *ngFor="let item1 of item.submenu">
+                    <a class="nav-link" [routerLink]="[item1.href]">{{item1.title}}</a>
+                  </li>
 
-                <ul class="submenu-item" >
-                  <li class="nav-item" *ngFor="let item1 of periodos.reverse()">
-
-                    <button class="nav-link " (click)="changeData(item1)"
-                    [ngClass]="item1?.estado == 'C' ? ' text-danger': 'text-success'"
-                      style="cursor: pointer;">{{item1?.quemes}} <i class="ml-2"  [ngClass]="item1?.estado == 'C' ? 'icon-lock':'icon-power'"></i>
-
-
-                      </button></li>
                 </ul>
               </div>
 
-            </li> -->
+
+            </li>
           </ng-template>
 
 
