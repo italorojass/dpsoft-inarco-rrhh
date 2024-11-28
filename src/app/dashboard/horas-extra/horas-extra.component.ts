@@ -14,7 +14,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { ParametrosService } from 'src/app/shared/components/parametros/services/parametros.service';
 import { ToastrService } from 'ngx-toastr';
 import { CentralizaPeriodosService } from 'src/app/shared/services/centraliza-periodos.service';
-import { Subscription, switchMap } from 'rxjs';
+import { Observable, of, Subscription, switchMap } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -75,10 +75,220 @@ export class HorasExtraComponent implements OnInit {
 
     this.titlepage = sessionStorage.getItem('titlePage');
 
-    this.getPeriodo().subscribe((r:any)=>{
+    this.getFeriados().pipe(
+      switchMap((feriado)=>{
+        this.feriados = feriado;
+       // console.log('response feriado',feriado);
+        //return this.getPeriodo()
+        return this.getCalendarios()
+      })
+    ).subscribe((r:any)=>{
       let res = r['result'].parametros[0];
       //this.datosParametros = res;
+      console.log('response periodo',r);
+      this.columnDefs.push(
+        {
+          headerName: 'ID',
+          field: 'correlativo',
+          width: 80,
+          pinned: 'left',
+          filter: false,
+          floatingFilter: false,
+          editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
+        },
+        {
+          field: 'nombre',
+          headerName: 'Nombre',
+          width: 250,
+          minWidth: 170,
+          suppressSizeToFit: true,
+          pinned: 'left',
+          lockPinned: true,
+          cellClass: 'lock-pinned',
 
+          editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
+        }
+      );
+
+
+      this.formDate.patchValue({
+        inicio: res.inicio_periodo,
+        final: res.final_periodo,
+      });
+      let cabecera = this.buildHeader(res.inicio_periodo, res.final_periodo);
+
+      console.log('datos dias', cabecera);
+      let todosLosFeriados = [];
+      let diaferiado = ''
+      if(this.feriados.length>0){
+        todosLosFeriados = this.feriados.filter(x=>x.fecha);
+        console.log(todosLosFeriados)
+      }
+      let counTotalSemana = 0;
+      for (let i = 0; i < cabecera.length; i++) {
+        if (cabecera[i].nombre.includes('Domingo')) {
+          counTotalSemana++; //agrego acontador a total semaa
+          //console.log('CANTIDAD DE SEMANAS', counTotalSemana);
+          this.columnDefs.push({
+            headerName: `Semana ${counTotalSemana}`,
+
+            children: [
+              {
+                field: `dia${i + 1}`,
+                headerName: cabecera[i].nombre.includes('totsem')
+                  ? !`${cabecera[i].nombre}`
+                  : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
+                headerClass: 'text-vertical',
+                width: 80,
+                suppressSizeToFit: true,
+                filter: false,
+                floatingFilter: false,
+                editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
+
+                cellEditor: 'agNumberCellEditor',
+                cellEditorParams: {
+                  min: 1,
+                  max: 100,
+                  precision: 0,
+                },
+                cellStyle: {
+                  // you can use either came case or dashes, the grid converts to whats needed
+                  backgroundColor: '#ff5e', // light green
+                },
+              },
+            ],
+          });
+
+          this.columnDefs.push({
+            // headerName:`Semana ${counTotalSemana}`,
+            children: [
+              {
+                headerName: `Total semana ${counTotalSemana}`,
+
+                field: `totsem${counTotalSemana}`,
+                width: 100,
+                suppressSizeToFit: true,
+                filter: false,
+                floatingFilter: false,
+                editable: false,
+
+                cellStyle: {
+                  // you can use either came case or dashes, the grid converts to whats needed
+                  backgroundColor: '#439aff', // light green
+                },
+              },
+            ],
+          });
+        } else {
+
+          if (cabecera[i].nombre.includes('Sábado')) {
+            this.columnDefs.push({
+              field: `dia${i + 1}`,
+              headerName: cabecera[i].nombre.includes('totsem')
+                ? !`${cabecera[i].nombre}`
+                : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
+              headerClass: 'text-vertical',
+              width: 80,
+              suppressSizeToFit: true,
+              filter: false,
+              floatingFilter: false,
+              editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
+              cellEditor: 'agNumberCellEditor',
+              cellEditorParams: {
+                min: 1,
+                max: 100,
+                precision: 0,
+              },
+              cellStyle: {
+                // you can use either came case or dashes, the grid converts to whats needed
+                backgroundColor: '#7ed321', // light green
+              },
+            });
+          } else {
+            //todos los dias
+            //TODO : crear una funcion que tome la fecha si existen feriados,
+            //si existen, devolver true para q pinte de rojo la casilla entera
+            this.columnDefs.push({
+              field: `dia${i + 1}`,
+              headerName: cabecera[i].nombre.includes('totsem')
+                ? !`${cabecera[i].nombre}`
+                : `${cabecera[i].dia} | ${cabecera[i].nombre}`,
+              headerClass: 'text-vertical',
+              width: 100,
+              suppressSizeToFit: true,
+              filter: false,
+              floatingFilter: false,
+              editable : (params) => params.data.ciequincena !== 'S'&& this.datosParametros.estado =='A',
+              cellEditor: 'agNumberCellEditor',
+                cellEditorParams: {
+                  min: 1,
+                  max: 100,
+                  precision: 0,
+                },
+                cellStyle: {
+                  // you can use either came case or dashes, the grid converts to whats needed
+                 // backgroundColor: this.feriados.length >0 ? 'white' : '#7ed321', // light green
+                },
+            });
+          }
+        }
+      }
+      this.columnDefs.push(
+        {
+          field: `tothormes`,
+          headerName: 'Total h. extras del mes',
+          headerClass: 'text-vertical',
+          width: 80,
+          suppressSizeToFit: true,
+          filter: false,
+          floatingFilter: false,
+          editable: false,
+          lockPinned: true,
+          pinned: 'right',
+        },
+        {
+          field: `valhor`,
+          headerName: 'Valor líquido hora extra',
+          headerClass: 'text-vertical',
+          width: 100,
+          suppressSizeToFit: true,
+          filter: false,
+          floatingFilter: false,
+          editable: false,
+          lockPinned: true,
+          pinned: 'right',
+          cellRenderer: this.CurrencyCellRenderer,
+
+          cellRendererParams: {
+            currency: 'CLP',
+          },
+        },
+        {
+          field: `totvalhor`,
+          headerName: 'Valor líquido total horas del mes',
+          headerClass: 'text-vertical',
+          width: 100,
+          suppressSizeToFit: true,
+          filter: false,
+
+          floatingFilter: false,
+          editable: false,
+          lockPinned: true,
+          pinned: 'right',
+          cellRenderer: this.CurrencyCellRenderer,
+          cellRendererParams: {
+            currency: 'CLP',
+          },
+        }
+      ); //los ultimos/.
+      console.log('columDef Final', this.columnDefs);
+
+      this.grid.api.setColumnDefs(this.columnDefs);
+    })
+    /* this.getPeriodo().subscribe((r:any)=>{
+      let res = r['result'].parametros[0];
+      //this.datosParametros = res;
+ console.log('response periodos y feriado',r);
       this.columnDefs.push(
         {
           headerName: 'ID',
@@ -262,18 +472,19 @@ export class HorasExtraComponent implements OnInit {
       console.log('columDef Final', this.columnDefs);
 
       this.grid.api.setColumnDefs(this.columnDefs);
-    })
+    }) */
 
 
-    let req = this.periodos.getPeriodoSeleccionado();
     this.getHoraExtra();
+
+   // this.getFeriados();
 
   }
 
   titlepage ='';
 
   CurrencyCellRenderer(params: any) {
-    return params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return params.value?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
   public groupHeaderHeight = 45;
@@ -299,11 +510,21 @@ export class HorasExtraComponent implements OnInit {
     };
     //console.log(b);
     return this.ParametrosService.get(b);
-    //return this.buildHeader(this.formDate.value.inicio,this.formDate.value.final);
+  }
+  getCalendarios(){
+    let b = {
+      accion : 'C',
+      obra :this.obra.codigo,
+      mesyano : this.datosParametros.quemes,
+      tipo_proceso : this.datosParametros.tipo_proceso
+    }
+    return this.ParametrosService.getCalendarioHoraExtra(b)
+
   }
   weekday = [];
 
   buildHeader(inicio, final) {
+    console.log('fechas', inicio,final);
     this.tblHeader = [];
     this.weekday = this.bt.getDaysInMonth(inicio, final);
 
@@ -349,6 +570,28 @@ export class HorasExtraComponent implements OnInit {
 
     });
   }
+
+  feriados :any=[]
+  getFeriados(): Observable<any>{
+
+    let periodoSelect = this.datosParametros.inicio_periodo.split('-');
+
+    let testData : any = [
+      {
+        "nombre": "Día de la Virgen del Carmen",
+        "comentarios": null,
+        "fecha": "2024-07-16",
+        "irrenunciable": "0",
+        "tipo": "Religioso"
+      }
+    ]
+
+
+    return of(testData)
+   // return this.ParametrosService.getFeriadosMonthYear(periodoSelect[0],periodoSelect[1]);
+  }
+
+
 
   headings = [
     [

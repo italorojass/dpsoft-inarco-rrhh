@@ -18,18 +18,26 @@ export class BtnEliminarDetallePagoComponent implements ICellRendererAngularComp
     ){
 
   }
+
+  rolUser = sessionStorage.getItem('rolUser');
+
   agInit(params: ICellRendererParams): void {
     this.cellValue =params.data;
     //console.log('AG INIT',params.data)
   }
-  buttonClicked() {
-   // console.log(this.cellValue)
-
+  buttonClicked(typeClick : string) {
+    //console.log(this.cellValue)
+    this.cellValue = {
+      ...this.cellValue,
+      tipoClick : typeClick
+    }
    this.deletePago.dataEdit.next(this.cellValue);
 
 
     //this.passData.dataEdit.next(format);
   }
+
+
 
   // gets called whenever the user gets the cell to refresh
   refresh(params: ICellRendererParams) {

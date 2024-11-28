@@ -11,6 +11,10 @@ import { DetalleBonoComponent } from './detalle-bono/detalle-bono.component';
 import { HorasExtraComponent } from './horas-extra/horas-extra.component';
 import { MaestroEspecialidadComponent } from './maestro-especialidad/maestro-especialidad.component';
 import { AuthGuard } from '../shared/guards/auth.guard';
+import { CalendarioHoraExtraComponent } from './calendario-hora-extra/calendario-hora-extra.component';
+// ... existing imports ...
+import { CalendarioFeriadosComponent } from './calendario-feriados/calendario-feriados.component';
+// ... rest of the file ...
 
 const routes: Routes = [
   {
@@ -45,7 +49,14 @@ const routes: Routes = [
       path : 'detalle-bonos',
       component : DetalleBonoComponent
     },
-
+    {
+      path : 'calendario-hora-extra',
+      component : CalendarioHoraExtraComponent
+    },
+    {
+      path : 'calendario-feriados',
+      component : CalendarioFeriadosComponent
+    },
   ]
   },
 ];

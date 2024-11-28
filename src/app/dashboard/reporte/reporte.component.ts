@@ -50,7 +50,7 @@ export class ReporteComponent implements OnInit {
 
   CurrencyCellRenderer(params: any) {
 
-    return params.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return params.value?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
     //return params.value;
   }
@@ -316,25 +316,25 @@ this.fileName='';
         const wsname: string = wb.SheetNames[0];
         const ws: XLSX.WorkSheet = wb.Sheets[wsname];
         this.showbtnFiniq = true;
-        ws['!ref'] = "A4:CE758"
+        ws['!ref'] = "A5:CE30000"
         let dataExcel= XLSX.utils.sheet_to_json(ws);
        // this.data = data;
        console.log('datos excel rem',dataExcel);
 
        dataExcel.forEach((element:any, i:number) => {
         //console.log('datos excel each',element);
-        let nombre = element['Nombre'];
-        let apepat = element['Apellido'];
-        let apemat = element['Segundo Apellido'];
-        let rut = element['RUT'];
-        let ficha = element['Código de ficha'];
-        let area = element['Área'] ;
-        let montoSinRemunerar = element['Monto sin remuneración pendiente'];
+        let nombre = element['Empleado - Nombre Completo'];
+      /*   let apepat = element['Apellido'];
+        let apemat = element['Segundo Apellido']; */
+        let rut = element['Empleado - Número de Documento'];
+        let ficha = element['Empleado - Código de Ficha'];
+        let area = element['Trabajo - Nombre Sub-área Asignada(o)'] ;
+        let montoSinRemunerar = element['Finiquito - Monto sin remuneración pendiente'];
        // let finiq = 'F';
 
 
           this.dataFiniq.push({
-            nombre: nombre+' ' + apepat+' '+apemat,
+            nombre: nombre,
             rut: rut,
             ficha: ficha,
             obra: '0'+area.trim().split(/\s+/)[0],

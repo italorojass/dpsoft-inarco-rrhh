@@ -13,4 +13,8 @@ export class EliminarPagoService {
   deleteTrabajador(body){
     return this.HttpClient.post(`${environment.url}ws_estadopago_rrhh.php`,body);
   }
+
+  finiquitarTrabajador(body){
+    return this.HttpClient.post(`${environment.url}ws_marcafin_rrhh.php`,body);
+  }
 }

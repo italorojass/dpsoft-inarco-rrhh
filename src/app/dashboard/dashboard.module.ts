@@ -33,6 +33,9 @@ import { HorasExtraComponent } from './horas-extra/horas-extra.component';
 import { LoaderService } from '../shared/services/loader.service';
 import { ReportePdfComponent } from './detalle-pago/reporte-pdf/reporte-pdf.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { CalendarioHoraExtraComponent } from './calendario-hora-extra/calendario-hora-extra.component';
+import { FlatpickrModule } from 'angularx-flatpickr';
+import { CalendarioFeriadosComponent } from './calendario-feriados/calendario-feriados.component';
 
 // Registra el idioma español
 registerLocaleData(localeEs);
@@ -51,7 +54,9 @@ registerLocaleData(localeEs);
     DiferenciaSabDomComponent,
     DetalleBonoComponent,
     MaestroEspecialidadComponent,
-    ReportePdfComponent
+    ReportePdfComponent,
+    CalendarioHoraExtraComponent,
+    CalendarioFeriadosComponent
 
 
 
@@ -69,7 +74,7 @@ registerLocaleData(localeEs);
     SweetAlert2Module,
     AgGridModule,
     NgSelectModule,
-
+    FlatpickrModule
   ],
   providers : [
     LoaderService,

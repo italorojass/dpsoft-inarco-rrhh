@@ -11,27 +11,37 @@
               >
             </h4>
           </div>
-          <div class="col-sm-6 col-6">
-            <app-cabecera-pages [titulo]="'Horas extra'"
+          <div class="col-6">
+            <app-cabecera-pages [titulo]="'Feriados'"
             ></app-cabecera-pages>
-          </div>
+        </div>
           <div class="col-3">
-           <!--  <button
-            type="button"
-            class="btn btn-outline-primary btn-rounded pull-right"
+            <div class="pull-right">
+              <!-- <button
+              type="button"
+              class="btn btn-outline-primary btn-rounded pull-right"
 
-            (click)="getHoraExtra();"
-          >
-            <i class="icon-reload"></i>Integración
-          </button> -->
-            <app-btn-reporte-excel
-              [data]="data"
-              [headings]="headings"
-              [sheetName]="'Hoja1'"
-              [_from]="'hh'"
-              [fileName]="'Reporte_HorasExtras_'+obra.codigo+'_'+obra.nombre"
+              (click)="getBonos();"
             >
-            </app-btn-reporte-excel>
+              <i class="icon-reload"></i>Integración
+            </button> -->
+             <!--  <app-btn-reporte-excel
+                [data]="data"
+                [_from]="'bonos'"
+                [headings]="headings"
+
+                [fileName]="'Reporte_bonos_'+obra.codigo+'_'+obra.nombre+'_'+titlepage"
+              >
+              </app-btn-reporte-excel>
+
+              <button
+                type="button"
+                class="btn btn-outline-dark btn-rounded mr-2"
+                (click)="createPDF()"
+              >
+                <i class="icon-doc"></i>Reporte PDF
+              </button> -->
+            </div>
           </div>
         </div>
 
@@ -40,37 +50,28 @@
             <div class="table-responsive1">
               <strong>Total trabajadores: {{ data.length }} </strong>
               <ag-grid-angular
-                #heGrid
+                #Grid
                 style="width: 100%; height: 100%"
                 class="ag-theme-alpine"
-                [groupHeaderHeight]="groupHeaderHeight"
-                [headerHeight]="headerHeight"
-                [floatingFiltersHeight]="50"
                 [columnDefs]="columnDefs"
                 [defaultColDef]="defaultColDef"
                 [rowData]="data"
                 [suppressMenuHide]="true"
-                [suppressColumnVirtualisation]="false"
-                [suppressRowVirtualisation]="false"
                 [pagination]="true"
                 [groupSelectsChildren]="true"
-                [rowSelection]="rowSelection"
                 [enableCellChangeFlash]="true"
-                [alwaysShowHorizontalScroll]="false"
-                [alwaysShowVerticalScroll]="true"
+                [paginationPageSize]="15"
                 [suppressMaxRenderedRowRestriction]="true"
+                [editType]="'fullRow'"
                 [overlayLoadingTemplate]="overlayLoadingTemplate"
                 [overlayNoRowsTemplate]="overlayNoRowsTemplate"
                 [localeText]="localeText"
-                [paginationPageSize]="15"
                 [rowClassRules]="rowClassRules"
-                (gridReady)="onGridReady($event)"
-                (rowEditingStopped)="onRowValueChanged($event)"
-                [editType]="'fullRow'"
+                (cellValueChanged)="saveEdit($event)"
               ></ag-grid-angular>
-
-
             </div>
+
+
           </div>
         </div>
       </div>

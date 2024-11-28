@@ -49,7 +49,9 @@ export class CentralizaPeriodosService {
       quemes : '',
       abierto : ''
     }
-    console.log('BODY Q SE ENVIA',body);
+    if(tipo== 'extras' ){
+     delete body['tipo']
+    }
    if(!periodoSession){
     let periodoAux = JSON.parse(sessionStorage.getItem('periodoAbiertoAUX')!);
     body = {
@@ -57,8 +59,8 @@ export class CentralizaPeriodosService {
         quemes :periodoAux?.quemes,
         abierto : periodoAux?.estado
       }
-    console.log('body build',body);
-    body
+
+
    }else{
    body = {
       ...body,

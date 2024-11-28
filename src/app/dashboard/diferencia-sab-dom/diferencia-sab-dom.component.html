@@ -71,7 +71,7 @@
               (gridReady)="onGridReady($event)"
               [paginationPageSize]="15"
               [rowClassRules]="rowClassRules"
-              (rowValueChanged)="onRowValueChanged($event)"
+              (rowEditingStopped)="onRowValueChanged($event)"
               [editType]="'fullRow'"
             ></ag-grid-angular>
 

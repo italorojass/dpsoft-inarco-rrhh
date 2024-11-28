@@ -15,6 +15,18 @@ export class ParametrosService {
     return this._http.post(`${environment.url}ws_parame_rrhh.php`,body);
   }
 
+  getFeriadosMonthYear(year,month){
+    return this._http.get(`${ environment.apiFeriadosv}${year}/${month}`);
+  }
+
+  getFeriadosYear(year){
+    return this._http.get(`${ environment.apiFeriadosv}${year}`);
+  }
+
+  updateSueldos(body){
+    return this._http.post(`${environment.url}ws_calculo_sueldo_rrhh.php`,body);
+  }
+
   getBonos(body){
     return this._http.post(`${environment.url}ws_nombrebonos_rrhh.php`,body);
   }
@@ -22,6 +34,10 @@ export class ParametrosService {
   cierre(body){
     return this._http.post(`${environment.url}ws_cierre_rrhh.php`,body);
 
+  }
+
+  getCalendarioHoraExtra(body){
+    return this._http.post(`${environment.url}ws_parameobras_rrhh.php`,body);
   }
 
 

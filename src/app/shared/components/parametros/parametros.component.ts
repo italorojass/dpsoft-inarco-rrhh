@@ -1,5 +1,5 @@
 import { ToastrService } from 'ngx-toastr';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild,ElementRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ParametrosService } from './services/parametros.service';
 import { ObrasService } from 'src/app/dashboard/obras/services/obras.service';
@@ -9,6 +9,9 @@ import { AgGridSpanishService } from '../../services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { DatepickerAgGridComponent } from '../datepicker-ag-grid/datepicker-ag-grid.component';
 import { DatepickerAgGridFinalComponent } from '../datepicker-ag-grid-final/datepicker-ag-grid-final.component';
+import { environment } from 'src/environments/environment';
+import flatpickr from 'flatpickr';
+import { Spanish } from 'flatpickr/dist/l10n/es'; // Importa el idioma español
 
 @Component({
   selector: 'app-parametros',
@@ -18,6 +21,7 @@ import { DatepickerAgGridFinalComponent } from '../datepicker-ag-grid-final/date
 export class ParametrosComponent implements OnInit {
 
   nombreDias = ['Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo'];
+  @ViewChild('fromDate') fromDateInput!: ElementRef;
 
   constructor(private fb : FormBuilder,
     private paramSV : ParametrosService,
@@ -74,9 +78,121 @@ export class ParametrosComponent implements OnInit {
 
   ngOnInit(): void {
     this.get();
-    this.getMesesFuturos()
-  }
+    this.getMesesFuturos();
 
+    let today = new Date();
+
+    flatpickr(this.fromDateInput.nativeElement, {
+      dateFormat: 'd-m-Y',
+      locale: Spanish,
+      defaultDate: [this.formatfecha(today.toISOString().split('T')[0])],
+      onChange: (selectedDates) => {
+        if (selectedDates.length === 2) {
+          //abrir alerta y mandar a guardar
+          /* this.fromDateInput.nativeElement.value = selectedDates[0].toLocaleDateString();
+          this.toDateInput.nativeElement.value = selectedDates[1].toLocaleDateString(); */
+
+        }
+      }
+    });
+
+    //this.getFeriadosActuales();
+  }
+  feriados:any = [];
+  columnDefsFeriados = [
+    {
+      field: 'nombre',
+      headerName: 'Motivo',
+      width : 280,
+      suppressSizeToFit: true,
+      editable : false,
+    },
+    {
+      field: 'fecha',
+      headerName: 'Fecha',
+      editable : true,
+      width : 200,
+      //filter: 'agDateColumnFilter',
+      //cellRenderer: DatepickerAgGridComponent,
+      //cellEditor: DatepickerAgGridComponent,
+      cellEditor: "agDateStringCellEditor",
+      valueFormatter: (params: ValueFormatterParams<any>) => {
+        if (!params.value) {
+          return "";
+        }
+        return this.formatfecha(params.value);
+      }
+    },
+    {
+      field: 'irrenunciable',
+      headerName: 'Irrenunciable',
+      cellEditor: 'agSelectCellEditor',
+      suppressSizeToFit: true,
+      editable : false,
+      suppressMenu: true,
+      valueFormatter: this.formatFeriado,
+
+      cellStyle: params => {
+        // you can use either came case or dashes, the grid converts to whats needed
+        // light green
+        if (params.value ==1) {
+          return { backgroundColor: '#ff5e5e', color : '#000' }
+        } else if(params.value ==0) {
+          return { backgroundColor: '#7ed321' };
+        }else {
+          return { backgroundColor: '#959595' };
+        }
+      },
+    },
+
+  ];
+getFeriadosActuales(){
+  let date = new Date;
+  let year = date.getFullYear();
+
+  this.paramSV.getFeriadosYear(year).subscribe((feriados)=>{
+    console.log(feriados);
+    this.feriados = feriados;
+  })
+
+}
+
+dataFeriadosTest = [
+  {
+    "nombre": "Independencia Nacional",
+    "comentarios": "",
+    "fecha": "2014-09-18",
+    "irrenunciable": "1",
+    "tipo": "Civil",
+    "leyes": [
+      {
+        "nombre": "Ley 2.977",
+        "url": "http://www.leychile.cl/Navegar?idNorma=23639"
+      },
+      {
+        "nombre": "Ley 19.973",
+        "url": "http://www.leychile.cl/Navegar?idNorma=230132"
+      }
+    ]
+  },
+  {
+    "nombre": "Día de las Glorias del Ejército",
+    "comentarios": "",
+    "fecha": "2014-09-19",
+    "irrenunciable": "1",
+    "tipo": "Civil",
+    "leyes": [
+      {
+        "nombre": "Ley 2.977",
+        "url": "http://www.leychile.cl/Navegar?idNorma=23639"
+      },
+      {
+        "nombre": "Ley 20.629",
+        "url": "http://www.leychile.cl/Navegar?idNorma=1043726"
+      }
+    ]
+  }
+]
 
   cellCellEditorParams = (params: ICellEditorParams<any>) => {
     //
@@ -200,11 +316,13 @@ export class ParametrosComponent implements OnInit {
     return `${dia}-${mes}-${year}`;
   }
 
-  cierre(tipo,msj){
+  cierre(tipo){
 
 
+    console.log(tipo,this.paramss);
+    this.paramss.tipo_proceso
     Swal.fire({
-      title: 'Está seguro de que desea cerrar '+msj+'?',
+      title: 'Está seguro de que desea cerrar '+this.paramss.quemes+'?',
       showDenyButton: true,
       showCancelButton: false,
       confirmButtonText: 'Cerrar',
@@ -212,11 +330,11 @@ export class ParametrosComponent implements OnInit {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        let body = {accion : tipo};
+        let body = {accion : this.paramss.tipo_proceso};
         console.log(body)
         this.paramSV.cierre(body).subscribe(r=>{
           console.log(r);
-          this.ToastrService.success('Realizado con éxito',msj);
+          this.ToastrService.success('Para '+this.paramss.quemes,'Cierre realizado con éxito');
 
           this.get();
         })
@@ -227,13 +345,32 @@ export class ParametrosComponent implements OnInit {
 
 
   }
+  obras =  JSON.parse(sessionStorage.getItem('obras')!);
 
+  fechaFeriado = '';
+  agregarFecha(){
+    console.log('agregar fecha');
+  }
+  selectedObra = '';
+  actualizarSueldos(){
+    let body = {
 
+    }
+  this.paramSV.updateSueldos(body).subscribe(r=>{
+    console.log(r);
+    Swal.fire('Actualizar sueldos','Sueldos actualizados con éxito','success')
+  })
+  }
+
+  formatFeriado(irrenunciable : ValueFormatterParams){
+
+    return irrenunciable.value ==1 ? 'Si':'No';
+  }
 
   formatEstado(estado : ValueFormatterParams){
     let value ='';
     switch(estado.value){
-      case 'A':
+      case 1:
       value ='Abierto'
       break;
       case 'C' :

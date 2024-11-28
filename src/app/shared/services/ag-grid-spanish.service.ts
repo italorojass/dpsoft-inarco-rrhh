@@ -13,6 +13,7 @@ export class AgGridSpanishService {
   rowGroupPanelShow: 'always' | 'onlyWhenGrouping' | 'never' = 'always';
   pivotPanelShow: 'always' | 'onlyWhenPivoting' | 'never' = 'always';
   rowSelection: 'single' | 'multiple' = 'multiple';
+
   public overlayLoadingTemplate =
     '<span class="ag-overlay-loading-center">Recargando tabla, favor espere</span>';
   public overlayNoRowsTemplate =

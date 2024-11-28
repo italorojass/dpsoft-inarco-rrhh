@@ -21,29 +21,45 @@ export class BuildMonthService {
 
 
   getDaysInMonth(init: any,final : any) {
-    //console.log('llega al buildMont', init,final);
+    console.log('llega al buildMont', init,final);
     let dayPeriodInit = Number(init.split('-')[2]);
     let dayPeriodFinal = Number(final.split('-')[2]);
     let dateInit = new Date(init);
     let dateFinal = new Date (final);
     //console.log('date format date', dateInit.toISOString())
 
-    let periodoInicial = this.get_all_dates(dateInit.getFullYear(),dateInit.getMonth());
-    let periodoFinal = this.get_all_dates(dateFinal.getFullYear(),dateFinal.getMonth());
+    let periodoInicial = this.get_all_dates(init.split('-')[0],init.split('-')[1]-1);
+    let periodoFinal = this.get_all_dates(final.split('-')[0],final.split('-')[1]-1);
     //console.log('arraydays', periodoInicial, periodoFinal);
     let primeros15: any = [];
+    console.log(periodoInicial,dayPeriodFinal);
+    if(init.split('-')[1] == final.split('-')[1]){
+      periodoInicial.forEach(element => {
 
-    periodoInicial.forEach(element => {
-      if(element.dia >= dayPeriodInit){
-        primeros15.push(element);
-      }
-    });
+        if(dayPeriodInit <= element.dia && element.dia <= dayPeriodFinal ){
+          primeros15.push(element);
+        }
+      });
+    }else{
+      periodoInicial.forEach(element => {
 
-    periodoFinal.forEach(element => {
-      if(element.dia <= dayPeriodFinal){
-        primeros15.push(element);
-      }
-    });
+        if(dayPeriodInit <= element.dia /* && element.dia <= dayPeriodFinal */ ){
+          primeros15.push(element);
+        }
+      });
+    }
+
+
+    console.log(periodoFinal);
+    if(init.split('-')[1] != final.split('-')[1]){
+      periodoFinal.forEach(element => {
+        if(dayPeriodFinal >= element.dia ){
+          primeros15.push(element);
+        }
+      });
+    }
+
+
 
     return primeros15;
   }

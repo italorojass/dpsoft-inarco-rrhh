@@ -2,16 +2,12 @@
   <div class="card-body">
     <h4 class="d-flex justify-content-center">Parámetros del sistema</h4>
     <hr>
-    <!--  <div class="d-flex justify-content-center display-4">PERIODO ACTUAL:
-
-      <div class="text-primary text-bold">
-        <u *ngIf="paramss" class="ml-3">{{paramss.quemes}}</u>
-      </div>
-
-    </div> -->
     <br>
     <div class="container">
+
       <div class="row" *ngIf="parametrosArray.length>0 && paramss">
+
+
         <div class="col-6 grid-margin">
           <div class="card ">
             <div class="card-body ">
@@ -32,18 +28,21 @@
 
                   <div class="row mt-1">
                     <div class="col-12">
-                      <button class="btn btn-inverse-danger btn-rounded btn-block" (click)="cierre('Q','quincena')"
-                        *ngIf="parametrosArray[0].estado == 'A'" [disabled]="paramss.tipo_proceso=='S'">
+                      <button class="btn btn-inverse-danger btn-rounded btn-block"
+                        (click)="cierre(paramss.tipo_proceso)" *ngIf="paramss.estado == 'A'"
+                        [disabled]="paramss.tipo_proceso=='S'">
                         <i class="icon-lock text-white icon-md"></i>
                       </button>
                     </div>
                   </div>
 
-
-
                 </div>
+
+
               </div>
             </div>
+
+
           </div>
         </div>
         <div class="col-6 grid-margin">
@@ -67,7 +66,7 @@
                 </div>
 
 
-                <div class="d-inline-block">
+                <!--  <div class="d-inline-block">
                   <div class="badge  badge-pill"
                     [ngClass]="parametrosArray[1].estado == 'A' ? 'badge-success': 'badge-dark'" style=" font-size: 1rem;
                   font-weight: bold;">
@@ -84,12 +83,37 @@
                     <i class="icon-lock text-white icon-lg"></i>
                   </button>
 
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
         </div>
+        <div class="col-6 grid-margin">
+          <div class="card ">
+            <div class="card-body ">
+              <div class="row">
+                <div class="col-8">
+                  <h4 class="mb-0 text-info">Actualizar sueldos del sistema<span class=" text-bold">
+                    </span> </h4>
+                </div>
+
+                <div class="col-4 mt-2">
+                  <button class="btn btn-success btn-rounded btn-block" (click)="actualizarSueldos()"
+                    [disabled]="paramss.tipo_proceso=='S'">
+                    <i class="icon-refresh text-white icon-md"></i>
+                  </button>
+
+
+                </div>
+              </div>
+
+            </div>
+
+
+          </div>
+        </div>
       </div>
+
       <div class="row">
         <div class="col-12">
           <div class="card ">
@@ -113,12 +137,53 @@
 
         </div>
       </div>
+      <div class="row mt-2">
+        <div class="col-12">
+          <div class="card ">
+            <div class="card-body">
+              <h1 class="display-4">Feriados del año</h1>
+              <div class="table-responsive1">
+                <app-table-aggrid [datos]="dataFeriadosTest" [columnas]="columnDefsFeriados"></app-table-aggrid>
+              <!--   <ag-grid-angular #pGrid style="width: 100%; height: 100%" class="ag-theme-alpine"
+                  [gridOptions]="gridOptions" [defaultColDef]="defaultColDef" [suppressMenuHide]="true"
+                  [suppressColumnVirtualisation]="false" [suppressRowVirtualisation]="false" [pagination]="true"
+                  [groupSelectsChildren]="true" [rowSelection]="rowSelection" [enableCellChangeFlash]="true"
+                  [alwaysShowHorizontalScroll]="false" [alwaysShowVerticalScroll]="true"
+                  [suppressMaxRenderedRowRestriction]="true" [paginationPageSize]="15" [rowClassRules]="rowClassRules"
+                  (gridReady)="onGridReady($event)" (rowValueChanged)="onRowValueChanged($event)"
+                  [editType]="'fullRow'"></ag-grid-angular> -->
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <ng-select
+                  [items]="obras"
+                  [(ngModel)]="selectedObra"
+                  bindLabel="nombre"
+                  bindValue="codigo"
+                  placeholder="Seleccione una obra"
+                  >
+                </ng-select>
+
+                </div>
+                <div class="col-md-6">
+                  <div class="input-group">
+
+                    <input type="text" mwlFlatpickr [(ngModel)]="fechaFeriado"  [dateFormat]="'d-m-Y'"  class="form-control"/>
+                  <!--   <input #fromDate type="text" placeholder="Inicio del periodo" class="date-input" /> -->
+                    <button class="btn btn-primary ml-2" (click)="agregarFecha()">
+                      Agregar fecha
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
     </div>
-
-
-
-
-
-
   </div>
 </div>
