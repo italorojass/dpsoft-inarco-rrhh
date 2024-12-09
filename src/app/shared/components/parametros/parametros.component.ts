@@ -82,33 +82,15 @@ export class ParametrosComponent implements OnInit {
 
     let today = new Date();
 
-    flatpickr(this.fromDateInput.nativeElement, {
-      dateFormat: 'd-m-Y',
-      locale: Spanish,
-      defaultDate: [this.formatfecha(today.toISOString().split('T')[0])],
-      onChange: (selectedDates) => {
-        if (selectedDates.length === 2) {
-          //abrir alerta y mandar a guardar
-          /* this.fromDateInput.nativeElement.value = selectedDates[0].toLocaleDateString();
-          this.toDateInput.nativeElement.value = selectedDates[1].toLocaleDateString(); */
 
-        }
-      }
-    });
 
-    //this.getFeriadosActuales();
+    this.getFeriadosActuales();
   }
   feriados:any = [];
   columnDefsFeriados = [
+   /*  */
     {
-      field: 'nombre',
-      headerName: 'Motivo',
-      width : 280,
-      suppressSizeToFit: true,
-      editable : false,
-    },
-    {
-      field: 'fecha',
+      field: 'fecha_fer',
       headerName: 'Fecha',
       editable : true,
       width : 200,
@@ -124,6 +106,13 @@ export class ParametrosComponent implements OnInit {
       }
     },
     {
+      field: 'obra',
+      headerName: 'Obra',
+      width : 280,
+      suppressSizeToFit: true,
+      editable : false,
+    },
+   /*  {
       field: 'irrenunciable',
       headerName: 'Irrenunciable',
       cellEditor: 'agSelectCellEditor',
@@ -143,16 +132,17 @@ export class ParametrosComponent implements OnInit {
           return { backgroundColor: '#959595' };
         }
       },
-    },
+    }, */
 
   ];
 getFeriadosActuales(){
-  let date = new Date;
-  let year = date.getFullYear();
-
-  this.paramSV.getFeriadosYear(year).subscribe((feriados)=>{
+  let body = {
+    accion : 'C',
+    obra :'0000'
+  }
+  this.paramSV.getFeriados(body).subscribe((feriados:any)=>{
     console.log(feriados);
-    this.feriados = feriados;
+    this.feriados = feriados.result.feriados;
   })
 
 }

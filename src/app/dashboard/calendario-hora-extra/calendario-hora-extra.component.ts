@@ -22,6 +22,7 @@ export class CalendarioHoraExtraComponent implements OnInit , AfterViewInit {
         dateRange: ['']
       });
     }
+    selectedDate:any;
     formDate = this.fb.group({
       inicio : [''],
       final : [''],
@@ -61,27 +62,9 @@ export class CalendarioHoraExtraComponent implements OnInit , AfterViewInit {
 
         this.paramss =r.result.parametros[0];
         this.selectedInitDate = this.paramss.inicio_periodo
-        this.fromDateInput.nativeElement.value = this.formatfecha(this.selectedInitDate);
 
         this.selectedEndDate = this.paramss.final_periodo
-       // this.toDateInput.nativeElement.value = this.formatfecha(this.selectedEndDate) ;
-        flatpickr(this.fromDateInput.nativeElement, {
-          mode: 'range', // Activa el modo de rango
-          dateFormat: 'd-m-Y',
-          locale: Spanish,
-          defaultDate: [this.formatfecha(this.selectedInitDate), this.formatfecha(this.selectedEndDate)],
-          onChange: (selectedDates) => {
-            if (selectedDates.length === 2) {
-              //abrir alerta y mandar a guardar
-              /* this.fromDateInput.nativeElement.value = selectedDates[0].toLocaleDateString();
-              this.toDateInput.nativeElement.value = selectedDates[1].toLocaleDateString(); */
-              this.startDate = selectedDates[0].toLocaleDateString().split('T')[0];
-              this.endDate = selectedDates[1].toLocaleDateString().split('T')[0];
 
-              this.validateDateRange(this.startDate,this.endDate);
-            }
-          }
-        });
       })
 
 
@@ -101,15 +84,45 @@ export class CalendarioHoraExtraComponent implements OnInit , AfterViewInit {
 
     }
 
+     calcularFechaFinal(fechaInicialStr) {
+
+      // Crear una nueva fecha final sumando exactamente 35 días
+      const partes = fechaInicialStr.split('/');
+      const dia = parseInt(partes[0], 10);
+      const mes = parseInt(partes[1], 10) - 1; // Los meses empiezan en 0
+      const anio = parseInt(partes[2], 10);
+  // Crear el objeto Date
+  const fecha = new Date(anio, mes, dia);
+  fecha.setDate(fecha.getDate() + 35);
+
+  // Formatear la nueva fecha en DD/MM/YYYY
+  const nuevoDia = String(fecha.getDate()).padStart(2, '0');
+  const nuevoMes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
+  const nuevoAnio = fecha.getFullYear();
+
+  return `${nuevoDia}/${nuevoMes}/${nuevoAnio}`;
+
+  }
+
+
+
+
+
     updateCalendarioHoraExtra(){
+
+      let nuevaFecha = this.calcularFechaFinal(this.selectedDate)
+
+
       let b = {
         accion : 'U',
         obra :this.obra.codigo,
         mesyano : this.quemesViene.quemes,
         tipo_proceso : this.quemesViene.tipo_proceso,
-        inicio_periodo : this.startDate,
-        final_periodo : this.endDate
+        inicio_periodo : this.selectedDate,
+        final_periodo :nuevaFecha
       }
+
+      console.log(b);
 
       this.paramSV.getCalendarioHoraExtra(b).subscribe(r=>{
         console.log(r);

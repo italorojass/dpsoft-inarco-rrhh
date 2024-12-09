@@ -332,6 +332,16 @@ export class DiferenciaSabDomComponent implements OnInit {
         pinned: 'right',
         lockPinned: true,
         editable: false
+      },
+      {
+        field: 'total_mensual_fer',
+        headerName: 'Diferencia feriados',
+        width: 120,
+        sortable: true,
+        cellRenderer: this.CurrencyCellRenderer,
+        pinned: 'right',
+        lockPinned: true,
+        editable: false
       }
     )
 

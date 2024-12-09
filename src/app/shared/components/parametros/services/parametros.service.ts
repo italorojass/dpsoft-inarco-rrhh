@@ -19,8 +19,8 @@ export class ParametrosService {
     return this._http.get(`${ environment.apiFeriadosv}${year}/${month}`);
   }
 
-  getFeriadosYear(year){
-    return this._http.get(`${ environment.apiFeriadosv}${year}`);
+  getFeriados(body){
+    return this._http.post(`${ environment.url}ws_feriadosano_rrhh.php`,body);
   }
 
   updateSueldos(body){

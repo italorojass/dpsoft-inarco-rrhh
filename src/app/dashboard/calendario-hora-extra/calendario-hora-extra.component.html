@@ -34,7 +34,7 @@
                   <div class="mb-0">
                     <span class="text-gray">
                       Último día del periodo:
-                      {{formatfecha(paramss.final_periodo)
+                        {{paramss.final_periodo | date:'dd-MM-yyyy'
                       }}</span>
 
 
@@ -49,7 +49,8 @@
 
               </h4>
               <div class="date-range-container pt-3">
-                <input #fromDate type="text" placeholder="Inicio del periodo" class="date-input" />
+                <input type="text" mwlFlatpickr [(ngModel)]="selectedDate" class="date-input" [dateFormat]="'d/m/Y'" [locale]="'es'" />
+               <!--  <input #fromDate type="text" placeholder="Inicio del periodo" class="date-input" /> -->
 
 
 

@@ -41,9 +41,7 @@ export class CalendarioFeriadosComponent implements OnInit  {
 
   saveEdit(item) {
     let b = {
-      tipo: 'bonos',
       accion: 'M',
-      obra: this.obra.codigo,
       ...item.data,
     };
     console.log('body', b, item);
@@ -167,12 +165,15 @@ export class CalendarioFeriadosComponent implements OnInit  {
       for (let i = 0; i < 5; i++) {
 
         if (this.feriados[i]) {
-          let fechaFer = 'Feriado '+(i+1);
-        /*   if(this.feriados[i].fechas_feriados){
-            let fechas =this.feriados[i].fechas_feriados.split(';')[0];
+          let fechaFer ='';
+          fechaFer = 'Feriado '+(i+1);
+         /*  if(this.feriados[i].fechas_feriados){
+            let fechas =this.feriados[i].fechas_feriados.split(';');
             fechaFer = fechas.map((x,i)=>{
               return x;
             });
+          }else{
+            fechaFer = 'Feriado '+(i+1);
           } */
           this.columnDefs.push({
             headerComponent: InputHeaderComponent,

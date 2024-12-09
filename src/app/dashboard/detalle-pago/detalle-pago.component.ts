@@ -71,7 +71,7 @@ export class DetallePagoComponent implements OnInit {
           buttonsStyling: false
         })
 
-        if (valueEdit.tipoClick == 'D') {
+        if (valueEdit.tipoClick == 'D') { //eliminar
           swalWithBootstrapButtons.fire({
             title: 'Estás eliminando un trabajador!',
             text: `Estas seguro de eliminar al trabajador ${valueEdit.nombre} de manera permanente de la obra ${this.obra.nombre}`,
@@ -108,7 +108,7 @@ export class DetallePagoComponent implements OnInit {
               ) */
             }
           })
-        } else {
+        } else if (valueEdit.tipoClick == 'F') { //finiquitar
           swalWithBootstrapButtons.fire({
             title: 'Estás finiquitando un trabajador!',
             text: `Estas seguro de finiquitar al trabajador ${valueEdit.nombre} de la obra ${this.obra.nombre}`,
@@ -120,13 +120,60 @@ export class DetallePagoComponent implements OnInit {
           }).then((result) => {
             let format = {
               id_detalle_pagos: valueEdit.id,
-
+              accion: 'F'
             }
 
             if (result.isConfirmed) {
               this.deletePago.finiquitarTrabajador(format).subscribe((r: any) => {
                 console.log('click edit response ', r);
                 this.toastr.success('Finiquitado', `Trabajador ${valueEdit.nombre} finiquitado con éxito`);
+
+                let body = {
+                  ... r.result.respuesta[0],
+                  rutF: ChileanRutify.formatRut(`${r.result.respuesta[0].rut}-${r.result.respuesta[0].dig}`)
+                }
+                let updateRowid = body.id;
+
+                 let rowNode= this.gridOptions.api.getRowNode(updateRowid);
+
+                if (rowNode) {
+                  rowNode.setData(body);  // Actualiza solo la fila con la nueva data
+                   result.dismiss === Swal.DismissReason.cancel
+                }
+
+              })
+
+
+            } else if (
+              /* Read more about handling dismissals below */
+              result.dismiss === Swal.DismissReason.cancel
+            ) {
+              /* swalWithBootstrapButtons.fire(
+                'Cancelled',
+                'Your imaginary file is safe :)',
+                'error'
+              ) */
+            }
+          })
+        } else if (valueEdit.tipoClick == 'R') { //reintegrar
+          swalWithBootstrapButtons.fire({
+            title: 'Estás reintegrando un trabajador!',
+            text: `Estas seguro de reintegrar al trabajador ${valueEdit.nombre} de la obra ${this.obra.nombre}`,
+             showCancelButton: true,
+             icon: 'info',
+            confirmButtonText: 'Si, Reintegrar',
+            cancelButtonText: 'No, cancelar',
+            reverseButtons: true
+          }).then((result) => {
+            let format = {
+              id_detalle_pagos: valueEdit.id,
+              accion: 'R'
+            }
+
+            if (result.isConfirmed) {
+                this.deletePago.finiquitarTrabajador(format).subscribe((r: any) => {
+                console.log('click edit response ', r);
+                this.toastr.success('Reintegrado', `Trabajador ${valueEdit.nombre} reintegrado con éxito`);
 
                 let body = {
                   ... r.result.respuesta[0],
@@ -148,13 +195,10 @@ export class DetallePagoComponent implements OnInit {
               /* Read more about handling dismissals below */
               result.dismiss === Swal.DismissReason.cancel
             ) {
-              /* swalWithBootstrapButtons.fire(
-                'Cancelled',
-                'Your imaginary file is safe :)',
-                'error'
-              ) */
+
             }
           })
+
         }
 
 
@@ -885,7 +929,7 @@ export class DetallePagoComponent implements OnInit {
     },
     {
       field: 'feriados',
-      headerName: 'Feriados',
+      headerName: 'Diferencia días feriados',
       width: 150,
       sortable: true,
       cellRenderer: this.CurrencyCellRenderer,
