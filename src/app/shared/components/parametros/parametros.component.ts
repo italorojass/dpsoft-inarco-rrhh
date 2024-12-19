@@ -12,6 +12,7 @@ import { DatepickerAgGridFinalComponent } from '../datepicker-ag-grid-final/date
 import { environment } from 'src/environments/environment';
 import flatpickr from 'flatpickr';
 import { Spanish } from 'flatpickr/dist/l10n/es'; // Importa el idioma español
+import { BtnEliminarFeriadoParametrosComponent } from '../btn-eliminar-feriado-parametros/btn-eliminar-feriado-parametros.component';
 
 @Component({
   selector: 'app-parametros',
@@ -79,8 +80,15 @@ export class ParametrosComponent implements OnInit {
   ngOnInit(): void {
     this.get();
     this.getMesesFuturos();
+    console.log(this.obras )
 
-    let today = new Date();
+    this.obras = this.obras.map(obra => {
+      return {
+        ...obra,
+        nombre: `${obra.codigo} | ${obra.nombre}`,
+        codigo: obra.codigo
+      };
+    });
 
 
 
@@ -88,6 +96,19 @@ export class ParametrosComponent implements OnInit {
   }
   feriados:any = [];
   columnDefsFeriados = [
+    {
+      headerName: 'Acciones',
+      cellRenderer: BtnEliminarFeriadoParametrosComponent,
+
+      filter: false,
+      floatingFilter: false,
+      lockPinned: true,
+      pinned: 'left',
+      width: 100,
+      autoHeight: true,
+      editable: false,
+      suppressSizeToFit: true,
+    },
    /*  */
     {
       field: 'fecha_fer',
@@ -340,6 +361,18 @@ dataFeriadosTest = [
   fechaFeriado = '';
   agregarFecha(){
     console.log('agregar fecha');
+    let b = {
+      accion : 'A',
+      obra : this.selectedObra,
+      fecha : this.fechaFeriado
+    }
+    this.paramSV.postFeriadoObra(b).subscribe(r=>{
+      console.log(r);
+      this.ToastrService.success('Feriado agregado con éxito','Feriado agregado');
+      this.getFeriadosActuales();
+      this.fechaFeriado = '';
+      this.selectedObra = '';
+    })
   }
   selectedObra = '';
   actualizarSueldos(){

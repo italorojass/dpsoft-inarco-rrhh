@@ -1,20 +1,17 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
-import { ToastrService } from 'ngx-toastr';
-import Swal from 'sweetalert2';
-import { EliminarPagoService } from './service/eliminar-pago.service';
 
 @Component({
-  selector: 'app-btn-eliminar-detalle-pago',
-  templateUrl: './btn-eliminar-detalle-pago.component.html',
-  styleUrls: ['./btn-eliminar-detalle-pago.component.css']
+  selector: 'app-btn-eliminar-feriado-parametros',
+  templateUrl: './btn-eliminar-feriado-parametros.component.html',
+  styleUrls: ['./btn-eliminar-feriado-parametros.component.css']
 })
-export class BtnEliminarDetallePagoComponent implements ICellRendererAngularComp  {
+export class BtnEliminarFeriadoParametrosComponent  implements ICellRendererAngularComp {
   public cellValue!: any;
 
   constructor(
-    private deletePago : EliminarPagoService
+   // private deletePago : EliminarPagoService
     ){
 
   }
@@ -23,7 +20,7 @@ export class BtnEliminarDetallePagoComponent implements ICellRendererAngularComp
 
   agInit(params: ICellRendererParams): void {
     this.cellValue =params.data;
-    console.log('AG INIT',params.data)
+    //console.log('AG INIT',params.data)
   }
   buttonClicked(typeClick : string) {
     //console.log(this.cellValue)
@@ -31,7 +28,7 @@ export class BtnEliminarDetallePagoComponent implements ICellRendererAngularComp
       ...this.cellValue,
       tipoClick : typeClick
     }
-   this.deletePago.dataEdit.next(this.cellValue);
+   // this.deletePago.dataEdit.next(this.cellValue);
 
 
     //this.passData.dataEdit.next(format);

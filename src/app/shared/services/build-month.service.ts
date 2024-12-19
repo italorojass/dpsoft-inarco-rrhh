@@ -21,7 +21,7 @@ export class BuildMonthService {
 
 
   getDaysInMonth(init: any,final : any) {
-    console.log('llega al buildMont', init,final);
+    //console.log('llega al buildMont', init,final);
     let dayPeriodInit = Number(init.split('-')[2]);
     let dayPeriodFinal = Number(final.split('-')[2]);
     let dateInit = new Date(init);
@@ -32,7 +32,7 @@ export class BuildMonthService {
     let periodoFinal = this.get_all_dates(final.split('-')[0],final.split('-')[1]-1);
     //console.log('arraydays', periodoInicial, periodoFinal);
     let primeros15: any = [];
-    console.log(periodoInicial,dayPeriodFinal);
+   // console.log(periodoInicial,dayPeriodFinal);
     if(init.split('-')[1] == final.split('-')[1]){
       periodoInicial.forEach(element => {
 
@@ -50,7 +50,7 @@ export class BuildMonthService {
     }
 
 
-    console.log(periodoFinal);
+    //console.log(periodoFinal);
     if(init.split('-')[1] != final.split('-')[1]){
       periodoFinal.forEach(element => {
         if(dayPeriodFinal >= element.dia ){

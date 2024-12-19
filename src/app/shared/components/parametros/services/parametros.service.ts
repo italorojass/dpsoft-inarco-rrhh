@@ -15,6 +15,13 @@ export class ParametrosService {
     return this._http.post(`${environment.url}ws_parame_rrhh.php`,body);
   }
 
+  postFeriadoObra(body:any){
+
+    //console.log(`${environment.url}ws_estadopago_rrhh.php`,body);
+    return this._http.post(`${environment.url}ws_feriadosano_rrhh.php`,body);
+  }
+
+
   getFeriadosMonthYear(year,month){
     return this._http.get(`${ environment.apiFeriadosv}${year}/${month}`);
   }

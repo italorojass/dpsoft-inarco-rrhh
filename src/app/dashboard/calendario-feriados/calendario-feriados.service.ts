@@ -13,4 +13,8 @@ getb(body){
   return this._http.post(`${environment.url}ws_feriados_rrhh.php`,body);
 }
 
+getNombresFeriados(body){
+  return this._http.post(`${environment.url}ws_nombreferiados_rrhh.php`,body);
+}
+
 }

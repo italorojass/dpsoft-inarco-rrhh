@@ -5,7 +5,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { DetallePagoService } from './services/detalle-pago.service';
 import { ToastrService } from 'ngx-toastr';
 import ChileanRutify from 'chilean-rutify';
-import { ColDef, GetRowIdFunc, GetRowIdParams, GridApi, GridOptions, GridReadyEvent, ICellEditorParams, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
+import { CellEditRequestEvent, ColDef, GetRowIdFunc, GetRowIdParams, GridApi, GridOptions, GridReadyEvent, ICellEditorParams, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ProyectosService } from 'src/app/shared/components/proyectos/services/proyectos.service';
@@ -210,6 +210,7 @@ export class DetallePagoComponent implements OnInit {
   }
 
   public getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
+   // console.log('params', params);
     return params.data.id;
   };
 
@@ -272,49 +273,7 @@ export class DetallePagoComponent implements OnInit {
     };
   };
 
-  getChanges(e) {
-    //console.log('este cambiar', e);
-    let indexEspecialidad = this.especialidades.find(x => x.descripcion == e.descripcion);
-    console.log('especialidad id', this.itemEditPago);
 
-    let body1 = {
-      tipo: "pagos",
-      accion: "M",
-      especialidad: indexEspecialidad.id,
-      sueldo_liq: Number(e.sueldo_liq),
-      id_detalle: e.id,
-      obra: this.obra.codigo,
-      dias: parseFloat(e.dias),
-      valor_hora: Number(e.valor_hora),
-      ajuste_pos: Number(e.ajuste_pos),
-      anticipo: Number(e.anticipo),
-      dctos_varios: Number(e.dctos_varios),
-
-      finiq: e.finiq,
-      zona10: Number(e.zona10),
-      viatico: Number(e.viatico),
-      asignaciones: Number(e.asignaciones),
-      aguinaldo: Number(e.aguinaldo),
-      finiquito: Number(e.finiquito),
-      finiquito_findemes: Number(e.finiquito_findemes)
-    }
-    // console.log('body edit', body1);
-    this.dtSv.get(body1).subscribe(r => {
-      console.log('response edit', r);
-      this.toastr.success('Actualizado con éxito', `trabajador ${e.nombre}`);
-      const rowNode = this.gridOptions.api.getRowNode(e.id);
-      if (rowNode) {
-        rowNode.setData(e);  // Actualiza solo la fila con la nueva data
-      }
-
-      this.grid.api.getPinnedBottomRow(5);
-      this.grid.api.getDisplayedRowCount();
-
-      //this.getPagos();
-
-    })
-
-  }
   formatRut(rut, dig) {
 
     return this.BuildMonthService.formatRut(rut, dig);
@@ -344,7 +303,7 @@ export class DetallePagoComponent implements OnInit {
 
     this.dtSv.get(body).subscribe((r: any) => {
 
-      console.log(r)
+      console.log('response detalle pagos',r)
       let c = 0;
       if (r.status != 'error') {
         if (r.result) {
@@ -442,6 +401,7 @@ export class DetallePagoComponent implements OnInit {
         { text: 'Total valor hora líquido', alignment: 'center', margin: [0, 10] },
         { text: 'Diferencia días sábado', alignment: 'center', margin: [0, 10] },
         { text: 'Diferencia días domingo', alignment: 'center', margin: [0, 10] },
+        { text: 'Diferencia días feriados', alignment: 'center', margin: [0, 10] },
         { text: 'TOTAL BONOS', alignment: 'center', margin: [0, 10] },
         { text: 'Viático', alignment: 'center', margin: [0, 10] },
         { text: 'Asignaciones', alignment: 'center', margin: [0, 10] },
@@ -472,6 +432,7 @@ export class DetallePagoComponent implements OnInit {
           { text: Number(p.val_lun_sab).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.difer_sabado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.difer_domingo.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+          { text: p.feriados.toString( ).replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.total_bonos.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.viatico.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
           { text: p.asignaciones.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
@@ -554,6 +515,7 @@ export class DetallePagoComponent implements OnInit {
                 'auto',//Total valor hora líquido
                 'auto',//Diferencia de días sábado
                 'auto', //diferencia dia domingo
+                'auto',//Diferencia de días feriados
                 'auto',//TOTAL BONOS
                 'auto',//VIATICO
                 'auto',//Asignaciones
@@ -582,6 +544,7 @@ export class DetallePagoComponent implements OnInit {
                   { text: r['result'].datos.reduce((sum, p) => sum + p.val_lun_sab, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.difer_sabado, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.difer_domingo, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + p.feriados, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.total_bonos, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.viatico, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.asignaciones, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
@@ -675,6 +638,7 @@ export class DetallePagoComponent implements OnInit {
       'Total valor hora extra líquido',
       'Diferencia días Sábados',
       'Diferencia días Domingo',
+      'Diferencia días Feriados',
       'Total bonos',
       'Zona 10%',
       'Viático',
@@ -1063,11 +1027,65 @@ export class DetallePagoComponent implements OnInit {
   };
   pinnedBottomRowData: any[];
 
-  onRowValueChanged(event: RowValueChangedEvent) {
+  onRowValueChanged(event: CellEditRequestEvent) {
+ /*    console.log('event', event);
     var data = event.data;
-    console.log('guardar', data);
-    this.getChanges(data);
+    console.log('guardar', data, this.data);
+    this.getChanges(data); */
 
+    const data = event.data;
+    const field = event.colDef.field;
+    const newValue = event.newValue;
+    const oldItem = this.data.find((row) => row.id === data.id);
+    if (!oldItem || !field) {
+      return;
+    }
+    const newItem = { ...oldItem };
+    console.log('newItem', newItem);
+    newItem[field] = newValue;
+    //       console.log("onCellEditRequest, updating " + field + " to " + newValue);
+
+
+   // this.gridApi.setRowData(newData);
+   let indexEspecialidad = this.especialidades.find(x => x.descripcion.trim() == newItem.descripcion.trim());
+   console.log('especialidad id', indexEspecialidad);
+
+   let body1 = {
+     tipo: "pagos",
+     accion: "M",
+     especialidad: indexEspecialidad.id,
+     sueldo_liq: Number(newItem.sueldo_liq),
+     id_detalle: newItem.id,
+     obra: this.obra.codigo,
+     dias: parseFloat(newItem.dias),
+     valor_hora: Number(newItem.valor_hora),
+     ajuste_pos: Number(newItem.ajuste_pos),
+     anticipo: Number(newItem.anticipo),
+     dctos_varios: Number(newItem.dctos_varios),
+
+     finiq: newItem.finiq,
+     zona10: Number(newItem.zona10),
+     viatico: Number(newItem.viatico),
+     asignaciones: Number(newItem.asignaciones),
+     aguinaldo: Number(newItem.aguinaldo),
+     finiquito: Number(newItem.finiquito),
+     finiquito_findemes: Number(newItem.finiquito_findemes)
+   }
+    console.log('body edit', body1);
+   this.dtSv.get(body1).subscribe(r => {
+     console.log('response edit', r);
+     this.toastr.success('Actualizado con éxito', `trabajador ${newItem.nombre}`);
+     const rowNode = this.gridOptions.api.getRowNode(newItem.id);
+     if (rowNode) {
+       rowNode.setData(newItem);  // Actualiza solo la fila con la nueva data
+     }
+
+     this.grid.api.getPinnedBottomRow(5);
+     this.grid.api.getDisplayedRowCount();
+
+     //this.getPagos();
+
+   })
   }
 
   /*  */

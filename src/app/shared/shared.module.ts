@@ -45,6 +45,7 @@ import { CentralizaPeriodosService } from './services/centraliza-periodos.servic
 import { SelectNgSelectAggridComponent } from './components/select-ng-select-aggrid/select-ng-select-aggrid.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { BtnFiniquitarComponent } from './components/btn-finiquitar/btn-finiquitar.component';
+import { BtnEliminarFeriadoParametrosComponent } from './components/btn-eliminar-feriado-parametros/btn-eliminar-feriado-parametros.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { BtnFiniquitarComponent } from './components/btn-finiquitar/btn-finiquit
     DatepickerAgGridFinalComponent,
     CabeceraPagesComponent,
     SelectNgSelectAggridComponent,
-    BtnFiniquitarComponent
+    BtnFiniquitarComponent,
+    BtnEliminarFeriadoParametrosComponent
   ],
   imports: [
     CommonModule,
