@@ -57,7 +57,7 @@
                 [defaultColDef]="defaultColDef"
                 [gridOptions]="gridOptions"
                 [getRowId]="getRowId"
-                [rowData]="data"
+                [rowData]="feriados"
                 [suppressMenuHide]="true"
                 [pagination]="true"
                 [groupSelectsChildren]="true"
@@ -69,8 +69,7 @@
                 [overlayNoRowsTemplate]="overlayNoRowsTemplate"
                 [localeText]="localeText"
                 [rowClassRules]="rowClassRules"
-                (cellEditRequest)="onRowValueChanged($event)"
-                [readOnlyEdit]="true"
+                (cellValueChanged)="saveEdit($event)"
                 (gridReady)="onGridReady($event)"
               ></ag-grid-angular>
             </div>

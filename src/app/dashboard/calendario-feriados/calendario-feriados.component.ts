@@ -64,8 +64,7 @@ export class CalendarioFeriadosComponent implements OnInit  {
     const newItem = { ...oldItem };
     console.log('newItem', newItem);
     newItem[field] = newValue;
-    this.getChanges(newItem);
-    //this.getChanges(data);
+    //this.getChanges(newItem);
 
   }
   getChanges(item) {
@@ -115,7 +114,7 @@ export class CalendarioFeriadosComponent implements OnInit  {
 
   public getRowId: GetRowIdFunc = (params: GetRowIdParams) => {
     // console.log('params', params);
-     return params.data.id;
+     return params.data.id_detalle_pagos;
    };
    private gridApi!: GridApi;
   saveEdit(item) {
@@ -130,31 +129,19 @@ export class CalendarioFeriadosComponent implements OnInit  {
       feriado5: item.data.feriado5 || '0'
     };
     console.log('body', b);
-    const rowNode = this.gridApi.getRowNode(item.data.id_detalle_pagos);
-    console.log('rowNode', rowNode);
-    if (rowNode) {
-      // Actualiza los datos de la fila
-      rowNode.setData(item.data);
-    }
-    /* this.feriadosSV.getb(b).subscribe((r: any) => {
-      console.log(r.result[0]);
-      let data = r.result[0];
-      console.log('data', data[0]);
-      const rowNode = this.agGrid.api.getRowNode(item.data.id_detalle_pagos);
-      console.log('rowNode', rowNode);
-      if (rowNode) {
+    this.feriadosSV.getb(b).subscribe((r: any) => {
+      console.log(r);
+      const rowNode = this.gridOptions.api.getRowNode(item.data.id_detalle_pagos);
+          if (rowNode) {
+            // Actualiza los datos de la fila
+            let data = r.result[0];
+            console.log('data response to patch', data[0]);
+            rowNode.setData(data[0]);
+          }
+      /* this.agGrid.api.getPinnedBottomRow(5);
+      this.agGrid.api.getDisplayedRowCount(); */
+    });
 
-        rowNode.setData(data[0]);
-        this.agGrid.api.setRowData(data[0]);
-      }
-
-      //this.getAllData();
-
-      this.toast.success(
-        'Actualizado con éxito',
-        `Feriado de ${item.data.nombre}`
-      );
-    }); */
   }
 
   formatRut(rut, dig) {
@@ -264,39 +251,46 @@ export class CalendarioFeriadosComponent implements OnInit  {
       obra: this.obra.codigo,
       mesyano: this.datosParametros.quemes
     }
-    console.log('bodyNombres', bodyNombres);
+   // console.log('bodyNombres', bodyNombres);
     //obtiene trabajadores
-    this.feriadosSV.getNombresFeriados(bodyNombres).pipe(
+
+    let body = {
+      accion: 'C',
+      obra: this.obra.codigo,
+      periodo: this.datosParametros.quemes,
+      abierto: this.datosParametros.estado
+    }
+    this.feriadosSV.getb(body).pipe(
       switchMap((r:any)=>{
-        console.log('feriados', r);
-        this.feriadosTotales= r.result.feriados.map((value, i) => {
-          let feriado = value.Feriados.split(':');
-          console.log('feriado', feriado);
+        console.log('response trabajadoresferiados', r);
+        this.feriados = r['result'].feriados.map((value, i) => {
           return {
-            key: feriado[0],
-            nombre: feriado[1],
+            ...value,
+            correlativo: i + 1,
+            rutF: this.formatRut(value.rut, value.dig),
+            isEdit: false,
           };
         });
+        //console.log('response feriados', this.feriados);
 
-        console.log('feriadosTotales', this.feriadosTotales);
+
+        //this.data = this.feriados;
+       //this.agGrid.api.setRowData(this.feriados);
 
 
-        let body = {
-          accion: 'C',
-          obra: this.obra.codigo
-        }
-      return  this.feriadosSV.getb(body)
+        return this.feriadosSV.getNombresFeriados(bodyNombres);
       })
-    ).subscribe(r=>{
-      this.feriados = r['result'].feriados.map((value, i) => {
+    ).subscribe((r:any)=>{
+      console.log('feriados', r);
+      this.feriadosTotales= r.result.feriados.map((value, i) => {
+        let feriado = value.Feriados.split(':');
+        console.log('feriado', feriado);
         return {
-          ...value,
-          correlativo: i + 1,
-          rutF: this.formatRut(value.rut, value.dig),
-          isEdit: false,
+          key: feriado[0],
+          nombre: feriado[1],
         };
       });
-      console.log('response feriados', this.feriados);
+
       for (let i = 0; i < 5; i++) {
 
         if (this.feriadosTotales[i]) {
@@ -356,6 +350,8 @@ export class CalendarioFeriadosComponent implements OnInit  {
             floatingFilter: false,
             editable : (params) => params.data.ciequicena !== 'S' && this.datosParametros.estado =='A',
           });
+
+
         }
       }
 
@@ -371,11 +367,10 @@ export class CalendarioFeriadosComponent implements OnInit  {
           currency: 'CLP',
         },
       });
-      //this.data = this.feriados;
-     this.agGrid.api.setRowData(this.feriados);
       this.agGrid.api.setColumnDefs(this.columnDefs);
-
     })
+
+
 
   }
 
