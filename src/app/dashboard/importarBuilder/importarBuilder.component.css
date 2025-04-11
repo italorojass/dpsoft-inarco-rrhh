@@ -1,0 +1,83 @@
+
+.wizard {
+  margin-top: 20px;
+}
+
+.wizard-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.wizard-step {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  background-color: #e9ecef;
+  border-radius: 50px 5px;
+  position: relative;
+  margin-right: 10px;
+}
+
+.wizard-step.completed {
+  background-color: #117127;
+  color: #fff;
+}
+
+.wizard-step.active {
+  background-color: #2b4793;
+  color: #fff;
+}
+
+.wizard-step.completed:after, .wizard-step.active:after {
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 20px solid white;
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -20px;
+  width: 0;
+}
+
+.wizard-step span {
+  display: block;
+  font-weight: bold;
+}
+
+.wizard-step small {
+  display: block;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.wizard-content {
+  padding: 20px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+
+.drop-zone {
+  border: 2px dashed #28a745;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  background-color: #d4edda;
+  color: #155724;
+  margin-bottom: 20px;
+}
+
+.drop-zone p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.drop-zone.dragover {
+  background-color: #c3e6cb;
+}
+
+

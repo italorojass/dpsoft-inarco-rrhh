@@ -1,0 +1,132 @@
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-3">
+        <h4 class="text-left mb-4 text-dark">
+          <a [routerLink]="['/obras']"><i class="icon-action-undo mr-2"></i>{{ obra.codigo }} | {{ obra.nombre }}</a>
+        </h4>
+      </div>
+      <div class="col-9">
+        <app-cabecera-pages [titulo]="'Importar desde builder'"></app-cabecera-pages>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-12">
+        <div class="wizard">
+          <div class="wizard-steps">
+            <div class="wizard-step" >
+              <span>Importar horas extras desde builder</span>
+
+            </div>
+
+
+          </div>
+          <div class="wizard-content">
+            <div >
+              <div class="drop-zone"  (click)="file2.click()" style="cursor: pointer;">
+                <p >Seleccionar archivo de horas extras (Solo archivos .xlsx o .xls) <i class="icon-cloud-upload"></i></p>
+
+                 <input
+                 type="file"
+                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                 #file2
+                 (change)="handleFileInput($event)"
+                 style="display: none"
+                 >
+               </div>
+
+             <!--  <table class="table table-borderless" *ngIf="showbtn">
+                <tbody>
+                  <tr>
+                    <td>
+                      <h6>Datos del archivo {{ fileName }}</h6>
+                      <p class="text-muted mb-0">
+                        Cantidad de datos procesados
+                      </p>
+                    </td>
+                    <td>
+                      <h3 class="text-primary">
+                        {{ data.length }}
+                      </h3>
+                    </td>
+                  </tr>
+
+
+                </tbody>
+              </table> -->
+              <br>
+             <!--  <div class="table-responsive1" *ngIf="dataGrid.length > 0">
+                <app-table-aggrid
+                  [datos]="dataGrid"
+                  [columnas]="columnDefs"
+                ></app-table-aggrid>
+                <br>
+
+              </div> -->
+              <!-- Step 1 content here -->
+            </div>
+
+
+
+            <!-- Repeat for each step -->
+           <!--  <div class="col-12">
+              <div class="mt-1">
+                <app-btn-reporte-excel
+                [data]="resultadosComparados"
+                [headings]="headings"
+                [sheetName]="'DATOS COMPARADOS'"
+                [_from]="'comparativo'"
+                [fileName]="'Reporte_comparativo_'+titlepage"
+              >
+              </app-btn-reporte-excel>
+              </div>
+              <ul class="nav nav-tabs tab-solid tab-solid-primary" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="tab-5-1" data-toggle="tab" href="#comparados" role="tab" aria-controls="comparados" aria-selected="true">Datos comparados <u style="margin-left: 5px;"> {{resultadosComparados.length }}</u></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="tab-5-2" data-toggle="tab" href="#BUK" role="tab" aria-controls="BUK" aria-selected="false">Diferencias por obra <u style="margin-left: 5px;"> {{resultadosComparadosBUK.length }} </u></a>
+                </li>
+
+              </ul>
+              <br>
+              <div class="tab-content tab-content-solid">
+                <div class="tab-pane fade show active" id="comparados" role="tabpanel" aria-labelledby="comparados">
+                  <div class="row" >
+                    <div class="col-12">
+                      <div class="table-responsive1">
+                        <app-table-aggrid
+                            [datos]="resultadosComparados"
+                            [columnas]="columnDefsComparados"
+                          ></app-table-aggrid>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="BUK" role="tabpanel" aria-labelledby="buk">
+                  <div class="row" >
+                    <div class="col-12">
+                      <div class="table-responsive1">
+                        <app-table-aggrid
+                            [datos]="resultadosComparadosBUK"
+                            [columnas]="columnDefsComparadosBUK"
+                            [paginationNumber]="25"
+                          ></app-table-aggrid>
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div> -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div>

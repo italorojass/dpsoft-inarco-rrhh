@@ -23,7 +23,7 @@ export class BtnEliminarDetallePagoComponent implements ICellRendererAngularComp
 
   agInit(params: ICellRendererParams): void {
     this.cellValue =params.data;
-    console.log('AG INIT',params.data)
+  //  console.log('AG INIT',params.data)
   }
   buttonClicked(typeClick : string) {
     //console.log(this.cellValue)

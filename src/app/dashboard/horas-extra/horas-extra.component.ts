@@ -428,11 +428,13 @@ export class HorasExtraComponent implements OnInit {
       tipo: 'extras',
       obra: this.obra.codigo,
       accion: 'M',
+      quemes : this.datosParametros.quemes,
       ...item,
     };
     console.log('body edit', body);
     this.dtSv.get(body).subscribe((r: any) => {
       //item.isEdit = false
+      console.log('response',r);
       this.toastr.success(
         'Actualizado con éxito',
         `Hora extra del trabajador ${item.nombre}`

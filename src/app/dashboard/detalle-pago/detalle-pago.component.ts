@@ -5,7 +5,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { DetallePagoService } from './services/detalle-pago.service';
 import { ToastrService } from 'ngx-toastr';
 import ChileanRutify from 'chilean-rutify';
-import { CellEditRequestEvent, ColDef, GetRowIdFunc, GetRowIdParams, GridApi, GridOptions, GridReadyEvent, ICellEditorParams, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
+import { CellEditRequestEvent, CellValueChangedEvent, ColDef, GetRowIdFunc, GetRowIdParams, GridApi, GridOptions, GridReadyEvent, ICellEditorParams, RowClassRules, RowValueChangedEvent } from 'ag-grid-community';
 import { AgGridSpanishService } from 'src/app/shared/services/ag-grid-spanish.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ProyectosService } from 'src/app/shared/components/proyectos/services/proyectos.service';
@@ -261,15 +261,17 @@ export class DetallePagoComponent implements OnInit {
 
   cellCellEditorParams = (params: ICellEditorParams<any>) => {
     //
-    const selectedCountry = params.data.id;
-    console.log('SELECTED', selectedCountry);
+    console.log('EDITANDO ESPECIALIDAD', params.data);
+    const selectedEspecialidad = params.data;
+
     let keys = this.especialidades.map(x => {
       return x.descripcion
     });
+    //console.log('keys', keys);
 
     return {
       values: keys,
-      formatValue: (value) => `${value} (${selectedCountry})`
+      formatValue: (value) => `${value} (${selectedEspecialidad.trim()})`
     };
   };
 
@@ -413,7 +415,7 @@ export class DetallePagoComponent implements OnInit {
         { text: 'Finiquito fin de mes', alignment: 'center', margin: [0, 10] },
         { text: 'Líquido a pagar', alignment: 'center', margin: [0, 10] }
       ]
-      console.log(r);
+      console.log('responde data pdf',r);
       //r['result'].datos
       let bodyTable = r['result'].datos.map((p, i) => {
 
@@ -540,7 +542,7 @@ export class DetallePagoComponent implements OnInit {
                   { text: r['result'].datos.reduce((sum, p) => sum + Number(p.dias), 0), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.valor_hora, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.total_periodo, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
-                  { text: r['result'].datos.reduce((sum, p) => sum + Number(p.hor_lun_sab), 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
+                  { text: r['result'].datos.reduce((sum, p) => sum + Number(p.hor_lun_sab), 0).toFixed(2), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.val_lun_sab, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.difer_sabado, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
                   { text: r['result'].datos.reduce((sum, p) => sum + p.difer_domingo, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."), alignment: 'right' },
@@ -822,7 +824,7 @@ export class DetallePagoComponent implements OnInit {
       editable: (params) => params.data.ciequincena !== 'S' && this.quemesViene ? this.quemesViene.estado == 'A' : this.datosParametros.estado == 'A',
       cellEditor: 'agSelectCellEditor',
       cellEditorParams: this.cellCellEditorParams,
-      suppressMenu: true
+
     },
     {
       field: 'sueldo_liq',
@@ -1023,72 +1025,52 @@ export class DetallePagoComponent implements OnInit {
     rowData: [],
     pinnedBottomRowData: [],
     rowSelection: 'multiple', // Habilita selección múltiple
-    suppressRowClickSelection: false // Permite seleccionar filas al hacer clic
+    suppressRowClickSelection: false, // Permite seleccionar filas al hacer clic
+
   };
   pinnedBottomRowData: any[];
+  onCellValueChanged(event: CellValueChangedEvent) {
+    console.log(
+      "onCellValueChanged: " + event.colDef.field + " = " + event.newValue,
+    );
+  }
+  public editType: "fullRow" = "fullRow";
+  onRowValueChanged(event: any) {
 
-  onRowValueChanged(event: CellEditRequestEvent) {
- /*    console.log('event', event);
     var data = event.data;
-    console.log('guardar', data, this.data);
-    this.getChanges(data); */
+    console.log('guardar', data);
+//validar la especialidad
+let especialidad = this.especialidades.find(x => x.descripcion.trim() == data.descripcion.trim());
+data.id_espec = especialidad.id;
 
-    const data = event.data;
-    const field = event.colDef.field;
-    const newValue = event.newValue;
-    const oldItem = this.data.find((row) => row.id === data.id);
-    if (!oldItem || !field) {
-      return;
-    }
-    const newItem = { ...oldItem };
-    console.log('newItem', newItem);
-    newItem[field] = newValue;
-    //       console.log("onCellEditRequest, updating " + field + " to " + newValue);
-
-
-   // this.gridApi.setRowData(newData);
-   let indexEspecialidad = this.especialidades.find(x => x.descripcion.trim() == newItem.descripcion.trim());
-   console.log('especialidad id', indexEspecialidad);
 
    let body1 = {
      tipo: "pagos",
      accion: "M",
-     especialidad: indexEspecialidad.id,
-     sueldo_liq: Number(newItem.sueldo_liq),
-     id_detalle: newItem.id,
-     obra: this.obra.codigo,
-     dias: parseFloat(newItem.dias),
-     valor_hora: Number(newItem.valor_hora),
-     ajuste_pos: Number(newItem.ajuste_pos),
-     anticipo: Number(newItem.anticipo),
-     dctos_varios: Number(newItem.dctos_varios),
-
-     finiq: newItem.finiq,
-     zona10: Number(newItem.zona10),
-     viatico: Number(newItem.viatico),
-     asignaciones: Number(newItem.asignaciones),
-     aguinaldo: Number(newItem.aguinaldo),
-     finiquito: Number(newItem.finiquito),
-     finiquito_findemes: Number(newItem.finiquito_findemes)
+     quemes: this.quemesViene.quemes,
+     abierto: this.quemesViene.estado,
+    ...data
    }
     console.log('body edit', body1);
-   this.dtSv.get(body1).subscribe(r => {
+   this.dtSv.get(body1).subscribe((r:any) => {
      console.log('response edit', r);
-     this.toastr.success('Actualizado con éxito', `trabajador ${newItem.nombre}`);
-     const rowNode = this.gridOptions.api.getRowNode(newItem.id);
+     this.toastr.success('Actualizado con éxito', `trabajador ${data.nombre}`);
+     const rowNode = this.gridOptions.api.getRowNode(data.id);
      if (rowNode) {
-       rowNode.setData(newItem);  // Actualiza solo la fila con la nueva data
+
+      let data = {...r.result[0][0], rutF: ChileanRutify.formatRut(`${r.result[0][0].rut}-${r.result[0][0].dig}`)};
+
+       rowNode.setData(data);  // Actualiza solo la fila con la nueva data
      }
 
      this.grid.api.getPinnedBottomRow(5);
      this.grid.api.getDisplayedRowCount();
 
-     //this.getPagos();
 
    })
   }
 
-  /*  */
+
 
   CurrencyCellRenderer(params: any) {
 

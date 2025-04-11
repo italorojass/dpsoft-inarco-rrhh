@@ -73,6 +73,11 @@ export class HeaderComponent implements OnInit {
             title: 'Calendario hora extra',
             href: '/obras/inicio/calendario-hora-extra',
            // icon: 'icon-calendar'
+          },
+          {
+            title: 'Importar desde builder',
+            href: '/obras/inicio/importar-builder',
+           // icon: 'icon-calendar'
           }
         ]
       },

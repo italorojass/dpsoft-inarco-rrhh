@@ -71,7 +71,7 @@
                 [defaultColDef]="defaultColDef"
                 [gridOptions]="gridOptions"
                 [getRowId]="getRowId"
-                [rowData]="data"
+
                 [pagination]="true"
                 [groupSelectsChildren]="true"
                 [rowSelection]="'multiple'"
@@ -86,10 +86,10 @@
                 [paginationPageSize]="10"
                 [pinnedBottomRowData]="pinnedBottomRowData"
                 [rowClassRules]="rowClassRules"
-                [readOnlyEdit]="true"
-                (cellEditRequest)="onRowValueChanged($event)"
+                (rowValueChanged)="onRowValueChanged($event)"
+
                 (gridReady)="onGridReady($event)"
-                [editType]="'fullRow'"
+                [editType]="editType"
               ></ag-grid-angular>
 
 
