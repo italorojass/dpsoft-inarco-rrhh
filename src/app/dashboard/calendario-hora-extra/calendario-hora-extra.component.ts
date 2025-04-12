@@ -12,95 +12,96 @@ import { Spanish } from 'flatpickr/dist/l10n/es'; // Importa el idioma español
   templateUrl: './calendario-hora-extra.component.html',
   styleUrls: ['./calendario-hora-extra.component.css']
 })
-export class CalendarioHoraExtraComponent implements OnInit , AfterViewInit {
-  constructor(private fb : FormBuilder,
-    private paramSV : ParametrosService,
-    private ToastrService : ToastrService,
+export class CalendarioHoraExtraComponent implements OnInit, AfterViewInit {
+  constructor(private fb: FormBuilder,
+    private paramSV: ParametrosService,
+    private ToastrService: ToastrService,
     private aggsv: AgGridSpanishService) {
 
-      this.calendarForm = this.fb.group({
-        dateRange: ['']
-      });
+    this.calendarForm = this.fb.group({
+      dateRange: ['']
+    });
+  }
+  selectedDate: any;
+  formDate = this.fb.group({
+    inicio: [''],
+    final: [''],
+    quincena: [],
+    finmes: [],
+    cantDias: [],
+    primerDia: [],
+    nombre_bono: ['']
+  })
+  nombreDias = ['Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo'];
+  quemesViene: any;
+  obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
+
+  calendarForm: FormGroup;
+  dateRange: any;
+  ngOnInit(): void {
+
+    this.quemesViene = JSON.parse(sessionStorage.getItem('periodoAbierto'));
+
+    // this.get();
+  }
+
+  startDate: any;
+  endDate: any;
+  ngAfterViewInit(): void {
+    // Configura Flatpickr para seleccionar un rango de fechas
+    console.log('value init dia', this.selectedInitDate)
+
+    let b = {
+      accion: 'C',
+      obra: this.obra.codigo,
+      mesyano: this.quemesViene.quemes,
+      tipo_proceso: this.quemesViene.tipo_proceso
     }
-    selectedDate:any;
-    formDate = this.fb.group({
-      inicio : [''],
-      final : [''],
-      quincena : [],
-      finmes : [],
-      cantDias : [],
-      primerDia : [],
-      nombre_bono : ['']
+
+    this.paramSV.getCalendarioHoraExtra(b).subscribe((r: any) => {
+      console.log('get calendario hora extra', r);
+
+      this.paramss = r.result.parametros[0];
+      this.selectedInitDate = this.paramss.inicio_periodo
+
+      this.selectedEndDate = this.paramss.final_periodo
+
     })
-    nombreDias = ['Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo'];
-    quemesViene : any;
-    obra = JSON.parse(sessionStorage.getItem('obraSelect')!);
 
-    calendarForm: FormGroup;
-    dateRange: any;
-    ngOnInit(): void {
 
-      this.quemesViene = JSON.parse(sessionStorage.getItem('periodoAbierto'));
+  }
 
-     // this.get();
+  getCalendarios() {
+    let b = {
+      accion: 'C',
+      obra: this.obra.codigo,
+      mesyano: this.quemesViene.quemes,
+      tipo_proceso: this.quemesViene.tipo_proceso
     }
+    this.paramSV.getCalendarioHoraExtra(b).subscribe((r: any) => {
+      console.log('UPDATE', r)
+      this.paramss = r.result.parametros[0];
+    })
 
-    startDate :any;
-    endDate :any;
-    ngAfterViewInit(): void {
-      // Configura Flatpickr para seleccionar un rango de fechas
-      console.log('value init dia', this.selectedInitDate )
+  }
 
-      let b = {
-        accion : 'C',
-        obra :this.obra.codigo,
-        mesyano : this.quemesViene.quemes,
-        tipo_proceso : this.quemesViene.tipo_proceso
-      }
-      this.paramSV.getCalendarioHoraExtra(b).subscribe((r:any)=>{
-        console.log(r);
+  calcularFechaFinal(fechaInicialStr) {
 
-        this.paramss =r.result.parametros[0];
-        this.selectedInitDate = this.paramss.inicio_periodo
+    // Crear una nueva fecha final sumando exactamente 35 días
+    const partes = fechaInicialStr.split('/');
+    const dia = parseInt(partes[0], 10);
+    const mes = parseInt(partes[1], 10) - 1; // Los meses empiezan en 0
+    const anio = parseInt(partes[2], 10);
+    // Crear el objeto Date
+    const fecha = new Date(anio, mes, dia);
+    fecha.setDate(fecha.getDate() + 35);
 
-        this.selectedEndDate = this.paramss.final_periodo
+    // Formatear la nueva fecha en DD/MM/YYYY
+    const nuevoDia = String(fecha.getDate()).padStart(2, '0');
+    const nuevoMes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
+    const nuevoAnio = fecha.getFullYear();
 
-      })
-
-
-    }
-
-    getCalendarios(){
-      let b = {
-        accion : 'C',
-        obra :this.obra.codigo,
-        mesyano : this.quemesViene.quemes,
-        tipo_proceso : this.quemesViene.tipo_proceso
-      }
-      this.paramSV.getCalendarioHoraExtra(b).subscribe((r:any)=>{
-        console.log('UPDATE',r)
-        this.paramss =r.result.parametros[0];
-      })
-
-    }
-
-     calcularFechaFinal(fechaInicialStr) {
-
-      // Crear una nueva fecha final sumando exactamente 35 días
-      const partes = fechaInicialStr.split('/');
-      const dia = parseInt(partes[0], 10);
-      const mes = parseInt(partes[1], 10) - 1; // Los meses empiezan en 0
-      const anio = parseInt(partes[2], 10);
-  // Crear el objeto Date
-  const fecha = new Date(anio, mes, dia);
-  fecha.setDate(fecha.getDate() + 35);
-
-  // Formatear la nueva fecha en DD/MM/YYYY
-  const nuevoDia = String(fecha.getDate()).padStart(2, '0');
-  const nuevoMes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
-  const nuevoAnio = fecha.getFullYear();
-
-  return `${nuevoDia}/${nuevoMes}/${nuevoAnio}`;
+    return `${nuevoDia}/${nuevoMes}/${nuevoAnio}`;
 
   }
 
@@ -108,72 +109,76 @@ export class CalendarioHoraExtraComponent implements OnInit , AfterViewInit {
 
 
 
-    updateCalendarioHoraExtra(){
+  updateCalendarioHoraExtra() {
 
-      let nuevaFecha = this.calcularFechaFinal(this.selectedDate)
+    let nuevaFecha = this.calcularFechaFinal(this.selectedDate)
 
 
-      let b = {
-        accion : 'U',
-        obra :this.obra.codigo,
-        mesyano : this.quemesViene.quemes,
-        tipo_proceso : this.quemesViene.tipo_proceso,
-        inicio_periodo : this.selectedDate,
-        final_periodo :nuevaFecha
-      }
-
-      console.log(b);
-
-      this.paramSV.getCalendarioHoraExtra(b).subscribe(r=>{
-        console.log(r);
-        Swal.fire('Calendario hora extra','Periodos actualizados con éxito','success');
-        this.getCalendarios();
-      })
+    let b = {
+      accion: 'U',
+      obra: this.obra.codigo,
+      mesyano: this.quemesViene.quemes,
+      tipo_proceso: this.quemesViene.tipo_proceso,
+      inicio_periodo: this.selectedDate,
+      final_periodo: nuevaFecha
     }
 
-    validateDateRange(startDate ,endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      const differenceInTime = end.getTime() - start.getTime();
-      const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+    console.log(b);
 
-      this.dateRangeInvalid = differenceInDays > 35;
+    sessionStorage.setItem('periodoAbiertoAUX', JSON.stringify(b));
+
+
+    this.paramSV.getCalendarioHoraExtra(b).subscribe(r => {
+      console.log('get calendario hora extra', r);
+      Swal.fire('Calendario hora extra', 'Periodos actualizados con éxito', 'success');
+
+      this.getCalendarios();
+    })
+  }
+
+  validateDateRange(startDate, endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const differenceInTime = end.getTime() - start.getTime();
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+    this.dateRangeInvalid = differenceInDays > 35;
+  }
+  dateRangeInvalid = false;
+  @ViewChild('fromDate') fromDateInput!: ElementRef;
+  @ViewChild('toDate') toDateInput!: ElementRef;
+
+
+  onDateRangeChange(dateRange: any) {
+    console.log(dateRange)
+    this.dateRange = dateRange;
+  }
+
+  paramss: any;
+  parametrosArray = [];
+  get() {
+    this.parametrosArray = [];
+    let b = {
+      accion: 'C',
+      obra: this.obra.codigo,
+      mesyano: this.quemesViene.quemes,
+      tipo_proceso: this.quemesViene.tipo_proceso
     }
-    dateRangeInvalid = false;
-    @ViewChild('fromDate') fromDateInput!: ElementRef;
-    @ViewChild('toDate') toDateInput!: ElementRef;
+    this.paramSV.getCalendarioHoraExtra(b).subscribe((r: any) => {
+      console.log(r);
 
+      this.paramss = r.result.parametros[0];
+      this.selectedInitDate = this.paramss.inicio_periodo
+      this.fromDateInput.nativeElement.value = this.formatfecha(this.selectedInitDate);
 
-    onDateRangeChange(dateRange: any) {
-      console.log(dateRange)
-      this.dateRange = dateRange;
-    }
+      this.selectedEndDate = this.paramss.final_periodo
+      this.toDateInput.nativeElement.value = this.formatfecha(this.selectedEndDate);
+    })
+  }
 
-    paramss:any;
-    parametrosArray  =[];
-    get(){
-      this.parametrosArray=[];
-      let b = {
-        accion : 'C',
-        obra :this.obra.codigo,
-        mesyano : this.quemesViene.quemes,
-        tipo_proceso : this.quemesViene.tipo_proceso
-      }
-      this.paramSV.getCalendarioHoraExtra(b).subscribe((r:any)=>{
-        console.log(r);
-
-        this.paramss =r.result.parametros[0];
-        this.selectedInitDate = this.paramss.inicio_periodo
-        this.fromDateInput.nativeElement.value = this.formatfecha(this.selectedInitDate);
-
-        this.selectedEndDate = this.paramss.final_periodo
-        this.toDateInput.nativeElement.value = this.formatfecha(this.selectedEndDate) ;
-      })
-    }
-
-    selectedInitDate:any;
-    selectedEndDate : any;
-  formatfecha(fecha){
+  selectedInitDate: any;
+  selectedEndDate: any;
+  formatfecha(fecha) {
     let dia = fecha.split('-')[2];
     let mes = fecha.split('-')[1];
     let year = fecha.split('-')[0];
@@ -181,13 +186,13 @@ export class CalendarioHoraExtraComponent implements OnInit , AfterViewInit {
     return `${dia}-${mes}-${year}`;
   }
 
-  cierre(tipo){
+  cierre(tipo) {
 
 
-    console.log(tipo,this.paramss);
+    console.log(tipo, this.paramss);
     this.paramss.tipo_proceso
     Swal.fire({
-      title: 'Está seguro de que desea cerrar '+this.paramss.quemes+'?',
+      title: 'Está seguro de que desea cerrar ' + this.paramss.quemes + '?',
       showDenyButton: true,
       showCancelButton: false,
       confirmButtonText: 'Cerrar',
@@ -195,11 +200,11 @@ export class CalendarioHoraExtraComponent implements OnInit , AfterViewInit {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        let body = {accion : this.paramss.tipo_proceso};
+        let body = { accion: this.paramss.tipo_proceso };
         console.log(body)
-        this.paramSV.cierre(body).subscribe(r=>{
+        this.paramSV.cierre(body).subscribe(r => {
           console.log(r);
-          this.ToastrService.success('Para '+this.paramss.quemes,'Cierre realizado con éxito');
+          this.ToastrService.success('Para ' + this.paramss.quemes, 'Cierre realizado con éxito');
 
           //this.get();
         })

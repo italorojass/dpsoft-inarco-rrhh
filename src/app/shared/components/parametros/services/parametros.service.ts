@@ -15,6 +15,10 @@ export class ParametrosService {
     return this._http.post(`${environment.url}ws_parame_rrhh.php`,body);
   }
 
+  postImportarBuilder(body:any){
+    return this._http.post(`${environment.url}hextras_rrhh.php`,body);
+  }
+
   postFeriadoObra(body:any){
 
     //console.log(`${environment.url}ws_estadopago_rrhh.php`,body);
